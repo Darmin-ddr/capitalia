@@ -20,7 +20,8 @@ Lee `SPEC.md` antes de empezar cualquier tarea. Es la fuente de verdad del produ
 
 ## Datos
 
-- Nombres de países y capitales en **español normativo** (RAE/Fundéu).
+- **Los listados de clase (`docs/listas/`) son la fuente de verdad**: qué países entran y con qué nombre se muestran. Si un dato del listado parece erróneo o desactualizado, avisa al responsable; no lo cambies por tu cuenta.
+- Formas normativas (RAE/Fundéu) distintas de las del listado: se aceptan como variantes, no sustituyen a la del listado.
 - Cualquier dato geográfico o político (capitales, reconocimiento de estados, cambios de nombre) debe **verificarse con una fuente** al añadirlo o modificarlo. Anota la fuente en el commit o en un comentario del fichero de datos.
 - Casos especiales (transcontinentales, Kosovo, Taiwán, Palestina, Israel): seguir exactamente `SPEC.md`, sección 3.2. Notas neutras, sin valoraciones.
 - Los trucos de memoria deben ser breves, apropiados para la edad y revisables. Si un truco es flojo, mejor no ponerlo.

@@ -19,20 +19,19 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 ### 3.1 Estructura del contenido
 - Europa y Asia **separadas**, cada una dividida en **regiones** de 6 a 10 países (p. ej. Europa nórdica, Balcanes, Asia central, Sudeste Asiático). La división concreta se define en los datos.
 - Las regiones se desbloquean progresivamente; siempre se puede volver a las anteriores.
-- **Lista base:** estados miembros de la ONU de Europa y Asia, más los casos especiales de 3.2.
-- **Listados de clase** (material de 3º de ESO): `docs/listas/Europa.md` y `docs/listas/Asia.md`. Son la referencia de qué países y qué forma del nombre espera el profesor. Las discrepancias con la lista base o con el criterio RAE/Fundéu se resuelven caso a caso y se documentan.
+- **Lista base: los listados de clase** (material del colegio, 3º de ESO): `docs/listas/Europa.md` y `docs/listas/Asia.md`. Son la **fuente de verdad**: todo país que aparece en ellos está incluido y activo por defecto, con el nombre de país y de capital tal como figura en el listado. Fuera de los listados solo existen los opcionales desactivados de 3.2 (Kosovo).
 - **Filtro "solo examen"**: el adulto marca qué países entran en un examen concreto (cuando se conozca la lista del libro o del profesor).
 
 ### 3.2 Casos especiales
 - **Transcontinentales** (Rusia, Turquía, Kazajistán, Georgia, Armenia, Azerbaiyán, Chipre): aparecen en ambos mapas, pero son **una sola tarjeta con un solo progreso**.
 - **Kosovo:** opcional, desactivado por defecto (España no lo reconoce y muchos libros españoles no lo incluyen).
-- **Taiwán:** opcional, desactivado por defecto.
-- **Palestina:** incluida, con nota breve y neutra sobre la capital (Jerusalén Este reclamada, Ramala sede administrativa).
+- **Taiwán:** incluido y activo por defecto, porque figura en el listado de clase (capital: Taipéi).
+- **Palestina:** incluida, con nota breve y neutra sobre la capital (Jerusalén Este reclamada, Ramala sede administrativa). El listado da "Jerusalén Este / Ramala": se acepta cualquiera de las dos.
 - **Israel:** Jerusalén, con nota breve y neutra (la mayoría de embajadas están en Tel Aviv).
 - Las notas son informativas, sin valoraciones. Revisar estos datos antes de cada versión publicada: son de actualidad.
 
 ### 3.3 Nombres
-- **Español normativo** (criterio RAE/Fundéu): Pekín, Nueva Delhi, Hanói, Taskent, Astaná, Naipyidó...
+- **Forma principal: la del listado de clase** (que en general sigue el criterio RAE/Fundéu: Pekín, Nueva Delhi, Hanói, Taskent, Astaná, Naipyidó...). Si la forma normativa difiere de la del listado (p. ej. Chisinau/Chisináu), se muestra la del listado y la normativa se acepta como variante.
 - **Variantes aceptadas** en texto libre: Kiev/Kyiv, Pekín/Beijing, etc.
 - **Nombres antiguos** (Rangún, Nursultán...): se aceptan con aviso amable, p. ej. "¡Casi! Ahora se llama Astaná". Motivo: los libros escolares a veces están desactualizados.
 - Texto libre tolerante: sin exigir tildes ni mayúsculas, y con margen para erratas pequeñas (distancia de edición baja, ajustada a la longitud del nombre).
