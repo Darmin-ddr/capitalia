@@ -1,5 +1,14 @@
 import { barajar, type Rng } from './rng';
 
+/**
+ * Cómo ha ido una respuesta:
+ * - acierto: el país sale de la ronda.
+ * - fallo: vuelve a salir unas preguntas después.
+ * - repasar: acertado con errata o con nombre antiguo. No es fallo, pero
+ *   también vuelve a salir más tarde (SPEC 3.3).
+ */
+export type Resultado = 'acierto' | 'fallo' | 'repasar';
+
 export interface ResultadoRespuesta {
   /** Acierto en un país que se había fallado antes en esta ronda (momento de celebrar). */
   recuperado: boolean;
@@ -18,7 +27,7 @@ export interface ResumenRonda {
  * Lo fallado vuelve a salir unas preguntas después (no inmediatamente, si
  * quedan otros países), para que el alumno tenga otra oportunidad pronto.
  *
- * Versión mínima del hito 1: solo en memoria y contando preguntas, no minutos.
+ * Versión mínima: solo en memoria y contando preguntas, no minutos.
  * La cola completa con FSRS llega en el hito 3.
  */
 export class ColaRonda {
@@ -47,16 +56,18 @@ export class ColaRonda {
     return this.cola.length;
   }
 
-  responder(acierto: boolean): ResultadoRespuesta {
+  responder(resultado: Resultado): ResultadoRespuesta {
     const id = this.cola.shift();
     if (id === undefined) throw new Error('La ronda ya ha terminado');
 
-    if (acierto) {
+    if (resultado === 'acierto') {
       return { recuperado: this.fallados.has(id), terminada: this.cola.length === 0 };
     }
 
-    this.fallos++;
-    this.fallados.add(id);
+    if (resultado === 'fallo') {
+      this.fallos++;
+      this.fallados.add(id);
+    }
     const posicion = Math.min(this.huecoTrasFallo, this.cola.length);
     this.cola.splice(posicion, 0, id);
     return { recuperado: false, terminada: false };

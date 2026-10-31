@@ -66,7 +66,7 @@ export function iniciarElegir(
       alTeclear = null;
       for (const b of botones) b.disabled = true;
       const acierto = i === pregunta.correcta;
-      const resultado = cola.responder(acierto);
+      const resultado = cola.responder(acierto ? 'acierto' : 'fallo');
       mapa.mostrarCapital(id);
       botones[pregunta.correcta].classList.add('correcta');
 
