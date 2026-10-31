@@ -16,7 +16,7 @@ export interface ResultadoTexto {
   tipo: TipoRespuesta;
   /** Forma del listado que hay que mostrar (la capital "oficial"). */
   formaCorrecta: string;
-  /** Si es fallo y coincide o se parece a la capital de otro país, cuál. */
+  /** Si es fallo y lo escrito es exactamente la capital de otro país, cuál. */
   otroPais?: Pais;
 }
 
@@ -106,7 +106,5 @@ export function validarTexto(entrada: string, objetivo: Pais, todos: readonly Pa
     return { tipo: mejor.antigua ? 'antiguo' : 'errata', formaCorrecta };
   }
 
-  const pareceOtro =
-    masCercanoOtro && masCercanoOtro.d <= margenErratas(n.length) ? masCercanoOtro.pais : undefined;
-  return { tipo: 'fallo', formaCorrecta, otroPais: pareceOtro };
+  return { tipo: 'fallo', formaCorrecta };
 }
