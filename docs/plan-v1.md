@@ -35,7 +35,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 
 ## Objetivos
 
-### [ ] O1. Progreso, FSRS y sesión (hito 3)
+### [x] O1. Progreso, FSRS y sesión (hito 3)
 
 - Capa de almacenamiento local con manejo de errores (si falla o está vacía, la app funciona en memoria y lo indica discretamente). Datos con número de versión para poder migrar. `navigator.storage.persist()` si está disponible.
 - Una tarjeta FSRS por país (`ts-fsrs`, parámetros por defecto). **"Al revés" comparte la tarjeta.**

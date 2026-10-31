@@ -11,7 +11,7 @@ const ERRATA = { ALB:'Tirnaa',BIH:'Sarajebo',BGR:'Sofai',HRV:'Zagerb',SVN:'Liubi
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
     await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
-    await p.locator('.modo[data-modo="elegir"]')[tap]();
+    await p.locator('.modo[data-modo="practicar"]')[tap]();
 
     // ---- Colocar ----
     await p.locator('.selector-opcion[data-modo="colocar"]')[tap]();

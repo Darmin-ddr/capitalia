@@ -51,6 +51,8 @@ export interface EstadoProgreso {
   trucosPropios: Record<string, string>;
   /** Regiones cuyo dominio ya se ha celebrado (para no repetir el confeti). */
   regionesCelebradas: string[];
+  /** Última región estudiada (para volver a ella al abrir la app). */
+  ultimaRegion: string | null;
   ajustes: Ajustes;
 }
 
@@ -61,6 +63,7 @@ export function estadoVacio(): EstadoProgreso {
     historial: [],
     trucosPropios: {},
     regionesCelebradas: [],
+    ultimaRegion: null,
     ajustes: {
       opcionalesActivados: [],
       listaExamen: null,

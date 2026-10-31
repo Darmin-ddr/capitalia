@@ -7,7 +7,9 @@ import { pintarAcierto, pintarFallo, pintarResumen, progreso, type Contexto, typ
  * país." Todos los países de la región se pueden tocar siempre.
  */
 export function iniciarColocar(ctx: Contexto): ModoPractica {
-  const { contenedor, mapa, region, rng } = ctx;
+  const { contenedor, mapa, region, rng, motor } = ctx;
+  /** Momento de la última acción, para medir el tiempo de cada colocación. */
+  let desde = performance.now();
   mapa.setInteractivo(true);
 
   let ronda = new RondaColocar(region.map((p) => p.id), rng);
@@ -74,6 +76,8 @@ export function iniciarColocar(ctx: Contexto): ModoPractica {
     const capitalDe = seleccionada;
     seleccionada = null;
     const r = ronda.colocar(capitalDe, paisId);
+    motor.registrar(capitalDe, 'colocar', r.acierto ? 'acierto' : 'fallo', performance.now() - desde);
+    desde = performance.now();
 
     if (r.acierto) {
       colocadasEnRonda++;
@@ -90,7 +94,7 @@ export function iniciarColocar(ctx: Contexto): ModoPractica {
       pintarFallo(
         feedback,
         ['Eso es ', nombre(paisId), '. ', capital(capitalDe), ' es la capital de ', el('strong', '', nombre(capitalDe)), '.'],
-        region.find((p) => p.id === capitalDe)!,
+        motor.truco(capitalDe),
         null,
       );
     }

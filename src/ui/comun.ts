@@ -1,7 +1,7 @@
 import type { Pais } from '../logic/types';
 import type { Rng } from '../logic/rng';
-import type { ResumenRonda } from '../logic/sesion';
-import { trucoPrincipal } from '../logic/datos';
+import type { Resultado, ResumenRonda } from '../logic/sesion';
+import type { ModoId } from '../logic/config';
 import { MENSAJE_RECUPERADO, OTRA_OPORTUNIDAD, mensajeAcierto, mensajeResumen } from '../logic/mensajes';
 import type { Mapa } from '../map/mapa';
 import { boton, el, rellenar } from './dom';
@@ -21,6 +21,17 @@ export interface Contexto {
   candidatos: readonly Pais[];
   rng: Rng;
   alExplorar: () => void;
+  motor: Motor;
+}
+
+/** Servicios de la app que usan los modos: guardar progreso y consultar trucos y dominio. */
+export interface Motor {
+  /** Registra una respuesta en el progreso (FSRS + historial) y lo guarda. */
+  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number): void;
+  /** Modo que le toca a un país según su dominio. */
+  modoPara(paisId: string): ModoId;
+  /** Truco a mostrar (el del alumno si lo inventó; null si no hay). */
+  truco(paisId: string): string | null;
 }
 
 /** Un modo de práctica en marcha. */
@@ -87,11 +98,10 @@ export function pintarAcierto(
 export function pintarFallo(
   feedback: HTMLElement,
   titulo: (Node | string)[],
-  pais: Pais,
+  truco: string | null,
   alSeguir: (() => void) | null,
 ): HTMLButtonElement | null {
   feedback.className = 'feedback fallo';
-  const truco = trucoPrincipal(pais);
   const seguir = alSeguir ? boton('Siguiente', 'boton-principal', alSeguir) : null;
   rellenar(
     feedback,
@@ -128,10 +138,11 @@ export function pintarResumen(
   resumen: ResumenRonda,
   alOtra: () => void,
   alExplorar: () => void,
+  textos = { titulo: 'Ronda completada', otra: 'Otra ronda' },
 ): void {
-  const otra = boton('Otra ronda', 'boton-principal', alOtra);
+  const otra = boton(textos.otra, 'boton-principal', alOtra);
   contenedor.replaceChildren(
-    el('p', 'resumen-titulo', 'Ronda completada'),
+    el('p', 'resumen-titulo', textos.titulo),
     el('p', 'resumen', mensajeResumen(resumen.aLaPrimera, resumen.total)),
     el('div', 'acciones', otra, boton('Explorar el mapa', 'boton-secundario', alExplorar)),
   );

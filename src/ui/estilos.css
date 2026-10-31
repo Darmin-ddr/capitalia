@@ -268,6 +268,50 @@ button {
   stroke-width: 3;
 }
 
+/* Progreso: el mapa se colorea según el dominio (SPEC 10). */
+.pais.nivel-1 {
+  fill: color-mix(in srgb, var(--color-pais, var(--color-region)) 35%, var(--pais));
+}
+
+.pais.nivel-2 {
+  fill: color-mix(in srgb, var(--color-pais, var(--color-region)) 65%, var(--pais));
+}
+
+.pais.nivel-3 {
+  fill: var(--color-pais, var(--color-region));
+}
+
+/* Países del continente fuera de la región: se ven, más apagados, y no se tocan. */
+.pais.contexto {
+  stroke: var(--tierra-borde);
+  stroke-width: 0.6;
+  opacity: 0.75;
+}
+
+.pais.contexto:not([class*='nivel-']) {
+  fill: var(--tierra);
+}
+
+/* Microestados: círculo visible y área tocable invisible más grande. */
+.microestado .toque {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.microestado.tocable,
+.microestado.jugable {
+  cursor: pointer;
+}
+
+.pais.circulo {
+  stroke: var(--pais-borde);
+  stroke-width: 1.5;
+}
+
+.microestado.contexto {
+  pointer-events: none;
+}
+
 .pais.seleccion {
   fill: var(--color-region);
 }
@@ -699,4 +743,81 @@ button {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ---------- Avisos ---------- */
+
+.avisos {
+  position: fixed;
+  left: 50%;
+  top: calc(env(safe-area-inset-top) + 64px);
+  transform: translateX(-50%);
+  display: grid;
+  gap: 8px;
+  z-index: 20;
+  pointer-events: none;
+  width: min(92vw, 420px);
+}
+
+.aviso {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--texto);
+  color: var(--fondo);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.15);
+  transition: opacity 0.4s ease;
+}
+
+.aviso.saliendo {
+  opacity: 0;
+}
+
+.aviso-almacen {
+  margin: 0 16px 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--fallo-fondo);
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
+/* ---------- Trucos propios ---------- */
+
+.acciones-truco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 8px;
+}
+
+.boton-enlace {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--acento);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.campo-truco {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  font-size: 1.05rem;
+  resize: vertical;
+}
+
+.campo-truco:focus {
+  outline: none;
+  border-color: var(--acento);
 }

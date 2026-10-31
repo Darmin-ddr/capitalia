@@ -13,8 +13,9 @@
       <header class="barra">
         <h1 class="marca">Capitalia</h1>
         <nav class="modos" aria-label="Modo">
-          <button type="button" class="modo" data-modo="explorar" aria-pressed="true">Explorar</button>
-          <button type="button" class="modo" data-modo="elegir" aria-pressed="false">Practicar</button>
+          <button type="button" class="modo" data-modo="repaso" aria-pressed="true">Repaso</button>
+          <button type="button" class="modo" data-modo="practicar" aria-pressed="false">Practicar</button>
+          <button type="button" class="modo" data-modo="explorar" aria-pressed="false">Explorar</button>
         </nav>
         <span class="region-actual" id="region-actual"></span>
       </header>
@@ -22,6 +23,7 @@
         <section class="mapa" id="mapa"></section>
         <section class="panel" id="panel" aria-live="polite"></section>
       </main>
+      <div class="avisos" id="avisos" aria-live="polite"></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
