@@ -16,7 +16,11 @@
   --pais-borde: #ffffff;
   --objetivo: #a9c9ef;
   --objetivo-borde: #2f62a8;
-  --color-region: #c8b6e2;
+  /* El color base de la región lo fija main.ts desde regions.json. */
+  --region-base: #c8b6e2;
+  --color-region: var(--region-base);
+  /* Texto sobre el color de la región: siempre oscuro, también en modo oscuro (el pastel es claro). */
+  --texto-sobre-region: #1f2a37;
 
   --acierto: #1f7d5c;
   --acierto-fondo: #dcf3e9;
@@ -49,7 +53,6 @@
     --pais-borde: #161b22;
     --objetivo: #3d5f8f;
     --objetivo-borde: #9cc0f0;
-    --color-region: #6e5c8c;
 
     --acierto: #7fdcb7;
     --acierto-fondo: #17352b;
@@ -246,7 +249,7 @@ button {
 }
 
 @media (hover: hover) {
-  .pais.tocable:hover {
+  .pais.tocable:not(.seleccion):hover {
     fill: var(--pais-hover);
   }
 }
@@ -315,10 +318,32 @@ button {
 }
 
 .ficha-pais {
-  margin: 0;
-  font-size: 1.1rem;
-  color: var(--texto-suave);
-  font-weight: 700;
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+/* Evita que el «?» se quede solo en otra línea. */
+.sin-corte {
+  white-space: nowrap;
+}
+
+/* Nombre del país resaltado con el mismo color que tiene en el mapa. */
+.nombre-pais {
+  display: inline-block;
+  padding: 0 0.4em;
+  border-radius: 8px;
+  font-weight: 800;
+  color: var(--texto);
+}
+
+.nombre-pais.objetivo {
+  background: var(--objetivo);
+  box-shadow: inset 0 0 0 2px var(--objetivo-borde);
+}
+
+.nombre-pais.seleccion {
+  background: var(--color-region);
+  color: var(--texto-sobre-region);
 }
 
 .ficha-capital {
@@ -376,7 +401,7 @@ button {
 .chip[aria-pressed='true'] {
   background: var(--color-region);
   border-color: transparent;
-  color: #1f2a37;
+  color: var(--texto-sobre-region);
   font-weight: 700;
 }
 

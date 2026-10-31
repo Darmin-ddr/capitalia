@@ -46,7 +46,7 @@ export function iniciarExplorar(panel: HTMLElement, mapa: Mapa, region: readonly
     const truco = trucoPrincipal(pais);
     rellenar(
       ficha,
-      el('p', 'ficha-pais', pais.nombre),
+      el('p', 'ficha-pais', el('span', 'nombre-pais seleccion', pais.nombre)),
       el('p', 'ficha-capital', el('span', 'estrella-texto', '★'), ' ', pais.capital),
       truco && el('p', 'truco', el('span', 'truco-etiqueta', 'Truco'), truco),
       pais.nota && el('p', 'nota', pais.nota),

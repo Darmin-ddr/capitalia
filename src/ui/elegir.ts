@@ -45,7 +45,7 @@ export function iniciarElegir(
 
     const hechos = cola.resumen().total - cola.pendientes();
     const progreso = el('p', 'progreso', `${hechos} de ${cola.resumen().total}`);
-    const enunciado = el('p', 'enunciado', '¿Cuál es la capital de ', el('strong', '', pais.nombre), '?');
+    const enunciado = el('p', 'enunciado', '¿Cuál es la capital de ', el('span', 'sin-corte', el('strong', 'nombre-pais objetivo', pais.nombre), '?'));
     const opciones = el('div', 'opciones');
     const feedback = el('div', 'feedback');
     const botones = pregunta.opciones.map((texto, i) => {

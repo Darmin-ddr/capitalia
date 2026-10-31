@@ -14,7 +14,7 @@ const idsActivos = new Set(activos.map((p) => p.id));
 const region = regiones[0];
 const paisesRegion = paisesDeRegion(activos, region.id);
 
-document.documentElement.style.setProperty('--color-region', region.color);
+document.documentElement.style.setProperty('--region-base', region.color);
 document.getElementById('region-actual')!.textContent = region.nombre;
 
 const panel = document.getElementById('panel')!;
