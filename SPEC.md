@@ -23,8 +23,8 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 - **Filtro "solo examen"**: el adulto marca qué países entran en un examen concreto (cuando se conozca la lista del libro o del profesor).
 
 ### 3.2 Casos especiales
-- **Transcontinentales** (Rusia, Turquía, Kazajistán, Georgia, Armenia, Azerbaiyán, Chipre): aparecen en ambos mapas, pero son **una sola tarjeta con un solo progreso**.
-- **Kosovo:** opcional, desactivado por defecto (España no lo reconoce y muchos libros españoles no lo incluyen).
+- **Transcontinentales** (Rusia, Turquía, Kazajistán, Georgia, Armenia, Azerbaiyán, Chipre): cada uno aparece en el mapa del continente o continentes donde lo pone el listado de clase (Rusia y Turquía en ambos; Chipre en Europa; Georgia, Armenia, Azerbaiyán y Kazajistán en Asia). Siempre **una sola tarjeta con un solo progreso**.
+- **Kosovo:** opcional, desactivado por defecto (España no lo reconoce y muchos libros españoles no lo incluyen). No figura en el listado de clase. Mientras está desactivado, el mapa dibuja su territorio unido al de Serbia, sin frontera interior (es como lo tratan los mapas que no incluyen Kosovo como país).
 - **Taiwán:** incluido y activo por defecto, porque figura en el listado de clase (capital: Taipéi).
 - **Palestina:** incluida, con nota breve y neutra sobre la capital (Jerusalén Este reclamada, Ramala sede administrativa). El listado da "Jerusalén Este / Ramala": se acepta cualquiera de las dos.
 - **Israel:** Jerusalén, con nota breve y neutra (la mayoría de embajadas están en Tel Aviv).
@@ -34,6 +34,7 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 - **Forma principal: la del listado de clase** (que en general sigue el criterio RAE/Fundéu: Pekín, Nueva Delhi, Hanói, Taskent, Astaná, Naipyidó...). Si la forma normativa difiere de la del listado (p. ej. Chisinau/Chisináu), se muestra la del listado y la normativa se acepta como variante.
 - **Variantes aceptadas** en texto libre: Kiev/Kyiv, Pekín/Beijing, etc.
 - **Nombres antiguos** (Rangún, Nursultán...): se aceptan con aviso amable, p. ej. "¡Casi! Ahora se llama Astaná". Motivo: los libros escolares a veces están desactualizados.
+- **Sri Lanka:** se acepta Colombo con aviso amable (muchos materiales la dan como capital); la respuesta principal es la del listado.
 - Texto libre tolerante: sin exigir tildes ni mayúsculas, y con margen para erratas pequeñas (distancia de edición baja, ajustada a la longitud del nombre).
 
 ## 4. Modos de juego (niveles de dificultad)
