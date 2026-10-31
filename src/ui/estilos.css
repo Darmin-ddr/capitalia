@@ -87,6 +87,10 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 button {
   font: inherit;
   color: inherit;
@@ -104,6 +108,7 @@ button {
   flex-direction: column;
   height: 100vh;
   height: 100dvh;
+  height: var(--alto-app, 100dvh);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
@@ -306,6 +311,14 @@ button {
   pointer-events: none;
 }
 
+/* Poco alto (p. ej. con el teclado abierto en el móvil): el mapa cede sitio. */
+@media (max-height: 560px) and (max-width: 899px) {
+  .contenido {
+    grid-template-rows: minmax(110px, 32%) 1fr;
+    gap: 8px;
+  }
+}
+
 /* ---------- Explorar ---------- */
 
 .ayuda {
@@ -406,6 +419,117 @@ button {
 }
 
 /* ---------- Practicar ---------- */
+
+.selector-practica {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+}
+
+.selector-opcion {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.selector-opcion[aria-pressed='true'] {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: 0 0 0 1px var(--borde), 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+.pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.chip-capital {
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-width: 2px;
+}
+
+.chip-capital[aria-pressed='true'] {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: var(--acento-texto);
+}
+
+.pista {
+  color: var(--texto-suave);
+}
+
+.nombre-capital {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.respuesta-form {
+  display: grid;
+  gap: 10px;
+}
+
+.campo-texto {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 2px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  /* 16 px o más: evita que Safari de iPhone haga zoom al tocar el campo. */
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.campo-texto:focus {
+  outline: none;
+  border-color: var(--acento);
+}
+
+.campo-texto.correcta {
+  border-color: var(--acierto);
+  background: var(--acierto-fondo);
+}
+
+.campo-texto.elegida-mal {
+  border-color: var(--fallo);
+  background: var(--fallo-fondo);
+}
+
+.campo-texto:disabled {
+  opacity: 1;
+  color: var(--texto);
+  -webkit-text-fill-color: var(--texto);
+}
+
+.feedback.aviso .feedback-titulo {
+  color: var(--acierto);
+}
+
+.resumen-titulo {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
 
 .progreso {
   margin: 0;

@@ -3,7 +3,7 @@
 Herramienta para aprender las capitales de Europa y Asia sobre un mapa (3º de ESO).
 La especificación del producto está en [`SPEC.md`](SPEC.md) y las normas de trabajo en [`CLAUDE.md`](CLAUDE.md).
 
-Estado: **hito 1** (prototipo con la región de los Balcanes, modos Explorar y Practicar).
+Estado: **hito 2** (región de los Balcanes; modos Explorar, Elegir, Colocar, Escribir y Al revés; sin progreso guardado todavía).
 
 ## Uso en local
 

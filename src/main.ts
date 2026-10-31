@@ -7,7 +7,7 @@ import { paises as todos, regiones } from './data';
 import { paisesActivos, paisesDeRegion } from './logic/datos';
 import { Mapa } from './map/mapa';
 import { iniciarExplorar, type Modo } from './ui/explorar';
-import { iniciarElegir } from './ui/elegir';
+import { iniciarPracticar } from './ui/practicar';
 
 const activos = paisesActivos(todos);
 const idsActivos = new Set(activos.map((p) => p.id));
@@ -36,8 +36,21 @@ function cambiarModo(nombre: 'explorar' | 'elegir'): void {
   modo =
     nombre === 'explorar'
       ? iniciarExplorar(panel, mapa, paisesRegion)
-      : iniciarElegir(panel, mapa, paisesRegion, activos, Math.random, () => cambiarModo('explorar'));
+      : iniciarPracticar(panel, mapa, paisesRegion, activos, Math.random, () => cambiarModo('explorar'));
 }
 
 for (const b of botonesModo) b.addEventListener('click', () => cambiarModo(b.dataset.modo as 'explorar' | 'elegir'));
 cambiarModo('explorar');
+
+// Teclado en pantalla (iPhone/Android): la app se ajusta al alto visible para
+// que el campo de texto y el mapa no queden tapados. Con zoom de pellizco no se toca.
+const vista = window.visualViewport;
+if (vista) {
+  const ajustarAlto = () => {
+    if (Math.abs(vista.scale - 1) > 0.01) return;
+    document.documentElement.style.setProperty('--alto-app', `${Math.round(vista.height)}px`);
+    if (window.scrollY !== 0) window.scrollTo(0, 0);
+  };
+  vista.addEventListener('resize', ajustarAlto);
+  ajustarAlto();
+}
