@@ -35,13 +35,14 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 - **Variantes aceptadas** en texto libre: Kiev/Kyiv, Pekín/Beijing, etc.
 - **Nombres antiguos** (Rangún, Nursultán...): se aceptan con aviso amable, p. ej. "¡Casi! Ahora se llama Astaná". Motivo: los libros escolares a veces están desactualizados.
 - **Sri Lanka:** se acepta Colombo con aviso amable (muchos materiales la dan como capital); la respuesta principal es la del listado.
-- Texto libre tolerante: sin exigir tildes ni mayúsculas, y con margen para erratas pequeñas (distancia de edición baja, ajustada a la longitud del nombre).
+- Texto libre tolerante: sin exigir tildes, mayúsculas, espacios ni guiones, y con margen para erratas pequeñas (distancia de edición ajustada a la longitud del nombre: 0 hasta 4 letras, 1 de 5 a 8, 2 desde 9; dos letras intercambiadas cuentan como un solo error). Si lo escrito se parece tanto o más a otra capital, es fallo.
+- **Erratas y nombres antiguos:** no se marcan como fallo (sin coral), pero se avisa de la forma correcta y el país **se repite más tarde en la sesión, como si fuera un fallo**. No lanzan confeti al acertarse después y cuentan como "a la primera" en el resumen.
 
 ## 4. Modos de juego (niveles de dificultad)
 
 1. **Explorar:** tocar un país muestra su capital y su truco. Sin evaluación.
 2. **Elegir entre opciones:** país marcado en el mapa, 4 capitales posibles. Distractores preferentemente de la misma región.
-3. **Pool de capitales:** 5 o 6 capitales por ronda para colocar en su país. Interacción "toca la capital, luego toca el país" (más fiable que arrastrar en iPad y móvil). Arrastrar puede añadirse como alternativa en PC.
+3. **Pool de capitales:** tandas de 5 capitales para colocar en su país. Una capital mal colocada vuelve en una tanda posterior. Todos los países de la región se pueden tocar siempre (no solo los de la tanda), para que no se acierte por descarte. Interacción "toca la capital, luego toca el país" (más fiable que arrastrar en iPad y móvil). Arrastrar puede añadirse como alternativa en PC.
 4. **Texto libre:** escribir la capital del país marcado.
 5. **Al revés:** se muestra una capital y hay que tocar el país en el mapa.
 
