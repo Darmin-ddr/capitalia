@@ -5,12 +5,11 @@ import { geoContains } from 'd3-geo';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import type { Feature } from 'geojson';
 import mundo from 'world-atlas/countries-50m.json';
-import datos from '../src/data/countries.json';
-import regiones from '../src/data/regions.json';
+import { paises } from '../src/data';
+import { regiones } from '../src/data';
 import { paisesActivos } from '../src/logic/datos';
 import type { Pais } from '../src/logic/types';
 
-const paises = datos.paises as Pais[];
 const topo = mundo as unknown as Topology<{ countries: GeometryCollection<{ name: string }> }>;
 const formas = feature(topo, topo.objects.countries).features as Feature[];
 
