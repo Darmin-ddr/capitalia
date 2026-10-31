@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161b22" media="(prefers-color-scheme: dark)" />
+    <title>Capitalia</title>
+  </head>
+  <body>
+    <div class="app">
+      <header class="barra">
+        <h1 class="marca">Capitalia</h1>
+        <nav class="modos" aria-label="Modo">
+          <button type="button" class="modo" data-modo="explorar" aria-pressed="true">Explorar</button>
+          <button type="button" class="modo" data-modo="elegir" aria-pressed="false">Practicar</button>
+        </nav>
+        <span class="region-actual" id="region-actual"></span>
+      </header>
+      <main class="contenido">
+        <section class="mapa" id="mapa"></section>
+        <section class="panel" id="panel" aria-live="polite"></section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
