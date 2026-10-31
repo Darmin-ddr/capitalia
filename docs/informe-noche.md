@@ -2,6 +2,13 @@
 
 Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
+## Ahora mismo
+
+- **Objetivo en curso:** ninguno (pendiente de empezar O1).
+- **Hecho de él:** -
+- **Falta:** -
+- **Siguiente paso:** empezar O1 (capa de almacenamiento local).
+
 ## Estado
 
 | Objetivo | Estado |

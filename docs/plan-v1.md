@@ -10,6 +10,16 @@ Progreso: se marca cada objetivo (`[x]`) al cerrarlo, y se anota en [`informe-no
 2. `git log --oneline -20` para ver lo último hecho.
 3. Seguir por el **primer objetivo sin marcar**. Si estaba a medias, comprobar qué falta con sus criterios.
 
+## Memoria de trabajo (para sobrevivir a las compactaciones)
+
+La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza" se pierde. Por eso:
+
+- **Escribir antes de seguir:** toda decisión, hallazgo relevante (p. ej. un dato que no cuadra, un bloqueo, un truco técnico que ha costado encontrar) o cambio de rumbo se anota **en el momento** en `docs/informe-noche.md`, no al final.
+- **Sección "Ahora mismo"** al principio del informe: objetivo en curso, qué está hecho de él, qué falta y cuál es el siguiente paso concreto. Se actualiza cada vez que se cierra un paso.
+- **Commit y push frecuentes:** como mínimo al cerrar cada paso relevante (no solo cada objetivo), incluyendo los cambios del informe. Nunca acumular más de una hora de trabajo sin subir.
+- **Notas técnicas para mí** (cómo está organizado algo, comandos de prueba útiles, scripts de Playwright): en `docs/notas-tecnicas.md`, también con commit. Los scripts de prueba que merezca la pena conservar, en `scripts/`.
+- **Tras una compactación:** releer este plan, el informe ("Ahora mismo" primero) y `git log` antes de tocar nada.
+
 ## Reglas
 
 - **Fuente de verdad:** `SPEC.md` para el producto y los listados de `docs/listas/` para los datos. Países, nombres y capitales, exactamente como en los listados. **Nada de notas políticas ni nombres antiguos.** Variantes solo para grafías alternativas evidentes (Ljubljana, Kyiv, Beijing...).
