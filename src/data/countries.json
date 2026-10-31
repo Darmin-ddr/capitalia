@@ -3,7 +3,6 @@
     "nombres": "Nombres de país y capital: listados de clase de 3º de ESO (docs/listas/Europa.md), fuente de verdad del proyecto. Kosovo no figura en el listado; se usa la forma recomendada por Fundéu (Pristina).",
     "capitalCoords": "GeoNames (geonames.org, CC BY 4.0), lugares con código PPLC, vía el paquete npm all-the-cities 3.1.0. Se indica el identificador GeoNames de cada capital en 'geonamesId'. Coordenadas redondeadas a 3 decimales.",
     "isoNumerico": "ISO 3166-1 numérico, comprobado contra los identificadores de world-atlas 2.0.2 (Natural Earth 50m). Kosovo no tiene código ISO numérico: en world-atlas aparece sin id y con nombre 'Kosovo'.",
-    "antiguos": "Podgorica se llamó Titogrado entre 1946 y 1992 (dato conocido; pendiente de citar fuente concreta antes de publicar).",
     "trucos": "Redactados para el prototipo. Todos pendientes de revisión por un adulto (revisado: false)."
   },
   "paises": [
@@ -123,7 +122,7 @@
       "nombre": "Montenegro",
       "capital": "Podgorica",
       "variantes": [],
-      "antiguos": ["Titogrado", "Titograd"],
+      "antiguos": [],
       "continentes": ["europa"],
       "region": "balcanes",
       "capitalCoords": [19.264, 42.441],
@@ -169,7 +168,6 @@
       "capitalCoords": [21.167, 42.673],
       "geonamesId": 786714,
       "opcional": true,
-      "nota": "Kosovo declaró su independencia en 2008. Parte de la comunidad internacional lo reconoce y parte no, entre ellos España.",
       "trucos": []
     }
   ]

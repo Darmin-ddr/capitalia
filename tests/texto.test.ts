@@ -53,8 +53,7 @@ describe('validarTexto', () => {
     expect(v('Kyiv', UKR).tipo).toBe('correcto');
   });
 
-  it('nombres antiguos: aceptados con aviso', () => {
-    expect(v('Titogrado', real('MNE'), paises).tipo).toBe('antiguo');
+  it('nombres antiguos (mecanismo, sin datos reales): aceptados con aviso', () => {
     expect(v('nursultan', KAZ).tipo).toBe('antiguo');
     expect(v('Nursultam', KAZ).tipo).toBe('antiguo'); // errata en el nombre antiguo
   });
