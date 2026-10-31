@@ -1,0 +1,176 @@
+{
+  "fuentes": {
+    "nombres": "Nombres de país y capital: listados de clase de 3º de ESO (docs/listas/Europa.md), fuente de verdad del proyecto. Kosovo no figura en el listado; se usa la forma recomendada por Fundéu (Pristina).",
+    "capitalCoords": "GeoNames (geonames.org, CC BY 4.0), lugares con código PPLC, vía el paquete npm all-the-cities 3.1.0. Se indica el identificador GeoNames de cada capital en 'geonamesId'. Coordenadas redondeadas a 3 decimales.",
+    "isoNumerico": "ISO 3166-1 numérico, comprobado contra los identificadores de world-atlas 2.0.2 (Natural Earth 50m). Kosovo no tiene código ISO numérico: en world-atlas aparece sin id y con nombre 'Kosovo'.",
+    "antiguos": "Podgorica se llamó Titogrado entre 1946 y 1992 (dato conocido; pendiente de citar fuente concreta antes de publicar).",
+    "trucos": "Redactados para el prototipo. Todos pendientes de revisión por un adulto (revisado: false)."
+  },
+  "paises": [
+    {
+      "id": "ALB",
+      "isoNumerico": "008",
+      "nombre": "Albania",
+      "capital": "Tirana",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [19.819, 41.328],
+      "geonamesId": 3183875,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "BIH",
+      "isoNumerico": "070",
+      "nombre": "Bosnia y Herzegovina",
+      "capital": "Sarajevo",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [18.356, 43.849],
+      "geonamesId": 3191281,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "BGR",
+      "isoNumerico": "100",
+      "nombre": "Bulgaria",
+      "capital": "Sofía",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [23.324, 42.698],
+      "geonamesId": 727011,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "historia",
+          "texto": "Sofía es nombre de persona: imagínala desayunando un yogur búlgaro.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "HRV",
+      "isoNumerico": "191",
+      "nombre": "Croacia",
+      "capital": "Zagreb",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [15.978, 45.814],
+      "geonamesId": 3186886,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "SVN",
+      "isoNumerico": "705",
+      "nombre": "Eslovenia",
+      "capital": "Liubliana",
+      "variantes": ["Ljubljana"],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [14.505, 46.051],
+      "geonamesId": 3196359,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "GRC",
+      "isoNumerico": "300",
+      "nombre": "Grecia",
+      "capital": "Atenas",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [23.728, 37.984],
+      "geonamesId": 264371,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Atenas lleva el nombre de Atenea, la diosa griega de la sabiduría.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "MKD",
+      "isoNumerico": "807",
+      "nombre": "Macedonia del Norte",
+      "capital": "Skopie",
+      "variantes": ["Skopje"],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [21.431, 41.996],
+      "geonamesId": 785842,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MNE",
+      "isoNumerico": "499",
+      "nombre": "Montenegro",
+      "capital": "Podgorica",
+      "variantes": [],
+      "antiguos": ["Titogrado", "Titograd"],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [19.264, 42.441],
+      "geonamesId": 3193044,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "comparacion",
+          "texto": "Blanco y negro: Montenegro es el «monte negro» y su vecina Serbia tiene a Belgrado, la «ciudad blanca». Podgorica significa «al pie de la colina».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "SRB",
+      "isoNumerico": "688",
+      "nombre": "Serbia",
+      "capital": "Belgrado",
+      "variantes": ["Beograd"],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [20.465, 44.804],
+      "geonamesId": 792680,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "comparacion",
+          "texto": "Belgrado significa «ciudad blanca», y justo al lado está Montenegro, el «monte negro».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "XKX",
+      "isoNumerico": null,
+      "nombre": "Kosovo",
+      "capital": "Pristina",
+      "variantes": ["Prishtina", "Prishtinë"],
+      "antiguos": [],
+      "continentes": ["europa"],
+      "region": "balcanes",
+      "capitalCoords": [21.167, 42.673],
+      "geonamesId": 786714,
+      "opcional": true,
+      "nota": "Kosovo declaró su independencia en 2008. Parte de la comunidad internacional lo reconoce y parte no, entre ellos España.",
+      "trucos": []
+    }
+  ]
+}
