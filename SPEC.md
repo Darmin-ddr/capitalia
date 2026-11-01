@@ -34,18 +34,38 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 - **Forma principal: la del listado de clase** (que en general sigue el criterio RAE/Fundéu: Pekín, Nueva Delhi, Hanói, Taskent, Astaná, Naipyidó...). Si la forma normativa difiere de la del listado (p. ej. Chisinau/Chisináu), se muestra la del listado y la normativa se acepta como variante.
 - **Variantes aceptadas** en texto libre: Kiev/Kyiv, Pekín/Beijing, etc.
 - **Nombres antiguos:** no se añaden (los listados mandan). La lógica para aceptarlos con aviso existe, pero el campo `antiguos` queda vacío salvo decisión expresa del responsable. Tampoco se acepta Colombo para Sri Lanka.
+- **Nombres de país en texto libre** (mapa mudo): se acepta el del listado y formas equivalentes evidentes (Chequia, Arabia Saudí, Birmania o Myanmar, Bangladesh...). **Holanda** por Países Bajos se acepta **con aviso**, como una errata (decisión del responsable).
 - Texto libre tolerante: sin exigir tildes, mayúsculas, espacios ni guiones, y con margen para erratas pequeñas (distancia de edición ajustada a la longitud del nombre: 0 hasta 4 letras, 1 de 5 a 8, 2 desde 9; dos letras intercambiadas cuentan como un solo error). Si lo escrito se parece tanto o más a otra capital, es fallo.
 - **Erratas** (y nombres antiguos, si algún día se añaden): no se marcan como fallo (sin coral), pero se avisa de la forma correcta y el país **se repite más tarde en la sesión, como si fuera un fallo**. No lanzan confeti al acertarse después y cuentan como "a la primera" en el resumen.
 
-## 4. Modos de juego (niveles de dificultad)
+## 4. Estructura de la app y tipos de pregunta (v2)
 
-1. **Explorar:** tocar un país muestra su capital y su truco. Sin evaluación.
-2. **Elegir entre opciones:** país marcado en el mapa, 4 capitales posibles. Distractores preferentemente de la misma región.
-3. **Pool de capitales:** tandas de 5 capitales para colocar en su país. Una capital mal colocada vuelve en una tanda posterior. Todos los países de la región se pueden tocar siempre (no solo los de la tanda), para que no se acierte por descarte. Interacción "toca la capital, luego toca el país" (más fiable que arrastrar en iPad y móvil). Arrastrar puede añadirse como alternativa en PC.
-4. **Texto libre:** escribir la capital del país marcado.
-5. **Al revés:** se muestra una capital y hay que tocar el país en el mapa.
+El examen real de clase es un **mapa mudo con puntos en las capitales**: hay que saber qué país es y cuál es su capital. Todo se orienta a ese objetivo, separando **aprender** (fase de aprendizaje) de **repasar** (fase de repaso).
 
-Cada país avanza por los modos según su dominio; el alumno también puede elegir modo libremente.
+### 4.1 Pestañas
+- **Hoy** (uso diario, un solo botón): repaso de lo aprendido mezclando regiones y tipos de pregunta, con **países nuevos intercalados** (como Anki). Hoy no es solo repaso: es la rutina completa. Si hay examen configurado y se acerca la fecha, da prioridad a sus países.
+- **Aprender** (extra, a ritmo propio): por región; lleva a cada país por los escalones de 4.3. Lo que el alumno haga aquí es un adelanto sobre Hoy.
+- **Examen** (comprobar si estás listo): mapa mudo del continente; ver 4.4.
+- **Explorar**: tocar un país muestra su capital y su truco. Sin evaluación.
+
+### 4.2 Tipos de pregunta
+1. **Elegir:** país marcado en el mapa, 4 capitales posibles (distractores preferentemente de la misma región).
+2. **Colocar:** tandas de capitales para colocar en su país ("toca la capital, luego el país"); todos los países se pueden tocar para que no se acierte por descarte. En preguntas sueltas (Hoy) equivale a "Al revés".
+3. **Escribir:** escribir la capital del país marcado.
+4. **Mapa mudo:** se marca la estrella de una capital, sin resaltar el país; hay que escribir **el país y la capital**.
+5. **Al revés:** se muestra una capital y hay que tocar su país. Solo en Hoy, para dar variedad.
+
+### 4.3 Escalones de aprendizaje
+Cada país pasa por: **Elegir → Colocar → Escribir → Mapa mudo**. Sube de escalón al **acertar dos veces con otras preguntas por medio** (evita el espejismo de dominio de acertar seguido en una tarde). Un fallo reinicia el contador del escalón, sin bajar de escalón. Al superar el Mapa mudo, el país queda **aprendido** y pasa al repaso espaciado de Hoy. El "dominado" a largo plazo lo decide FSRS (sección 6).
+
+### 4.4 Examen
+- Mapa mudo del **continente entero** (como el examen real), sin colores de progreso, con las estrellas de las capitales; se resalta una y se escriben país y capital.
+- Se elige qué entra (Europa, Asia, todo o la lista del examen del panel) y cuántas preguntas (10, 20 o todas).
+- Sin trucos ni repeticiones. **Nota sobre 10**: 1 punto si país y capital son correctos, **medio punto** si solo uno de los dos. Al final, lista de fallos y opción de priorizarlos en Hoy.
+- **Los resultados cuentan para la planificación**: acierto completo como acierto, medio acierto como "repasar" (Hard), fallo como fallo (Again).
+
+### 4.5 Mapa con varias regiones
+En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra dominio real). Al cambiar, transición breve con el nombre de la región; el tiempo de respuesta cuenta desde que el mapa está quieto.
 
 ## 5. Pedagogía y feedback
 
@@ -91,8 +111,9 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 
 ## 7. Sesiones
 
-- **Sesión normal:** corta (objetivo orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar.
-- **Modo examen:** se elige fecha y regiones/lista. Repasa sobre todo lo flojo. No debe alterar la planificación FSRS normal salvo para registrar aciertos (**decidido:** los fallos en modo examen solo van al historial; los aciertos actualizan la tarjeta. El examen se prepara región a región; ver `docs/informe-noche.md`, D13 y D14).
+- **Hoy:** corta (orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar. Empieza con unos repasos y reparte los países nuevos entre ellos, separados para que cada uno salga varias veces.
+- **Nuevos por día, autorregulados entre 5 y 10** según el porcentaje de aciertos recientes; si hay muchos repasos pendientes (por ejemplo, tras días sin entrar), 5. El adulto puede ajustar el máximo.
+- **Examen configurado por el adulto** (fecha y países): Hoy da prioridad a esos países a medida que se acerca la fecha. El antiguo "Preparar examen" desaparece (lo absorben Hoy y Examen).
 
 ## 8. Panel de adultos
 
