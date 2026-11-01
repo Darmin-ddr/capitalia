@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crearSesionHoy, modoHoy, nuevosDeHoy, repasoAdelantado, repasosPendientes } from '../src/logic/hoy';
+import { ColaHoy, crearSesionHoy, modoHoy, nuevosDeHoy, repasoAdelantado, repasosPendientes } from '../src/logic/hoy';
 import { estadoVacio, registrarRespuesta, type EstadoProgreso } from '../src/logic/progreso';
 import { rngConSemilla } from '../src/logic/rng';
 import type { Pais } from '../src/logic/types';
@@ -62,6 +62,32 @@ describe('sesión de Hoy', () => {
     const ps = [pais('A', 'r2'), pais('B', 'r2'), pais('C', 'r1')];
     const s = sesion(estadoVacio(), ps, { nuevos: 1 });
     expect(s[0].paisId).toBe('C');
+  });
+
+  it('agrupa por región (el mapa salta poco) y deja la región de los nuevos para el final', () => {
+    const e = estadoVacio();
+    const ps = [pais('A1', 'r1'), pais('A2', 'r1'), pais('B1', 'r2'), pais('B2', 'r2'), pais('C1', 'r3'), pais('N1', 'r1'), pais('N2', 'r1')];
+    aprendidoCon(e, 'A1', -5);
+    aprendidoCon(e, 'B1', -4);
+    aprendidoCon(e, 'A2', -3);
+    aprendidoCon(e, 'C1', -2);
+    aprendidoCon(e, 'B2', -1);
+    const s = sesion(e, ps, { nuevos: 2 });
+    const regiones = s.map((i) => ps.find((x) => x.id === i.paisId)!.region);
+    const saltos = regiones.filter((r, i) => i > 0 && r !== regiones[i - 1]).length;
+    expect(saltos).toBe(2);
+    expect(regiones.at(-1)).toBe('r1');
+    expect(s.map((i) => i.paisId).slice(0, 3)).toEqual(['B1', 'B2', 'C1']);
+  });
+
+  it('los países en aprendizaje salen una vez al día', () => {
+    const e = estadoVacio();
+    const ps = [pais('A'), pais('B')];
+    e.aprendizaje.A = { escalon: 1, aciertos: 0, aprendido: false };
+    e.aprendizaje.B = { escalon: 1, aciertos: 0, aprendido: false };
+    registrarRespuesta(e, 'A', 'alreves', 'acierto', 3000, new Date(AHORA.getTime() - 3600e3));
+    registrarRespuesta(e, 'B', 'alreves', 'acierto', 3000, new Date(AHORA.getTime() - 2 * DIA));
+    expect(sesion(e, ps, { nuevos: 0 }).map((i) => i.paisId)).toEqual(['B']);
   });
 
   it('no supera el tamaño de la sesión', () => {
@@ -129,5 +155,34 @@ describe('tipo de pregunta en Hoy', () => {
     aprendidoCon(e, 'A', 0, 10);
     const modos = new Set(Array.from({ length: 50 }, (_, i) => modoHoy(e, 'A', rngConSemilla(i))));
     expect([...modos].sort()).toEqual(['alreves', 'escribir', 'mapamudo']);
+  });
+});
+
+describe('cola de Hoy', () => {
+  const items = (s: string) => s.split(' ').map((x) => ({ id: x, region: x[0] }));
+  const recorrer = (c: ColaHoy, fallar: Set<string>) => {
+    const visto: string[] = [];
+    while (c.actual()) {
+      const id = c.actual()!;
+      visto.push(id);
+      c.responder(fallar.has(id) && visto.filter((x) => x === id).length === 1 ? 'fallo' : 'acierto');
+    }
+    return visto.join(' ');
+  };
+
+  it('el fallo vuelve dentro del bloque de su región', () => {
+    expect(recorrer(new ColaHoy(items('a1 a2 a3 a4 a5 b1')), new Set(['a1']))).toBe('a1 a2 a3 a4 a1 a5 b1');
+    expect(recorrer(new ColaHoy(items('a1 a2 b1 b2')), new Set(['a1']))).toBe('a1 a2 a1 b1 b2');
+  });
+
+  it('si su bloque se acaba, tras la última de su región o al final', () => {
+    expect(recorrer(new ColaHoy(items('a1 b1 b2 a2 c1')), new Set(['a1']))).toBe('a1 b1 b2 a2 a1 c1');
+    expect(recorrer(new ColaHoy(items('a1 b1 b2')), new Set(['a1']))).toBe('a1 b1 b2 a1');
+  });
+
+  it('resumen como en las rondas', () => {
+    const c = new ColaHoy(items('a1 a2'));
+    recorrer(c, new Set(['a2']));
+    expect(c.resumen()).toEqual({ total: 2, aLaPrimera: 1, fallos: 1 });
   });
 });

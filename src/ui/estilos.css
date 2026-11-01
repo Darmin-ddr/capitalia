@@ -1368,3 +1368,57 @@ button {
   font-weight: 700;
   color: var(--texto-suave);
 }
+
+/* --- Hoy --- */
+.hoy-cuentas {
+  list-style: none;
+  margin: 10px 0 14px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hoy-cuentas li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+}
+
+/* Rótulo con el nombre de la región cuando Hoy cambia el mapa. */
+.rotulo-region {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 140px);
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  font-size: 1.25rem;
+  font-weight: 800;
+  pointer-events: none;
+  animation: rotulo-entra 0.25s ease-out;
+  transition: opacity 0.25s;
+}
+
+.rotulo-region.saliendo {
+  opacity: 0;
+}
+
+@keyframes rotulo-entra {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotulo-region {
+    animation: none;
+    transition: none;
+  }
+}

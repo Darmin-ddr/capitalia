@@ -3,9 +3,9 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
 ## Ahora mismo
-- **Fase en curso:** F3 (Hoy).
-- **Hecho:** F1 (lógica con tests) y F2 (pestaña Aprender en `src/ui/aprender.ts`, pregunta de mapa mudo `preguntaMapaMudo` en `preguntas.ts`, prueba `scripts/prueba-aprender.cjs` en verde). Practicar ya no existe; Repaso sigue siendo la v1 hasta F3.
-- **Siguiente paso concreto:** sustituir Repaso por Hoy (`crearSesionHoy`, `nuevosDeHoy`, `modoHoy` de `src/logic/hoy.ts`) con sesión multirregión.
+- **Fase en curso:** F4 (Examen).
+- **Hecho:** F1 (lógica), F2 (Aprender, `src/ui/aprender.ts`, prueba `scripts/prueba-aprender.cjs`) y F3 (Hoy, `src/ui/hoy.ts`, prueba `scripts/prueba-hoy.cjs`). Repaso, Practicar y "Preparar examen" ya no existen.
+- **Siguiente paso concreto:** pestaña Examen: mapa del continente con todas las estrellas, ámbito y número de preguntas, nota y fallos; los fallados pasan a `estado.prioridad`.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -50,7 +50,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - Pestaña por región; cada país en su escalón; Colocar por tandas para los países en ese escalón.
 - Pregunta de mapa mudo (estrella resaltada, país y capital).
 
-### [ ] F3. Hoy
+### [x] F3. Hoy
 - Sesión mezclada multirregión con transición de mapa y nombre de región; tiempo desde que el mapa está quieto.
 - Nuevos intercalados; resumen al terminar.
 
@@ -74,3 +74,8 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E8. Pregunta de mapa mudo fuera del examen:** el país se resalta como objetivo y se ve la estrella sin nombre; hay que escribir país y capital. Enter en el campo del país pasa al de la capital. Al corregir se muestra el nombre de la capital en el mapa.
 - **E9. Tanda de Aprender:** una pregunta por cada país pendiente de la región, en el modo de su escalón; los de Colocar van juntos en el pool de capitales (si hay al menos dos; uno solo va como Al revés). Así los dos aciertos de un escalón llegan siempre en tandas distintas. Al terminar, resumen con quién sube y la escalera actualizada. Si la región está toda aprendida, se ofrece practicarla con mapa mudo.
 - **E10. Practicar desaparece ya en F2:** la pestaña Aprender ocupa su sitio (las pestañas definitivas se ordenan en F5).
+- **E11. Hoy agrupa por región:** para que el mapa salte poco, la sesión va por bloques de región: primero las regiones sin nuevos (por urgencia) y al final la de los nuevos, con ellos intercalados. En la prueba, 20 preguntas de tres regiones pasaron de 7 cambios de mapa a 3.
+- **E12. Los países en aprendizaje salen en Hoy una vez al día:** si ya se respondieron hoy, esperan a mañana (como los pasos de aprendizaje de Anki). Sin esto, Hoy nunca quedaba "hecho".
+- **E13. Reintento de un fallo en Hoy** (`ColaHoy`): dentro del bloque de su región (hasta 3 preguntas después); si el bloque se acaba, tras la última pregunta de esa región o al final. Así un fallo no hace ir y volver el mapa.
+- **E14. Cambio de región en Hoy:** rótulo con el nombre de la región en la parte baja del mapa durante 1,1 s; el tiempo de la respuesta empieza a contar al terminar. Ese cambio no toca la "última región" guardada. Elegir otra región en el selector reinicia la sesión de Hoy (lo hecho ya está guardado).
+- **E15. Prioridad:** un país priorizado (fallado en un examen) deja de serlo al acertarlo fuera del examen. La lista de examen del panel también prioriza en Hoy.

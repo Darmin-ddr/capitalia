@@ -2,14 +2,13 @@ import { paises as todos, regiones } from '../data';
 import { paisesActivos, paisesDeRegion as filtrarRegion } from '../logic/datos';
 import { Almacen, almacenDelNavegador } from '../logic/almacen';
 import {
-  modoSegunDominio,
   nivelesDe,
   registrarEscalon,
   registrarRespuesta,
   regionDominada,
   regionesDesbloqueadas,
 } from '../logic/progreso';
-import { crearSesion } from '../logic/sesionDiaria';
+import { crearSesionHoy, modoHoy, nuevosDeHoy, repasoAdelantado, repasosPendientes } from '../logic/hoy';
 import type { Continente, Pais, Region } from '../logic/types';
 import { Mapa } from '../map/mapa';
 import { lanzarConfeti } from './confeti';
@@ -17,17 +16,20 @@ import { el } from './dom';
 import type { Motor } from './comun';
 import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
 import { iniciarAprender } from './aprender';
-import { iniciarRepaso } from './repaso';
+import { iniciarHoy } from './hoy';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
 import { crearGuia } from './guia';
 import { crearAcercaDe } from './acerca';
 import { crearBienvenida } from './bienvenida';
-import { crearPanelAdultos, textoDias } from './panel';
-import { diasHastaExamen, regionesConExamen, seleccionarExamen } from '../logic/adultos';
+import { crearPanelAdultos } from './panel';
+import { regionesConExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
 
-type Pestana = 'explorar' | 'repaso' | 'aprender';
+type Pestana = 'hoy' | 'aprender' | 'explorar';
+
+/** Duración del rótulo con el nombre de la región cuando Hoy cambia el mapa de región. */
+const ROTULO_REGION_MS = 1100;
 
 /**
  * Estado y orquestación de la app: progreso guardado, región actual, mapa,
@@ -45,7 +47,7 @@ export function iniciarApp(): void {
   let region: Region = regiones[0];
   let mapa: Mapa | null = null;
   let modo: Modo | null = null;
-  let pestana: Pestana = 'repaso';
+  let pestana: Pestana = 'hoy';
   let actualizarSelector: (() => void) | null = null;
 
   const regionDe = (id: string) => regiones.find((r) => r.id === id);
@@ -59,6 +61,16 @@ export function iniciarApp(): void {
     return abiertas;
   };
   const enExamen = (p: Pais) => estado.ajustes.listaExamen?.includes(p.id) ?? false;
+  /** Países de las regiones abiertas de los dos continentes (de ahí sale Hoy). */
+  const disponibles = () => {
+    const abiertas = new Set([...desbloqueadas('europa'), ...desbloqueadas('asia')]);
+    return activos.filter((p) => abiertas.has(p.region));
+  };
+  /** Regiones en el orden en que Hoy saca países nuevos: la actual primero, luego las de su continente. */
+  const ordenRegiones = () => {
+    const otro: Continente = region.continente === 'europa' ? 'asia' : 'europa';
+    return [region.id, ...regionesDe(region.continente).map((r) => r.id), ...regionesDe(otro).map((r) => r.id)];
+  };
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
   const paisesContinente = () => activos.filter((p) => p.continentes.includes(region.continente));
 
@@ -101,6 +113,8 @@ export function iniciarApp(): void {
     registrar(paisId, modoId, resultado, tiempoMs, opciones) {
       const antes = desbloqueadas(region.continente);
       registrarRespuesta(estado, paisId, modoId, resultado, tiempoMs, new Date(), opciones);
+      // Un país priorizado (fallado en un examen) deja de serlo al acertarlo fuera del examen.
+      if (resultado === 'acierto' && !opciones?.examen) estado.prioridad = estado.prioridad.filter((x) => x !== paisId);
       // El examen mide; no hace subir de escalón (SPEC 4.4).
       const cambio = opciones?.examen ? { subio: false, aprendido: false } : registrarEscalon(estado, paisId, modoId, resultado);
       guardar();
@@ -108,7 +122,6 @@ export function iniciarApp(): void {
       comprobarHitos(antes);
       return cambio;
     },
-    modoPara: (id) => modoSegunDominio(estado.tarjetas[id]),
     truco: (id) => trucos.propio(id) ?? trucos.predefinido(id),
   };
 
@@ -170,33 +183,55 @@ export function iniciarApp(): void {
     };
     if (nueva === 'explorar') modo = iniciarExplorar(panel, mapa, paisesRegion, trucos);
     else if (nueva === 'aprender') modo = iniciarAprender(panel, ctx, () => estado);
-    else {
-      const lista = estado.ajustes.listaExamen;
-      const examenRegion = paisesRegion.filter(enExamen);
-      const dias = diasHastaExamen(estado.ajustes.fechaExamen, new Date());
-      modo = iniciarRepaso(
-        panel,
-        ctx,
-        () => {
-          const abiertas = desbloqueadas(region.continente);
-          return crearSesion({
-            estado,
-            region: paisesRegion,
-            desbloqueados: activos.filter((p) => abiertas.has(p.region)),
-            ahora: new Date(),
-            rng: Math.random,
-          });
-        },
-        lista?.length
-          ? {
-              cuando: dias === null ? null : textoDias(dias),
-              ids: () => seleccionarExamen(estado, examenRegion),
-              total: lista.length,
-              enRegion: examenRegion.length,
-            }
-          : null,
-      );
-    }
+    else modo = iniciarHoy(panel, serviciosHoy());
+  }
+
+  function serviciosHoy() {
+    const prioridad = () => new Set([...estado.prioridad, ...(estado.ajustes.listaExamen ?? [])]);
+    return {
+      motor,
+      candidatos: activos,
+      rng: Math.random,
+      sesion() {
+        const ahora = new Date();
+        const pendientes = repasosPendientes(estado, disponibles(), ahora).length;
+        return crearSesionHoy({
+          estado,
+          disponibles: disponibles(),
+          ordenRegiones: ordenRegiones(),
+          prioridad: prioridad(),
+          nuevos: nuevosDeHoy(estado, pendientes, ahora),
+          ahora,
+          rng: Math.random,
+        });
+      },
+      adelantado: () => repasoAdelantado(estado, disponibles()),
+      modoPara: (id: string) => modoHoy(estado, id, Math.random),
+      mapaPara(pais: Pais) {
+        const enEsta = paisesDeRegion(region.id).some((p) => p.id === pais.id);
+        let transicionMs = 0;
+        if (!enEsta && regionDe(pais.region)) {
+          region = regionDe(pais.region)!;
+          montarMapa();
+          transicionMs = mostrarRotuloRegion(region.nombre);
+        }
+        return { mapa: mapa!, region: paisesDeRegion(region.id), transicionMs };
+      },
+      mapaActual: () => mapa,
+      irAAprender: () => cambiarPestana('aprender'),
+      alExplorar: () => cambiarPestana('explorar'),
+    };
+  }
+
+  /** Rótulo con el nombre de la región sobre el mapa recién cambiado. Devuelve cuánto dura. */
+  function mostrarRotuloRegion(nombre: string): number {
+    contenedorMapa.querySelector('.rotulo-region')?.remove();
+    const rotulo = el('div', 'rotulo-region', nombre);
+    rotulo.setAttribute('aria-hidden', 'true');
+    contenedorMapa.append(rotulo);
+    window.setTimeout(() => rotulo.classList.add('saliendo'), ROTULO_REGION_MS - 250);
+    window.setTimeout(() => rotulo.remove(), ROTULO_REGION_MS);
+    return ROTULO_REGION_MS;
   }
 
   /** Cambia la región en estudio (la recuerda para la próxima vez). */
@@ -263,7 +298,7 @@ export function iniciarApp(): void {
         guardar();
       }
     },
-    alEmpezar: () => cambiarPestana('repaso'),
+    alEmpezar: () => cambiarPestana('hoy'),
   });
   const { abrirBienvenida, abrirGuiaAdultos } = crearBienvenida({
     abrirGuiaAlumno: abrirGuia,
@@ -289,7 +324,7 @@ export function iniciarApp(): void {
     },
   });
   montarMapa();
-  cambiarPestana('repaso');
+  cambiarPestana('hoy');
   // Primer arranque: "¿quién eres?". Después, si el alumno aún no ha visto su guía, se le abre sola.
   if (!estado.bienvenidaVista) abrirBienvenida();
   else if (!estado.guiaVista) abrirGuia();

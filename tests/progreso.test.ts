@@ -5,9 +5,7 @@ import {
   estadoVacio, modoSegunDominio, nivelDominio, registrarRespuesta, regionDominada,
   regionesDesbloqueadas, regionSuperada, type EstadoProgreso,
 } from '../src/logic/progreso';
-import { crearSesion } from '../src/logic/sesionDiaria';
 import { Almacen, validarEstado, type AlmacenTexto } from '../src/logic/almacen';
-import { rngConSemilla } from '../src/logic/rng';
 import type { Pais, Region } from '../src/logic/types';
 
 const pais = (id: string, region = 'r1'): Pais => ({
@@ -15,7 +13,6 @@ const pais = (id: string, region = 'r1'): Pais => ({
   continentes: ['europa'], region, capitalCoords: [0, 0], opcional: false, trucos: [],
 });
 const D = (s: string) => new Date(s);
-const DIA = 86400000;
 
 describe('deducirNota', () => {
   it('fallo, errata, lento, normal y rápido', () => {
@@ -118,38 +115,6 @@ describe('regiones', () => {
     aprender(e, 'B', 3);
     expect(regionDominada(e, r1)).toBe(true);
     expect(regionDominada(e, [])).toBe(false);
-  });
-});
-
-describe('crearSesion', () => {
-  const region = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((x) => pais(x));
-  const otra = ['X', 'Y'].map((x) => pais(x, 'r0'));
-  const ahora = D('2026-11-10T10:00:00Z');
-
-  it('sin progreso: solo nuevas, como mucho maxNuevas', () => {
-    const s = crearSesion({ estado: estadoVacio(), region, desbloqueados: region, ahora, rng: rngConSemilla(1), maxNuevas: 5 });
-    expect(s).toHaveLength(5);
-    expect(new Set(s).size).toBe(5);
-  });
-
-  it('vencidas primero (también de otras regiones), luego nuevas, luego adelantadas', () => {
-    const e = estadoVacio();
-    registrarRespuesta(e, 'X', 'elegir', 'acierto', 3000, new Date(ahora.getTime() - 5 * DIA));
-    registrarRespuesta(e, 'A', 'elegir', 'acierto', 3000, new Date(ahora.getTime() - 2 * DIA));
-    registrarRespuesta(e, 'B', 'elegir', 'acierto', 3000, new Date(ahora.getTime() - 60000)); // vence en 10 min
-    const s = crearSesion({ estado: e, region, desbloqueados: [...otra, ...region], ahora, rng: rngConSemilla(2), maxNuevas: 3 });
-    expect(s.slice(0, 2)).toEqual(['X', 'A']); // X más atrasada
-    const nuevas = s.slice(2, 5);
-    for (const n of nuevas) expect(['C', 'D', 'E', 'F', 'G', 'H']).toContain(n);
-    expect(s[5]).toBe('B'); // adelantada
-    expect(s).toHaveLength(6);
-  });
-
-  it('respeta el tamaño máximo', () => {
-    const e = estadoVacio();
-    for (const p of region) registrarRespuesta(e, p.id, 'elegir', 'acierto', 3000, new Date(ahora.getTime() - 3 * DIA));
-    const s = crearSesion({ estado: e, region, desbloqueados: region, ahora, rng: rngConSemilla(3), tam: 4 });
-    expect(s).toHaveLength(4);
   });
 });
 

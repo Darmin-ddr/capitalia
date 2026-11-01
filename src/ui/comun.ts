@@ -32,8 +32,6 @@ export interface Motor {
    * aprendizaje) y lo guarda. Devuelve si el país ha subido de escalón.
    */
   registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: { examen?: boolean }): CambioEscalon;
-  /** Modo que le toca a un país según su dominio. */
-  modoPara(paisId: string): ModoId;
   /** Truco a mostrar (el del alumno si lo inventó; null si no hay). */
   truco(paisId: string): string | null;
 }
