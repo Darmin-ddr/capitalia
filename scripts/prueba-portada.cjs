@@ -123,12 +123,9 @@ async function abrir(b, perfil, estado) {
     const tap = o.hasTouch ? 'tap' : 'click';
     await p.waitForSelector('.selector-foco');
     await p.locator('.selector-foco .selector-opcion', { hasText: 'Solo Asia' })[tap]();
-    const confirmar = await p.locator('.confirmar-foco').innerText();
-    comprobar(confirmar.includes('Europa quedará en pausa') && confirmar.includes('No se pierde nada'), `${nombre}: confirmación con el efecto escrito`);
-    comprobar(await p.locator('.aviso-pausa').count() === 0, `${nombre}: sin confirmar, aún no cambia nada`);
-    await p.screenshot({ path: `${out}/${nombre}-foco-confirmar.png`, fullPage: nombre === 'movil' });
-    await p.getByRole('button', { name: 'Sí, solo Asia' })[tap]();
     await p.waitForSelector('.aviso-pausa');
+    const arriba = await p.evaluate(() => document.getElementById('panel').scrollTop);
+    comprobar(arriba === 0, `${nombre}: al cambiar, la tarjeta vuelve arriba y el aviso se ve`);
     const aviso = await p.locator('.aviso-pausa').innerText();
     comprobar(aviso.includes('Solo Asia') && aviso.includes('Europa: en pausa'), `${nombre}: aviso fijo → ${aviso.split('\n')[0]}`);
     comprobar((await p.locator('.fila-continente.pausada').innerText()).includes('en pausa'), `${nombre}: la barra de Europa dice "en pausa"`);

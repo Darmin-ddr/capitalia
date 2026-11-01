@@ -109,10 +109,9 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     return aviso;
   }
 
-  /** "Qué estudia Hoy": Todo o un solo continente; limitarlo pide confirmar, con el efecto escrito. */
+  /** "Qué estudia Hoy": Todo o un solo continente. Sin confirmación: el aviso fijo explica el efecto y deshacerlo es un toque. */
   function bloqueFoco(): HTMLElement {
     const foco = s.foco();
-    const confirmacion = el('div', 'confirmar-foco');
     const opciones: { valor: Continente | null; texto: string }[] = [
       { valor: null, texto: 'Todo' },
       ...s.continentes.map((c) => ({ valor: c, texto: `Solo ${s.nombreContinente(c)}` })),
@@ -122,24 +121,12 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     selector.setAttribute('aria-label', 'Qué estudia Hoy');
     for (const o of opciones) {
       const b = boton(o.texto, 'selector-opcion', () => {
-        if (o.valor === foco) return;
-        if (o.valor === null) {
-          s.ponerFoco(null);
-          return;
-        }
-        const c = o.valor;
-        const si = boton(`Sí, solo ${s.nombreContinente(c)}`, 'boton-principal', () => s.ponerFoco(c));
-        rellenar(
-          confirmacion,
-          el('p', '', el('strong', '', `${enPausa(c)} quedará en pausa.`), ` Hoy no te preguntará sus países, ni repasos ni nuevos, hasta que vuelvas a «Todo». No se pierde nada: al volver, retomas donde lo dejaste.`),
-          el('div', 'acciones', si, boton('Cancelar', 'boton-secundario', () => confirmacion.replaceChildren())),
-        );
-        si.focus({ preventScroll: true });
+        if (o.valor !== foco) s.ponerFoco(o.valor);
       });
       b.setAttribute('aria-pressed', String(o.valor === foco));
       selector.append(b);
     }
-    return el('div', 'campo-etiquetado bloque-foco', el('span', 'etiqueta-campo', 'Qué estudia Hoy'), selector, confirmacion);
+    return el('div', 'campo-etiquetado bloque-foco', el('span', 'etiqueta-campo', 'Qué estudia Hoy'), selector);
   }
 
   /** Portada: cifras de lo aprendido (logros, sin rachas) y el continente que se ve en el mapa. */

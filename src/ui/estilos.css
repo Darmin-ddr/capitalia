@@ -1703,20 +1703,6 @@ button {
   margin-top: 12px;
 }
 
-.confirmar-foco:not(:empty) {
-  display: grid;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--borde);
-  background: var(--fondo);
-}
-
-.confirmar-foco p {
-  margin: 0;
-}
-
 .fila-continente.pausada .barra-progreso,
 .fila-continente.pausada .fila-cifra {
   opacity: 0.5;

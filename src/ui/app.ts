@@ -311,6 +311,8 @@ export function iniciarApp(): void {
         estado.ajustes.focoHoy = c;
         guardar();
         cambiarPestana('hoy');
+        // Que se vea el aviso de arriba (en el móvil, el selector queda abajo del todo).
+        panel.scrollTop = 0;
       },
       modoPara: (id: string) => modoHoy(estado, id, Math.random),
       mapaPara(pais: Pais) {
