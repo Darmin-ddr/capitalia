@@ -5,9 +5,9 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 ## Ahora mismo
 
 - **Objetivo en curso:** O4 (panel de adultos y modo examen).
-- **Hecho de él:** nada aún. El estado ya tiene `ajustes` (lista de examen, fecha, opcionales, trucos editados y desactivados, hash del PIN) y `registrarRespuesta` admite `examen: true`.
-- **Falta:** lógica de PIN y de selección del modo examen con tests; interfaz del panel y del modo examen.
-- **Siguiente paso:** lógica pura de O4.
+- **Hecho de él:** lógica pura (`src/logic/adultos.ts`): PIN con hash, dominio por región, países atascados, actividad, días hasta el examen, selección del examen (lo flojo primero), regiones con examen. 8 tests nuevos (75 en total).
+- **Falta:** interfaz: panel de adultos (PIN, resumen, examen, opcionales, trucos, reinicio) y modo examen en Repaso.
+- **Siguiente paso:** `src/ui/panel.ts` y el modo examen.
 
 ## Estado
 
