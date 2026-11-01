@@ -5,7 +5,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 ## Ahora mismo
 - **Estado:** F1 a F6 terminadas en la rama `rediseno-hoy-aprender-examen`. **Sin fusionar** con la rama publicada: espera la aprobación del responsable.
 - **Siguiente paso:** que el responsable la pruebe (en local con `npm run build` y `npx vite preview`) y, si le parece bien, fusionar con `claude/hito-1-plan-7opthj` para publicarla.
-- **Pendientes que no bloquean:** el resumen del panel de adultos sigue mostrando el dominio FSRS, no los escalones. Pruebas con el alumno en iPad y iPhone reales.
+- **Pendientes que no bloquean:** pruebas con el alumno en iPad y iPhone reales; Explorar en "Europa entera" no tiene prueba automática propia.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -103,4 +103,5 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E32. Hoy no mira si una región está cerrada** (lo detectó una revisión: al segundo día, con Europa occidental aún cerrada, Hoy sacaba nuevos de Asia oriental y rompía el orden del curso). Ahora Hoy saca los nuevos por orden del curso entre todos los países, y una región se abre en el selector también cuando tiene algún país empezado (con su aviso "Nueva región disponible"). Decidido con el responsable: sin freno extra, basta con la autorregulación de nuevos.
 - **E33. Revisión visual** (pedida por el responsable): controles segmentados con tantas columnas como opciones (antes siempre 4, con hueco a la derecha); en los diálogos, los botones de una fila se reparten el ancho, salvo las acciones peligrosas; "Cerrar" separado de lo anterior; el mensaje de estado vacío no ocupa sitio; en el móvil, los botones del panel ocupan el ancho; en iPad horizontal y PC, el panel mide lo que su contenido en vez de todo el alto.
 - **E34. Tarea programada `bf6b8f47`** ("Sigue con docs/plan-v1.md…", cada hora): era una tarea solo de esta sesión de Claude Code, heredada de la sesión en la nube; por eso no aparecía en ningún sitio. Cancelada (el plan v1 estaba terminado).
+- **E35. Resumen del panel por escalones:** "Aprendidos por región" con la misma leyenda que el mapa (Sin empezar, Elegir o Colocar, Escribir o Mapa mudo, Aprendidos); antes contaba el dominio FSRS y no cuadraba con la portada. La leyenda usa un color fijo (el de la región del mapa podía ser casi gris y no se leía).
 

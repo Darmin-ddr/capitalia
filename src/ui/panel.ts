@@ -29,7 +29,8 @@ export interface DatosPanel {
 type Seccion = 'resumen' | 'examen' | 'trucos' | 'ajustes';
 
 const NOMBRES: Record<Seccion, string> = { resumen: 'Resumen', examen: 'Examen', trucos: 'Trucos', ajustes: 'Ajustes' };
-const NIVELES = ['Sin empezar', 'Aprendiendo', 'En repaso', 'Dominados'];
+/** Igual que los colores del mapa: por escalones (SPEC 4.3). */
+const NIVELES = ['Sin empezar', 'Elegir o Colocar', 'Escribir o Mapa mudo', 'Aprendidos'];
 
 /**
  * Panel de adultos (SPEC 8), protegido con PIN: progreso por región, países
@@ -192,7 +193,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     const diasActivos = act.filter((d) => d.respuestas > 0).length;
 
     cuerpo.append(
-      el('h3', 'dialogo-subtitulo', 'Dominio por región'),
+      el('h3', 'dialogo-subtitulo', 'Aprendidos por región'),
       tabla,
       leyenda,
       el('h3', 'dialogo-subtitulo', 'Los que más se atascan'),

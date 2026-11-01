@@ -1,4 +1,4 @@
-import { nivelDominio, type EstadoProgreso, type Nivel } from './progreso';
+import { nivelDominio, nivelMapa, type EstadoProgreso } from './progreso';
 import type { Pais, Region } from './types';
 
 /* ---------------- PIN ---------------- */
@@ -45,7 +45,8 @@ export function dominioPorRegion(
     .map((region) => {
       const porNivel: [number, number, number, number] = [0, 0, 0, 0];
       const paises = paisesDe(region.id);
-      for (const p of paises) porNivel[nivelDominio(estado.tarjetas[p.id]) as Nivel]++;
+      // Por escalones, como el mapa y la portada de Hoy.
+      for (const p of paises) porNivel[nivelMapa(estado, p.id)]++;
       return { region, total: paises.length, porNivel };
     });
 }

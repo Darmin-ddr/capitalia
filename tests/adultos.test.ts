@@ -32,13 +32,15 @@ describe('estadísticas', () => {
   const r2: Region = { id: 'r2', nombre: 'Dos', continente: 'asia', orden: 1, color: '' };
   const paises = [pais('A'), pais('B'), pais('C', 'r2')];
 
-  it('dominio por región', () => {
+  it('aprendidos por región, por escalones (como el mapa)', () => {
     const e = estadoVacio();
-    registrarRespuesta(e, 'A', 'elegir', 'acierto', 3000, D('2026-11-01T10:00:00Z'));
+    e.aprendizaje.A = { escalon: 1, aciertos: 0, aprendido: false };
+    e.aprendizaje.B = { escalon: 3, aciertos: 0, aprendido: true };
+    e.aprendizaje.C = { escalon: 2, aciertos: 0, aprendido: false };
     const d = dominioPorRegion(e, [r2, r1], (id) => paises.filter((p) => p.region === id));
     expect(d.map((x) => x.region.id)).toEqual(['r1', 'r2']); // Europa primero
-    expect(d[0]).toMatchObject({ total: 2, porNivel: [1, 1, 0, 0] });
-    expect(d[1]).toMatchObject({ total: 1, porNivel: [1, 0, 0, 0] });
+    expect(d[0]).toMatchObject({ total: 2, porNivel: [0, 1, 0, 1] });
+    expect(d[1]).toMatchObject({ total: 1, porNivel: [0, 0, 1, 0] });
   });
 
   it('países que más se atascan (solo fallos recientes)', () => {

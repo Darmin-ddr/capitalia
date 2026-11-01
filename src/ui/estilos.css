@@ -1110,7 +1110,8 @@ button {
   height: 12px;
   border-radius: 3px;
   vertical-align: -1px;
-  --color-pais: var(--color-region);
+  /* Color fijo: el de la región del mapa puede ser casi gris (el continente entero) y la leyenda no se leería. */
+  --color-pais: #e0a93e;
 }
 
 .nivel-tramo-0 {
