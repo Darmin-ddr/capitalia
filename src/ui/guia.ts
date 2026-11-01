@@ -1,5 +1,5 @@
 import type { Pais } from '../logic/types';
-import { boton, el, rellenar } from './dom';
+import { boton, el, enterPulsaPrincipal, rellenar } from './dom';
 
 export interface DatosGuia {
   /** Un país de la región actual sin truco propio, para el taller de trucos. */
@@ -30,6 +30,7 @@ export function crearGuia(datos: DatosGuia): () => void {
   const dialogo = el('dialog', 'dialogo-regiones dialogo-guia');
   dialogo.setAttribute('aria-label', 'Cómo aprender con Capitalia');
   document.body.append(dialogo);
+  enterPulsaPrincipal(dialogo);
   dialogo.addEventListener('close', () => datos.alCerrar());
   let indice = 0;
 

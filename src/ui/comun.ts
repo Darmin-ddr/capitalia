@@ -43,7 +43,12 @@ export interface ModoPractica {
 /** Atajos de teclado del modo: se sustituyen en cada paso y se quitan al salir. */
 export class Teclado {
   private manejador: ((e: KeyboardEvent) => void) | null = null;
-  private readonly oyente = (e: KeyboardEvent) => this.manejador?.(e);
+  private readonly oyente = (e: KeyboardEvent) => {
+    // Con un diálogo abierto (guías, panel, regiones...), las teclas son suyas:
+    // la pregunta de detrás no debe responder ni avanzar.
+    if (document.querySelector('dialog[open]')) return;
+    this.manejador?.(e);
+  };
 
   constructor() {
     document.addEventListener('keydown', this.oyente);

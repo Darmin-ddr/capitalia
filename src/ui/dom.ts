@@ -24,4 +24,20 @@ export function rellenar(destino: Element, ...hijos: Hijo[]): void {
   destino.replaceChildren(...hijos.filter((h): h is Node | string => Boolean(h)));
 }
 
+/**
+ * En las guías, Enter pulsa el botón principal (Siguiente, Empezar...) aunque el
+ * foco esté en el texto. Si el foco está en un campo o en otro botón, se respeta.
+ */
+export function enterPulsaPrincipal(dialogo: HTMLDialogElement): void {
+  dialogo.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const t = e.target as HTMLElement;
+    if (t.closest('input, textarea, select, button, a, summary')) return;
+    const principal = dialogo.querySelector<HTMLButtonElement>('.acciones .boton-principal:not(:disabled), .boton-principal:not(:disabled)');
+    if (!principal) return;
+    e.preventDefault();
+    principal.click();
+  });
+}
+
 export const reduceMovimiento = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;

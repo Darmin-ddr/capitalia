@@ -1,4 +1,4 @@
-import { boton, el } from './dom';
+import { boton, el, enterPulsaPrincipal } from './dom';
 
 export interface DatosBienvenida {
   /** Abre la guía del alumno. */
@@ -22,6 +22,7 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
   const dialogo = el('dialog', 'dialogo-regiones dialogo-guia');
   dialogo.setAttribute('aria-label', 'Bienvenida');
   document.body.append(dialogo);
+  enterPulsaPrincipal(dialogo);
 
   function mostrar(...hijos: Node[]): void {
     const c = el('div', 'dialogo-contenido');
