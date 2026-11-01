@@ -1,22 +1,22 @@
 # Plan v2: Hoy, Aprender y Examen
 
-Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
+Rediseño acordado con el responsable (SPEC 4, 6 y 7). Se hizo en la rama `rediseno-hoy-aprender-examen` y se fusionó con la rama publicada el 2026-11-01. La rama publicada se llama ahora `main` (antes `claude/hito-1-plan-7opthj`).
 
 ## Ahora mismo
-- **Estado:** F1 a F6 terminadas en la rama `rediseno-hoy-aprender-examen`. **Sin fusionar** con la rama publicada: espera la aprobación del responsable.
-- **Siguiente paso:** que el responsable la pruebe (en local con `npm run build` y `npx vite preview`) y, si le parece bien, fusionar con `claude/hito-1-plan-7opthj` para publicarla.
+- **Estado:** v2 terminada (F1 a F6), aprobada por el responsable, fusionada y **publicada** (versión 2.0.0) el 2026-11-01. Rama publicada: `main` (Pages publica con cada push a `main`).
+- **Siguiente paso:** que el alumno la use y recoger lo que se vea raro.
 - **Pendientes que no bloquean:** pruebas con el alumno en iPad y iPhone reales; Explorar en "Europa entera" no tiene prueba automática propia.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
-2. `git log --oneline -15` en la rama `rediseno-hoy-aprender-examen`.
+2. `git log --oneline -15` en la rama `main`.
 3. Seguir por la primera fase sin marcar; si estaba a medias, comprobar sus criterios.
 
 ## Modo de trabajo (el mismo que en la noche de la v1)
 - **Autonomía:** el responsable confía en los avances; tomar decisiones sin preguntar y anotarlas en "Decisiones de implementación" (opción elegida, motivo, si se puede revertir), **en el momento**, no al final.
 - **Memoria:** actualizar "Ahora mismo" al cerrar cada paso; commit y push tras cada paso relevante (nunca más de una hora sin subir).
 - **Calidad antes de cerrar una fase:** `npm test`, `npx tsc --noEmit`, `npm run build` y prueba en navegador con Playwright (móvil, iPad y PC; claro y oscuro donde toque). Revisar capturas, no solo los recuentos.
-- **Rama:** todo en `rediseno-hoy-aprender-examen`. **No fusionar con la rama publicada** (`claude/hito-1-plan-7opthj`, la que despliega Pages y usa el alumno) **hasta que el responsable lo apruebe**: al terminar F5, dejarlo listo y avisar.
+- **Rama:** el trabajo nuevo, en una rama por funcionalidad. **No fusionar con `main`** (la que despliega Pages y usa el alumno) **hasta que el responsable lo apruebe**.
 - **Datos:** los listados de clase mandan (CLAUDE.md). Nada de notas políticas ni nombres antiguos.
 - **Reglas de producto:** las de CLAUDE.md (sobrio, sin castigos, sin rachas, 44 px, teclado).
 

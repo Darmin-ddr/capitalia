@@ -6,7 +6,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 **La v1.0 está lista para probar:** se han cumplido todos los objetivos del plan (O1 a O6).
 
-- **Web:** https://darmin-ddr.github.io/capitalia/ (se publica sola con cada cambio de la rama `claude/hito-1-plan-7opthj`).
+- **Web:** https://darmin-ddr.github.io/capitalia/ (se publica sola con cada cambio de la rama `main`, que antes se llamaba `claude/hito-1-plan-7opthj`).
 - **Qué hay:** los 94 países de tus listados en 13 regiones; pestaña **Repaso** con repetición espaciada (FSRS) que elige qué preguntar y en qué modo; **Practicar** con los cuatro modos a elegir; **Explorar** con "Inventa tu truco"; el mapa se colorea según lo que se domina; panel para adultos con PIN, examen, trucos y ajustes; instalable, funciona sin conexión y tiene copia de seguridad.
 - **Qué falta del SPEC:** QR para la copia (descartado, ver D11) y arrastrar en el modo Colocar (era opcional).
 - **Lo más importante que revisar:** los trucos (escritos por mí, sin revisar), la división en regiones (D8) y la lista de pruebas manuales del final, sobre todo en iPad.
