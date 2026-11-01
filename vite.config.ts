@@ -1,10 +1,18 @@
 import { defineConfig } from 'vitest/config';
 import { VitePWA } from 'vite-plugin-pwa';
+import { readFileSync } from 'node:fs';
+
+const version = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version as string;
 
 export default defineConfig({
   // Rutas relativas: la web funciona en cualquier subcarpeta (p. ej. GitHub Pages)
   // sin depender del nombre del repositorio.
   base: './',
+  // Versión y fecha de compilación, para "Acerca de".
+  define: {
+    __VERSION__: JSON.stringify(version),
+    __FECHA_COMPILACION__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   plugins: [
     VitePWA({
       // La nueva versión se instala sola en segundo plano y se usa en la siguiente apertura.

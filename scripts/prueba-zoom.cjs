@@ -9,7 +9,7 @@ const escala = (t) => Number((t || '').match(/scale\(([\d.]+)\)/)?.[1] ?? 1);
   // PC: botones, rueda y arrastre con ratón.
   const p = await (await b.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
   p.on('pageerror', (e) => errores.push(e.message));
-  await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
   await p.locator('.modo[data-modo="explorar"]').click();
   const lienzo = p.locator('.mapa-svg > g');
   console.log('inicio, escala', escala(await lienzo.getAttribute('transform')), '| botón ver todo visible:', await p.getByLabel('Ver toda la región').isVisible());
@@ -31,7 +31,7 @@ const escala = (t) => Number((t || '').match(/scale\(([\d.]+)\)/)?.[1] ?? 1);
   // Móvil: pellizco simulado con dos punteros.
   const m = await (await b.newContext(devices['iPhone 13'])).newPage();
   m.on('pageerror', (e) => errores.push(e.message));
-  await m.goto('http://localhost:4173/'); await m.waitForSelector('.pais');
+  await m.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await m.goto('http://localhost:4173/'); await m.waitForSelector('.pais');
   const k = await m.evaluate(async () => {
     const svg = document.querySelector('.mapa-svg');
     const r = svg.getBoundingClientRect();

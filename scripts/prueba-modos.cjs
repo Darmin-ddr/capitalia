@@ -1,7 +1,7 @@
 const { chromium, devices } = require('playwright');
 // Empezar en los Balcanes: una lista de examen con sus países desbloquea la región.
 const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
-  ultimaRegion: 'balcanes', ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
+  ultimaRegion: 'balcanes', guiaVista: true, ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
   fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } });
 const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
 
@@ -16,7 +16,7 @@ const ERRATA = { ALB:'Tirnaa',BIH:'Sarajebo',BGR:'Sofai',HRV:'Zagerb',SVN:'Liubi
     const ctx = await b.newContext(o); await empezarEnBalcanes(ctx); const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
-    await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+    await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
     await p.locator('.modo[data-modo="practicar"]')[tap]();
 
     // ---- Colocar ----

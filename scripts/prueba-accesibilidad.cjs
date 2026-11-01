@@ -22,7 +22,7 @@ async function medir(p, pantalla, fallos) {
     const ctx = await b.newContext(perfil);
     const p = await ctx.newPage();
     p.on('dialog', (d) => d.accept());
-    await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+    await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
     const ir = async (sel) => { await p.locator(sel).click(); await p.waitForTimeout(200); };
     await medir(p, `${nombre}/repaso`, fallos);
     await p.locator('.opcion').first().click(); await p.waitForTimeout(200);
@@ -38,6 +38,16 @@ async function medir(p, pantalla, fallos) {
     await medir(p, `${nombre}/mapa-con-zoom`, fallos);
     await ir('#region-actual'); await medir(p, `${nombre}/regiones`, fallos); await p.keyboard.press('Escape');
     await ir('#boton-mas'); await medir(p, `${nombre}/mas`, fallos);
+    await p.getByRole('button', { name: 'Acerca de' }).click(); await medir(p, `${nombre}/acerca`, fallos);
+    await p.keyboard.press('Escape');
+    await ir('#boton-mas'); await p.getByRole('button', { name: 'Cómo aprender con Capitalia' }).click();
+    for (let i = 0; i < 8; i++) {
+      if (i === 1) await p.getByRole('button', { name: 'Diez minutos cada día' }).click();
+      await medir(p, `${nombre}/guia-${i + 1}`, fallos);
+      if (i < 7) await p.getByRole('button', { name: 'Siguiente' }).click();
+    }
+    await p.keyboard.press('Escape');
+    await ir('#boton-mas');
     await p.getByRole('button', { name: 'Panel para adultos', exact: true }).click();
     await medir(p, `${nombre}/panel-pin`, fallos);
     await p.getByPlaceholder('Nuevo PIN (4 a 6 cifras)').fill('2468'); await p.getByPlaceholder('Repite el PIN').fill('2468');
@@ -53,7 +63,7 @@ async function medir(p, pantalla, fallos) {
 
   // Teclado en PC.
   const p = await (await b.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
-  await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
   const foco = () => p.evaluate(() => { const e = document.activeElement; return `${e.tagName.toLowerCase()}${e.className ? '.' + String(e.className.baseVal ?? e.className).split(' ')[0] : ''} "${(e.getAttribute('aria-label') || e.textContent || '').trim().slice(0, 25)}"`; });
   const pasos = [];
   // 1) En Repaso, el foco empieza en la primera opción; la tecla 2 responde.

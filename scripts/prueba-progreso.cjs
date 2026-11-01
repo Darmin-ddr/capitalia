@@ -3,7 +3,7 @@
 const { chromium, devices } = require('playwright');
 // Empezar en los Balcanes: una lista de examen con sus países desbloquea la región.
 const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
-  ultimaRegion: 'balcanes', ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
+  ultimaRegion: 'balcanes', guiaVista: true, ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
   fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } });
 const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
 
@@ -15,7 +15,7 @@ const out = process.argv[2];
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(e.message));
-  await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   // Responder siempre la primera opción: unas veces acierta y otras falla, y así se ve la cola en acción.
   let pasos = 0;

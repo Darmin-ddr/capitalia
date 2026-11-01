@@ -8,6 +8,8 @@ export interface DatosMas {
   reemplazar(nuevo: EstadoProgreso): void;
   /** Abre el panel de adultos (si existe). */
   abrirPanelAdultos?: () => void;
+  abrirGuia?: () => void;
+  abrirAcercaDe?: () => void;
 }
 
 /**
@@ -81,10 +83,14 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     });
     const importarFichero = boton('Importar fichero', 'boton-secundario', () => selectorFichero.click());
 
+    const ayuda = el('div', 'acciones');
+    if (datos.abrirGuia) ayuda.append(boton('Cómo aprender con Capitalia', 'boton-principal', () => (dialogo.close(), datos.abrirGuia?.())));
+    if (datos.abrirAcercaDe) ayuda.append(boton('Acerca de', 'boton-secundario', () => (dialogo.close(), datos.abrirAcercaDe?.())));
     const contenido = el(
       'div',
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Más'),
+      ayuda,
       el('h3', 'dialogo-subtitulo', 'Copia de seguridad'),
       el(
         'p',

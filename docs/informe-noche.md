@@ -13,6 +13,12 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Para probar todas las regiones** sin tener que superarlas: Panel para adultos → Ajustes → "Desbloquear todas las regiones".
 - **Tests:** 110 tests automáticos (lógica, datos y contraste de colores) y ocho scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
 
+## Cambios posteriores al informe
+
+- **Guía "Cómo aprender con Capitalia"** (8 pasos, se abre sola la primera vez y desde ⋯): uso de la app y técnicas de aprendizaje para el alumno; con una pregunta interactiva y un taller para fabricar y guardar un truco propio. Ver SPEC 5.4.
+- **"Acerca de"** (desde ⋯): versión 1.0.0, fecha, autoría y créditos (Natural Earth, GeoNames con su atribución CC BY, ts-fsrs, Nunito, d3-geo).
+- Probado en Chromium (iPad y móvil): la guía se abre sola solo la primera vez, el taller guarda el truco, se reabre desde ⋯; objetivos táctiles de 44 px también en la guía y en "Acerca de" (`scripts/prueba-guia.cjs`, `scripts/prueba-accesibilidad.cjs`).
+
 ## Ahora mismo
 
 - **Objetivo en curso:** ninguno: plan terminado (O1 a O6 hechos).

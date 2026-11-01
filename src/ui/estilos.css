@@ -1218,3 +1218,64 @@ button {
 .controles-mapa:not(.con-zoom) .control-mapa:last-child {
   display: none;
 }
+
+/* ---------- Guía y Acerca de ---------- */
+
+.dialogo-guia {
+  width: min(94vw, 560px);
+}
+
+.cuerpo-guia p {
+  margin: 0 0 12px;
+}
+
+.lista-guia {
+  margin: 0 0 12px;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 6px;
+}
+
+.respuesta-guia {
+  margin-top: 12px;
+}
+
+.etiqueta-guia {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.puntos-guia {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px 0 4px;
+}
+
+.punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--borde);
+}
+
+.punto.actual {
+  background: var(--acento);
+}
+
+.acciones-guia {
+  align-items: center;
+  margin-top: 10px;
+}
+
+.acciones-guia .boton-enlace {
+  margin-left: auto;
+}
+
+.lista-creditos a {
+  display: inline-block;
+  padding: 10px 0;
+  color: var(--acento);
+}

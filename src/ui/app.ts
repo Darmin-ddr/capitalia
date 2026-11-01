@@ -19,6 +19,8 @@ import { iniciarPracticar } from './practicar';
 import { iniciarRepaso } from './repaso';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
+import { crearGuia } from './guia';
+import { crearAcercaDe } from './acerca';
 import { crearPanelAdultos, textoDias } from './panel';
 import { diasHastaExamen, regionesConExamen, seleccionarExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
@@ -235,7 +237,32 @@ export function iniciarApp(): void {
     todos,
     recargar: () => window.location.reload(),
   });
+  const abrirGuia = crearGuia({
+    paisParaTaller() {
+      const sinTruco = paisesDeRegion(region.id).filter((p) => !estado.trucosPropios[p.id]);
+      if (!sinTruco.length) return null;
+      // Primero, el que más ha fallado: es donde un truco propio sirve de verdad.
+      const fallos = new Map<string, number>();
+      for (const r of estado.historial) if (r.res === 'fallo') fallos.set(r.pais, (fallos.get(r.pais) ?? 0) + 1);
+      const masFallado = [...sinTruco].sort((a, b) => (fallos.get(b.id) ?? 0) - (fallos.get(a.id) ?? 0))[0];
+      if ((fallos.get(masFallado.id) ?? 0) > 0) return masFallado;
+      // Si aún no ha fallado nada, uno sin truco predefinido, al azar.
+      const sinNinguno = sinTruco.filter((p) => !trucos.predefinido(p.id));
+      const lista = sinNinguno.length ? sinNinguno : sinTruco;
+      return lista[Math.floor(Math.random() * lista.length)];
+    },
+    guardarTruco: (id, texto) => trucos.guardarPropio(id, texto),
+    alCerrar() {
+      if (!estado.guiaVista) {
+        estado.guiaVista = true;
+        guardar();
+      }
+    },
+    alEmpezar: () => cambiarPestana('repaso'),
+  });
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
+    abrirGuia,
+    abrirAcercaDe: crearAcercaDe(),
     abrirPanelAdultos: abrirPanel,
     estado: () => estado,
     reemplazar(nuevo) {
@@ -247,5 +274,7 @@ export function iniciarApp(): void {
   });
   montarMapa();
   cambiarPestana('repaso');
+  // La primera vez, la guía se abre sola.
+  if (!estado.guiaVista) abrirGuia();
 
 }

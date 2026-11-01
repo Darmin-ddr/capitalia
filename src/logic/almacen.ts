@@ -27,6 +27,7 @@ export function validarEstado(datos: unknown): EstadoProgreso | null {
     trucosPropios: d.trucosPropios && typeof d.trucosPropios === 'object' ? d.trucosPropios : {},
     regionesCelebradas: Array.isArray(d.regionesCelebradas) ? d.regionesCelebradas : [],
     ultimaRegion: typeof d.ultimaRegion === 'string' ? d.ultimaRegion : null,
+    guiaVista: d.guiaVista === true,
     ajustes: { ...base.ajustes, ...(d.ajustes ?? {}) },
   };
 }

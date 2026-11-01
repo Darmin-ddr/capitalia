@@ -11,7 +11,7 @@ const movil = process.argv[3] === 'movil';
   p.on('pageerror', (e) => errores.push(e.message));
   p.on('dialog', (d) => d.accept());
   const suf = movil ? '-movil' : '';
-  await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   // Algo de actividad para el resumen.
   for (let i = 0; i < 4; i++) {

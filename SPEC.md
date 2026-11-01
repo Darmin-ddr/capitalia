@@ -64,7 +64,13 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 - **Trucos propios:** botón "inventa tu truco". El truco del alumno se guarda y sustituye al predefinido (efecto de generación).
 - El adulto puede editar o desactivar trucos desde el panel.
 
-### 5.4 Lo que NO incluimos
+### 5.4 Guía para aprender
+- **"Cómo aprender con Capitalia"**: guía breve dirigida al alumno, en tono cercano y sin infantilizar. Se abre sola la primera vez y siempre desde el botón ⋯.
+- Explica el uso de la app y **cómo aprender con ella**: práctica de recuerdo (intentar antes de mirar), repaso espaciado (poco y a menudo), el valor de los errores, la dificultad deseable de los modos, y técnicas para fabricar trucos propios (a qué te suena, imagen exagerada, significado, parejas y familias).
+- Dos partes interactivas: una pregunta sobre cómo repartir el estudio y un **taller** que guía paso a paso para inventar un truco y guardarlo como truco propio (propone el país que más se ha fallado de la región).
+- **"Acerca de"**: versión, autoría y créditos de datos y librerías (GeoNames exige atribución por su licencia CC BY).
+
+### 5.5 Lo que NO incluimos
 - Sin rachas de días ni ninguna mecánica que castigue no entrar.
 - Sin síntesis de voz.
 - Sin mascota.

@@ -13,7 +13,7 @@ for (const p of datos.paises) {
   tarjetas[p.id] = { due: new Date(ahora.getTime() + 3 * 864e5).toISOString(), stability: 3, difficulty: 5, elapsed_days: 1,
     scheduled_days: 3, reps: 3, lapses: 0, learning_steps: 0, state: 2, last_review: ahora.toISOString() };
 }
-const estado = { version: 1, tarjetas, historial: [], trucosPropios: {}, regionesCelebradas: [], ultimaRegion: null,
+const estado = { version: 1, tarjetas, historial: [], trucosPropios: {}, regionesCelebradas: [], ultimaRegion: null, guiaVista: true,
   ajustes: { opcionalesActivados: [], listaExamen: null, fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } };
 const enRegion = (p, r) => !p.opcional && (p.region === r || (p.regionesExtra || []).includes(r));
 (async () => {
@@ -23,7 +23,7 @@ const enRegion = (p, r) => !p.opcional && (p.region === r || (p.regionesExtra ||
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(e.message));
-  await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   const sufijo = process.argv[3] === 'movil' ? '-movil' : '';
   for (const r of regiones) {

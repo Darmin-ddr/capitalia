@@ -55,6 +55,8 @@ export interface EstadoProgreso {
   regionesCelebradas: string[];
   /** Última región estudiada (para volver a ella al abrir la app). */
   ultimaRegion: string | null;
+  /** La guía se ha visto (para no abrirla sola cada vez). */
+  guiaVista: boolean;
   ajustes: Ajustes;
 }
 
@@ -66,6 +68,7 @@ export function estadoVacio(): EstadoProgreso {
     trucosPropios: {},
     regionesCelebradas: [],
     ultimaRegion: null,
+    guiaVista: false,
     ajustes: {
       opcionalesActivados: [],
       listaExamen: null,

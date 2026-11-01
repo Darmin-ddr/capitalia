@@ -8,7 +8,7 @@ const out = process.argv[2];
     const ctx = await b.newContext({ ...perfil, colorScheme: 'dark' });
     const p = await ctx.newPage();
     p.on('dialog', (d) => d.accept());
-    await p.goto('http://localhost:4173/');
+    await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
     await p.waitForSelector('.pais');
     await p.locator('.opcion').first().click();
     await p.waitForTimeout(400);
