@@ -72,7 +72,7 @@ const out = process.argv[2] || '.';
           capturaMudo = true;
           comprobar((await p.locator('.etiqueta-capital').count()) === 0, `${nombre}: mapa mudo sin nombre de capital`);
           comprobar((await p.locator('.estrella').count()) === 1, `${nombre}: mapa mudo con la estrella`);
-          comprobar((await p.locator('path.pais.objetivo').count()) === 0, `${nombre}: mapa mudo sin resaltar el país`);
+          comprobar((await p.locator('.pais.objetivo').count()) >= 1, `${nombre}: mapa mudo con el país sombreado`);
           await p.screenshot({ path: `${out}/${nombre}-aprender-mapamudo.png` });
         }
         const campos = p.locator('.mapa-mudo-form .campo-texto');

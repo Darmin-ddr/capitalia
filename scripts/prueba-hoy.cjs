@@ -170,7 +170,7 @@ async function responder(p, tap, mal = false) {
     await p.locator('.modo[data-modo="hoy"]').click();
     await p.waitForTimeout(300);
     const nada = await p.locator('.contenido-modo').innerText();
-    comprobar(nada.includes('ya está hecho') && nada.includes('Repasar un poco más'), `multi: nada que hacer → ${nada.split('\n').slice(0, 3).join(' | ')}`);
+    comprobar(nada.includes('ya está hecho') && nada.includes('Adelantar repasos'), `multi: nada que hacer → ${nada.split('\n').slice(0, 3).join(' | ')}`);
     await p.screenshot({ path: `${out}/pc-hoy-hecho.png` });
     await ctx.close();
   }

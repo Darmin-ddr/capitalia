@@ -6,7 +6,7 @@ import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import mundo from '../data/mapa-50m.json';
 import type { Pais } from '../logic/types';
 import type { Nivel } from '../logic/progreso';
-import { desplazar, esInicial, VISTA_INICIAL, zoomEn, type Vista } from '../logic/vista';
+import { desplazar, esInicial, limitar, VISTA_INICIAL, zoomEn, type Vista } from '../logic/vista';
 import { formaParaEncuadre } from '../logic/encuadre';
 
 type PropsMundo = { name: string };
@@ -26,6 +26,11 @@ const AREA_MINIMA = 250;
 /** Radio del área tocable de los círculos (diámetro >= 44 px, SPEC 10). */
 const RADIO_TOQUE = 22;
 const RADIO_VISIBLE = 8;
+/** Al enfocar un país (examen): por debajo de este tamaño en pantalla (px) se acerca el mapa, hasta ZOOM_ENFOQUE. */
+const TAM_ENFOQUE = 70;
+const ZOOM_ENFOQUE = 3;
+/** Radio del círculo de un microestado resaltado: hace de anillo alrededor de la estrella (que mide 9 a 12). */
+const RADIO_OBJETIVO = 16;
 
 /**
  * Territorios que Natural Earth separa pero que los listados no incluyen como
@@ -485,6 +490,10 @@ export class Mapa {
       if (nivel > 0) el.classList.add(`nivel-${nivel}`);
       if (color) el.style.setProperty('--color-pais', color);
       if (estado) el.classList.add(estado);
+      if (el.classList.contains('circulo')) {
+        el.dataset.radio = String(estado === 'objetivo' ? RADIO_OBJETIVO : RADIO_VISIBLE);
+        el.setAttribute('r', String(Number(el.dataset.radio) / this.vista.k));
+      }
       if (reanimar) {
         // Reinicia la animación aunque el estado se repita.
         el.style.animation = 'none';
@@ -492,6 +501,30 @@ export class Mapa {
         el.style.animation = '';
       }
     }
+  }
+
+  /**
+   * Acerca el mapa a un país si en la vista de la región se ve pequeño (examen
+   * en el mapa del continente); con null, o si el país se ve bien, vuelve a la vista de la región.
+   */
+  enfocar(paisId: string | null): void {
+    const pais = paisId ? this.op.region.find((p) => p.id === paisId) : null;
+    const forma = paisId ? (this.elementos.get(paisId) ?? []).find((e) => e.tagName === 'path') : undefined;
+    const punto = pais && this.proyeccion(pais.capitalCoords);
+    if (!pais || !forma || !punto || !this.ancho) {
+      this.cambiarVista(VISTA_INICIAL);
+      return;
+    }
+    const caja = (forma as SVGGraphicsElement).getBBox();
+    const tam = Math.max(caja.width, caja.height);
+    if (tam >= TAM_ENFOQUE) {
+      this.cambiarVista(VISTA_INICIAL);
+      return;
+    }
+    // Que el país ocupe unos TAM_ENFOQUE px, sin pasar de ZOOM_ENFOQUE (los microestados ya llevan su círculo).
+    const k = Math.min(ZOOM_ENFOQUE, Math.max(1, TAM_ENFOQUE / Math.max(tam, 1)));
+    const [cx, cy] = punto;
+    this.cambiarVista(limitar({ k, x: this.ancho / 2 - k * cx, y: this.alto / 2 - k * cy }, this.ancho, this.alto));
   }
 
   /** Estrellas pequeñas en estas capitales (el mapa mudo del examen); la de mostrarCapital se resalta. */

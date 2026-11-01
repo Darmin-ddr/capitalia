@@ -52,14 +52,14 @@ El examen real de clase es un **mapa mudo con puntos en las capitales**: hay que
 1. **Elegir:** país marcado en el mapa, 4 capitales posibles (distractores preferentemente de la misma región).
 2. **Colocar:** tandas de capitales para colocar en su país ("toca la capital, luego el país"); todos los países se pueden tocar para que no se acierte por descarte. En preguntas sueltas (Hoy) equivale a "Al revés".
 3. **Escribir:** escribir la capital del país marcado.
-4. **Mapa mudo:** se marca la estrella de una capital, sin resaltar el país; hay que escribir **el país y la capital**.
+4. **Mapa mudo:** se marca la estrella de una capital, sin su nombre, y se sombrea su país (si no, por ejemplo, Ciudad del Vaticano se confunde con Roma); hay que escribir **el país y la capital**.
 5. **Al revés:** se muestra una capital y hay que tocar su país. Solo en Hoy, para dar variedad.
 
 ### 4.3 Escalones de aprendizaje
 Cada país pasa por: **Elegir → Colocar → Escribir → Mapa mudo**. Sube de escalón al **acertar dos veces con otras preguntas por medio** (evita el espejismo de dominio de acertar seguido en una tarde). Un fallo reinicia el contador del escalón, sin bajar de escalón; en Mapa mudo, el medio punto cuenta como fallo para el escalón, y una errata ni suma ni resta. En Aprender, cada tanda pregunta una vez por cada país pendiente de la región (los de Colocar, juntos en el pool), así que los dos aciertos llegan en tandas distintas. Al superar el Mapa mudo, el país queda **aprendido** y pasa al repaso espaciado de Hoy. El "dominado" a largo plazo lo decide FSRS (sección 6).
 
 ### 4.4 Examen
-- Mapa mudo del **continente entero** (como el examen real), sin colores de progreso, con las estrellas de las capitales; se resalta una y se escriben país y capital.
+- Mapa mudo del **continente entero** (como el examen real), sin colores de progreso, con las estrellas de todas sus capitales; se resalta una, se sombrea su país (si es pequeño, el mapa se acerca) y se escriben país y capital.
 - Se elige qué entra (Europa, Asia, todo o la lista del examen del panel) y cuántas preguntas (10, 20 o todas). "Todo" va por continentes: primero el mapa de Europa y luego el de Asia (uno solo de los dos continentes no cabe bien en pantalla).
 - Sin corrección en el momento, como en clase: se responde todo y al final se ve la nota. Sin colores de progreso en el mapa mientras dura.
 - Sin trucos ni repeticiones. **Nota sobre 10**: 1 punto si país y capital son correctos, **medio punto** si solo uno de los dos. Al final, lista de fallos y opción de priorizarlos en Hoy.

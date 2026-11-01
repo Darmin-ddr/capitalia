@@ -90,6 +90,36 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
     await ctx.close();
   }
 
+  // Lista con microestados: país sombreado y mapa acercado si es pequeño (Vaticano junto a Roma).
+  {
+    const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
+    const est = JSON.parse(ESTADO);
+    est.ajustes.listaExamen = ['VAT', 'SMR', 'FRA'];
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, JSON.stringify(est));
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => errores.push('enfoque: ' + e.message));
+    await p.goto('http://localhost:4173/');
+    await p.waitForSelector('.pais');
+    await p.locator('.modo[data-modo="examen"]').click();
+    await p.locator('.selector-opcion', { hasText: 'Lista del examen' }).click();
+    await p.locator('text=Empezar examen').click();
+    for (let i = 0; i < 3; i++) {
+      await p.waitForSelector('.mapa-mudo-form');
+      const id = await p.locator('.capa-capital g').first().getAttribute('data-id');
+      const sombreados = await p.locator('.pais.objetivo').evaluateAll((els) => [...new Set(els.map((e) => e.dataset.id || e.closest('[data-id]')?.dataset.id))]);
+      const escala = Number((await p.locator('.mapa-svg > g').getAttribute('transform')).match(/scale\(([\d.]+)\)/)[1]);
+      const pequeno = id !== 'FRA';
+      comprobar(sombreados.length === 1 && sombreados[0] === id && (pequeno ? escala > 1.5 : escala === 1), `enfoque ${id}: sombreado ${sombreados}, zoom ${escala}`);
+      if (id === 'VAT') await p.screenshot({ path: `${out}/pc-examen-vaticano.png` });
+      await p.locator('.mapa-mudo-form .boton-principal').click();
+      await p.waitForTimeout(60);
+    }
+    await p.waitForSelector('.nota-examen');
+    const escalaFinal = await p.locator('.mapa-svg > g').getAttribute('transform');
+    comprobar(escalaFinal.includes('scale(1)'), `enfoque: al terminar, vista de todo el continente (${escalaFinal})`);
+    await ctx.close();
+  }
+
   // "Las dos": primero Europa y luego Asia, con rótulo al cambiar de continente.
   {
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });

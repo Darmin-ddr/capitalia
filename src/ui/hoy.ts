@@ -94,13 +94,19 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   function pintarNadaQueHacer(): void {
     const hayAdelantado = s.adelantado().length > 0;
     const principal = hayAdelantado
-      ? boton('Repasar un poco más', 'boton-principal', () => empezarSesion(s.adelantado(), true))
+      ? boton('Adelantar repasos', 'boton-principal', () => empezarSesion(s.adelantado(), true))
       : boton('Ir a Aprender', 'boton-principal', s.irAAprender);
     rellenar(
       contenedor,
       el('h2', 'titulo-panel', 'Hoy'),
       el('p', 'resumen', 'Lo de hoy ya está hecho.'),
-      el('p', 'ayuda', 'Mañana habrá más. Si te apetece seguir, puedes adelantar repasos o aprender en la pestaña Aprender.'),
+      el(
+        'p',
+        'ayuda',
+        hayAdelantado
+          ? 'Mañana habrá más. Si te apetece seguir, puedes adelantar los repasos de los próximos días o avanzar en Aprender.'
+          : 'Mañana habrá más. Si te apetece seguir, avanza en la pestaña Aprender.',
+      ),
       el('div', 'acciones', principal, hayAdelantado ? boton('Ir a Aprender', 'boton-secundario', s.irAAprender) : null),
     );
     principal.focus({ preventScroll: true });
@@ -163,7 +169,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     cola = null;
     const hayAdelantado = s.adelantado().length > 0;
     const seguir = hayAdelantado
-      ? boton('Repasar un poco más', 'boton-principal', () => empezarSesion(s.adelantado(), true))
+      ? boton('Adelantar repasos', 'boton-principal', () => empezarSesion(s.adelantado(), true))
       : boton('Ir a Aprender', 'boton-principal', s.irAAprender);
     rellenar(
       contenedor,

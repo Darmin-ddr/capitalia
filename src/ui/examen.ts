@@ -144,14 +144,20 @@ export function iniciarExamen(panel: HTMLElement, s: ServiciosExamen): Modo {
       let transicionMs = 0;
       if (continente !== continenteActual) {
         continenteActual = continente;
-        const enMapa = paises.filter((p) => continenteDe(p, ambito) === continente);
+        // El continente entero, con todas sus estrellas (como el examen real), aunque solo se pregunte por el ámbito.
+        const enMapa = s.candidatos.filter((p) => continenteDe(p, ambito) === continente);
         const montado = s.mapaContinente(continente, enMapa);
         mapa = montado.mapa;
         transicionMs = montado.transicionMs;
         mapa.setInteractivo(false);
         mapa.mostrarEstrellas(enMapa.map((p) => p.id));
       }
+      // La estrella resaltada, su país sombreado y, si es pequeño, el mapa acercado
+      // (si no, Ciudad del Vaticano se confundiría con Roma).
+      mapa!.limpiarEstados();
+      mapa!.setEstado(pais.id, 'objetivo');
       mapa!.mostrarCapital(pais.id, false);
+      mapa!.enfocar(pais.id);
 
       const campoPais = campoRespuesta('País', 'País');
       const campoCapital = campoRespuesta('Capital', 'Capital');
@@ -195,6 +201,7 @@ export function iniciarExamen(panel: HTMLElement, s: ServiciosExamen): Modo {
   function pintarResultado(respuestas: Respuesta[]): void {
     mapa?.mostrarCapital(null);
     mapa?.limpiarEstados();
+    mapa?.enfocar(null);
     const nota = notaExamen(respuestas.map((r) => r.correccion.puntos));
     const completas = respuestas.filter((r) => r.correccion.puntos === 1).length;
     const medias = respuestas.filter((r) => r.correccion.puntos === 0.5).length;

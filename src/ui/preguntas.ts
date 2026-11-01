@@ -222,8 +222,9 @@ function textoAviso(r: ResultadoTexto, que: 'país' | 'capital'): (Node | string
  */
 export const preguntaMapaMudo: Renderizador = (a) => {
   const { zona, mapa, pais, rng, teclado } = a;
-  // Solo la estrella, sin resaltar el país (SPEC 4.2).
+  // La estrella, sin nombre, y su país sombreado (para no confundir, p. ej., Ciudad del Vaticano con Roma).
   mapa.setInteractivo(false);
+  mapa.setEstado(pais.id, 'objetivo');
   mapa.mostrarCapital(pais.id, false);
 
   const campoPais = campoRespuesta('País', 'País');
