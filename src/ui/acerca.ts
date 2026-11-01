@@ -4,7 +4,7 @@ declare const __VERSION__: string;
 declare const __FECHA_COMPILACION__: string;
 
 /** Quién figura como autor en "Acerca de". */
-export const AUTORIA = 'Idea y dirección: Darmin-ddr. Programación: Claude (Anthropic).';
+export const AUTORIA = 'Creada por Darmin-ddr, con la ayuda de Claude (Anthropic).';
 
 /** Diálogo "Acerca de": versión, autoría y créditos de datos y librerías (licencias que piden atribución). */
 export function crearAcercaDe(): () => void {
@@ -42,6 +42,7 @@ export function crearAcercaDe(): () => void {
         el('li', '', 'Repaso espaciado: algoritmo FSRS, librería ', enlace('ts-fsrs', 'https://github.com/open-spaced-repetition/ts-fsrs'), ' (MIT).'),
         el('li', '', 'Tipografía: Nunito (SIL Open Font License).'),
         el('li', '', 'Dibujo del mapa: d3-geo y topojson-client (ISC).'),
+        el('li', '', 'Código libre bajo licencia MIT: ', enlace('ver el proyecto', 'https://github.com/Darmin-ddr/capitalia'), '.'),
       ),
       el('div', 'acciones acciones-cerrar', boton('Cerrar', 'boton-secundario', () => dialogo.close())),
     );

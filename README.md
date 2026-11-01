@@ -71,6 +71,14 @@ Creada por Darmin-ddr, con la ayuda de Claude (Anthropic).
 - Repaso espaciado: algoritmo FSRS, librería [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) (MIT).
 - Tipografía: Nunito (SIL Open Font License). Dibujo del mapa: d3-geo y topojson-client (ISC).
 
+## Licencia
+
+El código es libre bajo la [licencia MIT](LICENSE): puedes usarlo, copiarlo y adaptarlo, también para tus propios proyectos, siempre que conserves el aviso de copyright y la licencia.
+
+Si lo reutilizas, nos hará ilusión que lo cuentes y enlaces el proyecto original: *Capitalia, de Darmin-ddr* (https://github.com/Darmin-ddr/capitalia).
+
+Los datos de terceros mantienen sus licencias: las coordenadas de GeoNames (CC BY 4.0) requieren citar a GeoNames; el mapa de Natural Earth es de dominio público.
+
 ---
 
 ## Para desarrolladores
