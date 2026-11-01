@@ -11,7 +11,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Qué falta del SPEC:** QR para la copia (descartado, ver D11) y arrastrar en el modo Colocar (era opcional).
 - **Lo más importante que revisar:** los trucos (escritos por mí, sin revisar), la división en regiones (D8) y la lista de pruebas manuales del final, sobre todo en iPad.
 - **Para probar todas las regiones** sin tener que superarlas: Panel para adultos → Ajustes → "Desbloquear todas las regiones".
-- **Tests:** 79 tests automáticos de la lógica y los datos, y siete scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
+- **Tests:** 110 tests automáticos (lógica, datos y contraste de colores) y ocho scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
 
 ## Ahora mismo
 
@@ -67,7 +67,11 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 ### O5. Pulido
 - Revisión en modo oscuro de Repaso, Colocar, selector de regiones y panel (PC y móvil). Corregido: círculos de microestados poco visibles en oscuro (ahora con borde marcado), plurales del panel ("1 fallo de 1 intento") y una errata.
-- Revisión de todos los textos de la interfaz.
+- Revisión de todos los textos de la interfaz. Corregida la preposición delante de los países con artículo: "la capital **del** Vaticano / **del** Reino Unido / **de los** Países Bajos / **de los** Emiratos Árabes Unidos"; en los fallos al tocar el mapa se dice "Has tocado los Países Bajos" en vez de "Eso es Países Bajos".
+- **Accesibilidad básica, comprobada:**
+  - **Contraste:** `tests/contraste.test.ts` calcula el contraste WCAG de 14 combinaciones de texto y fondo en modo claro y oscuro (texto general y secundario, botones, mensajes de acierto y fallo, opciones marcadas, nombre resaltado, etiqueta de capital sobre el mapa) y el texto oscuro sobre el color de las 13 regiones. Todas cumplen AA (4,5:1 para texto; 3:1 para bordes).
+  - **Objetivos táctiles de 44 px:** `scripts/prueba-accesibilidad.cjs` mide todos los botones, campos, casillas y círculos de microestados visibles en todas las pantallas (Repaso, los cuatro modos, Explorar, mapa con zoom, selector de regiones, Más y las cuatro secciones del panel) en móvil, iPad y PC. Solo fallaban las casillas del panel de adultos (40 px de alto); corregidas, ahora no hay ninguno por debajo de 44 px. Los países del mapa tienen el tamaño de su geografía; los diminutos llevan un círculo tocable de 44 px y se puede hacer zoom.
+  - **Teclado en PC:** recorrido completo comprobado en el mismo script: el foco empieza en la primera opción, teclas 1 a 4 responden, Enter pasa a la siguiente, el contorno de foco es visible, Tab llega a los países del mapa y Enter los elige, el campo de Escribir recibe el foco y Enter comprueba, el selector de regiones lleva el foco a la región actual y Escape lo cierra, y los botones de zoom funcionan con Enter.
 - **Zoom y desplazamiento del mapa** (SPEC 10): pellizcar y arrastrar con el dedo, rueda del ratón en PC y botones +, − y "ver toda la región" (este solo aparece con zoom). Bordes, círculos de microestados, estrella y nombre de la capital mantienen su tamaño en pantalla al acercar. Tras arrastrar, soltar el dedo no elige país. Cálculo en `src/logic/vista.ts`, con tests. Ver D17.
 - **Mapa más ligero:** `scripts/recortar-mapa.cjs` quita del mapa del mundo los países lejos de Europa y Asia (y los trazos que solo usaban ellos): de 739 KB a 479 KB. El fichero principal de la app baja de unos 800 KB a 614 KB (200 KB comprimido). Un test comprueba que no falta ningún país de los listados.
 - Probado en Chromium: botones, rueda, arrastre sin elegir país, clic con zoom, pellizco simulado en móvil; y repetidas todas las pruebas de regiones, modos, panel y PWA con el mapa recortado.
@@ -163,6 +167,10 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 ### D17. Zoom del mapa (O5)
 - **Elección:** zoom propio (sin librería) de 1x a 8x, que no deja ver huecos fuera del mapa. El mapa se encarga de todos los gestos (`touch-action: none`), así que dentro del mapa no se desplaza la página ni se hace el zoom del navegador. El zoom vuelve a la vista completa al cambiar el tamaño del mapa (por ejemplo, al girar el iPad o al salir el teclado).
+- **Reversibilidad:** total.
+
+### D18. Nombres de país con artículo (O5)
+- **Elección:** el nombre se muestra exactamente como en el listado ("Vaticano", "Países Bajos"), pero la frase añade la preposición o el artículo que le toca ("la capital del Vaticano", "Has tocado los Países Bajos"). Lista en `src/logic/mensajes.ts`.
 - **Reversibilidad:** total.
 
 ## Pruebas manuales pendientes

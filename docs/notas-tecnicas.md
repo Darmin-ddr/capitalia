@@ -33,6 +33,7 @@
 - `scripts/prueba-panel.cjs <carpeta> [movil]`: panel de adultos y modo examen.
 - `scripts/capturas-oscuro.cjs <carpeta>`: capturas en modo oscuro.
 - `scripts/prueba-zoom.cjs <carpeta>`: zoom, arrastre, rueda y pellizco simulado.
+- `scripts/prueba-accesibilidad.cjs`: objetivos táctiles de 44 px en todas las pantallas y recorrido con teclado.
 
 ## Mapa recortado
 - La app usa `src/data/mapa-50m.json`, generado con `node scripts/recortar-mapa.cjs` a partir de world-atlas (dependencia de desarrollo). Si se añaden países fuera del recuadro, ampliar el recuadro del script y regenerar.

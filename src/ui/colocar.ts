@@ -1,4 +1,5 @@
 import { RondaColocar } from '../logic/colocar';
+import { conArticulo, preposicionDe } from '../logic/mensajes';
 import { boton, el } from './dom';
 import { pintarAcierto, pintarFallo, pintarResumen, progreso, type Contexto, type ModoPractica } from './comun';
 
@@ -93,7 +94,7 @@ export function iniciarColocar(ctx: Contexto): ModoPractica {
       marcasTemporales = [paisId, capitalDe];
       pintarFallo(
         feedback,
-        ['Eso es ', nombre(paisId), '. ', capital(capitalDe), ' es la capital de ', el('strong', '', nombre(capitalDe)), '.'],
+        ['Has tocado ', conArticulo(nombre(paisId)), '. ', capital(capitalDe), ` es la capital ${preposicionDe(nombre(capitalDe))}`, el('strong', '', nombre(capitalDe)), '.'],
         motor.truco(capitalDe),
         null,
       );

@@ -3,6 +3,7 @@ import type { Rng } from '../logic/rng';
 import type { Resultado } from '../logic/sesion';
 import { crearPreguntaOpciones } from '../logic/opciones';
 import { validarTexto } from '../logic/texto';
+import { conArticulo, preposicionDe } from '../logic/mensajes';
 import type { Mapa } from '../map/mapa';
 import { boton, el } from './dom';
 import { nombreResaltado, pintarAcierto, pintarAviso, pintarFallo, type Teclado } from './comun';
@@ -32,7 +33,7 @@ export interface ControlPregunta {
 export type Renderizador = (a: ArgsPregunta) => ControlPregunta;
 
 function enunciadoCapitalDe(pais: Pais): HTMLElement {
-  return el('p', 'enunciado', '¿Cuál es la capital de ', el('span', 'sin-corte', nombreResaltado(pais.nombre, 'objetivo'), '?'));
+  return el('p', 'enunciado', `¿Cuál es la capital ${preposicionDe(pais.nombre)}`, el('span', 'sin-corte', nombreResaltado(pais.nombre, 'objetivo'), '?'));
 }
 
 /** Modo 2: 4 capitales posibles. */
@@ -145,7 +146,7 @@ export const preguntaEscribir: Renderizador = (a) => {
     mapa.setEstado(pais.id, 'fallo');
     const titulo: (Node | string)[] =
       texto === null ? ['Es ', el('strong', '', pais.capital), '.'] : ['No es eso. Es ', el('strong', '', pais.capital), '.'];
-    if (r?.otroPais) titulo.push(` (${r.otroPais.capital} es la capital de ${r.otroPais.nombre}.)`);
+    if (r?.otroPais) titulo.push(` (${r.otroPais.capital} es la capital ${preposicionDe(r.otroPais.nombre)}${r.otroPais.nombre}.)`);
     pintarFallo(feedback, titulo, a.truco, a.siguiente)?.focus({ preventScroll: true });
     teclado.enterPara(a.siguiente);
   }
@@ -183,7 +184,7 @@ export const preguntaAlReves: Renderizador = (a) => {
       mapa.setEstado(pais.id, 'objetivo');
       pintarFallo(
         feedback,
-        ['Eso es ', nombreTocado, '. ', pais.capital, ' es la capital de ', el('strong', '', pais.nombre), '.'],
+        ['Has tocado ', conArticulo(nombreTocado), '. ', pais.capital, ` es la capital ${preposicionDe(pais.nombre)}`, el('strong', '', pais.nombre), '.'],
         a.truco,
         a.siguiente,
       )?.focus({ preventScroll: true });
