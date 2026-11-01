@@ -1581,3 +1581,49 @@ button {
 .region-item.region-entera .region-titulo {
   font-weight: 800;
 }
+
+/* --- Revisión visual: espaciados y anchos coherentes --- */
+
+/* Controles segmentados: tantas columnas iguales como opciones (antes, siempre 4: con 3 quedaba un hueco). */
+.selector-practica {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.selector-opcion {
+  padding: 4px 6px;
+  white-space: normal;
+  line-height: 1.15;
+}
+
+/* En los diálogos, los botones de una fila se reparten el ancho: si saltan de línea, no quedan de largos distintos. */
+.dialogo-contenido .acciones > button:not(.boton-enlace) {
+  flex: 1 1 auto;
+}
+
+/* El mensaje de estado vacío no ocupa sitio (sigue presente para los lectores de pantalla). */
+.mensaje-copia:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+/* En el móvil, los botones del panel ocupan el ancho (más fáciles de tocar y del mismo largo). */
+@media (max-width: 600px) {
+  .panel .acciones > button:not(.boton-enlace) {
+    flex: 1 1 auto;
+  }
+}
+
+/* iPad horizontal y PC: el panel mide lo que su contenido (con desplazamiento si no cabe), no todo el alto. */
+@media (min-width: 900px), (min-width: 700px) and (orientation: landscape) {
+  .panel {
+    align-self: start;
+    max-height: 100%;
+  }
+}
+
+/* Las acciones peligrosas no se estiran: que no llamen más la atención que el resto. */
+.dialogo-contenido .acciones > button.boton-peligro {
+  flex: 0 0 auto;
+}

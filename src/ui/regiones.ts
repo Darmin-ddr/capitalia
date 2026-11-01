@@ -76,7 +76,7 @@ export function prepararSelectorRegiones(disparador: HTMLButtonElement, datos: D
       });
       contenido.append(el('h3', 'dialogo-subtitulo', NOMBRE_CONTINENTE[c]), lista);
     }
-    contenido.append(el('div', 'acciones', cerrar));
+    contenido.append(el('div', 'acciones acciones-cerrar', cerrar));
     dialogo.replaceChildren(contenido);
     dialogo.showModal();
     (contenido.querySelector('.region-item.actual') as HTMLElement | null)?.focus();

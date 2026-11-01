@@ -67,10 +67,10 @@ async function abrir(b, perfil, estado) {
     await p.waitForTimeout(300);
     const deAsia = await p.locator('path.pais.jugable[data-id="JPN"]').count();
     comprobar(deAsia > 0, `${nombre}: el selector de la portada cambia a Asia`);
-    // Aprender vuelve a la región elegida (Europa del sur: los Balcanes aún no están abiertos en este estado).
+    // Aprender vuelve a la región elegida (Balcanes, abierta porque tiene países empezados), no al continente de la portada.
     await p.locator('.modo[data-modo="aprender"]')[tap]();
     await p.waitForTimeout(300);
-    comprobar((await p.locator('#region-actual').innerText()).includes('Europa del sur'), `${nombre}: Aprender vuelve a la región elegida, no al continente de la portada`);
+    comprobar((await p.locator('#region-actual').innerText()).includes('Balcanes'), `${nombre}: Aprender vuelve a la región elegida, no al continente de la portada`);
     await ctx.close();
   }
 
