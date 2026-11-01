@@ -17,6 +17,10 @@ export interface Pais {
   nombre: string;
   capital: string;
   variantes: string[];
+  /** Nombres de país equivalentes, aceptados sin aviso al escribir el país (Chequia, Myanmar...). */
+  variantesPais?: string[];
+  /** Nombres de país aceptados con aviso (Holanda). */
+  avisosPais?: string[];
   antiguos: string[];
   continentes: Continente[];
   region: string;

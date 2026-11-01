@@ -1,22 +1,23 @@
 import type { Pais } from './types';
 
 /**
- * Validación tolerante de respuestas escritas (modo 4, SPEC 3.3).
+ * Validación tolerante de respuestas escritas (SPEC 3.3): capitales (modos
+ * Escribir y Mapa mudo) y nombres de país (Mapa mudo).
  *
  * - Sin tildes, mayúsculas, espacios, guiones ni apóstrofos.
- * - Variantes del país: correctas sin aviso.
- * - Nombres antiguos: aceptados con aviso.
+ * - Variantes: correctas sin aviso.
+ * - Nombres antiguos (capital) o avisos (país, p. ej. Holanda): aceptados con aviso.
  * - Erratas pequeñas: aceptadas con aviso, con margen según la longitud.
- * - Si lo escrito se parece tanto o más a otra capital, es fallo.
+ * - Si lo escrito se parece tanto o más a otro país o capital, es fallo.
  */
 
 export type TipoRespuesta = 'correcto' | 'antiguo' | 'errata' | 'fallo' | 'vacio';
 
 export interface ResultadoTexto {
   tipo: TipoRespuesta;
-  /** Forma del listado que hay que mostrar (la capital "oficial"). */
+  /** Forma del listado que hay que mostrar (la capital o el nombre "oficial"). */
   formaCorrecta: string;
-  /** Si es fallo y lo escrito es exactamente la capital de otro país, cuál. */
+  /** Si es fallo y lo escrito es exactamente lo de otro país, cuál. */
   otroPais?: Pais;
 }
 
@@ -65,46 +66,60 @@ export function formasCorrectas(pais: Pais): string[] {
   return [...pais.capital.split(' / '), ...pais.variantes].map((f) => f.trim()).filter(Boolean);
 }
 
-function todasLasFormas(pais: Pais): string[] {
-  return [...formasCorrectas(pais), ...pais.antiguos];
+/** Nombres de país aceptados sin aviso: el del listado (también sin el paréntesis) y sus variantes. */
+export function nombresCorrectos(pais: Pais): string[] {
+  const sinParentesis = pais.nombre.replace(/\s*\(.*\)\s*/, '').trim();
+  return [...new Set([pais.nombre, sinParentesis, ...(pais.variantesPais ?? [])])].filter(Boolean);
 }
 
-export function validarTexto(entrada: string, objetivo: Pais, todos: readonly Pais[]): ResultadoTexto {
-  const formaCorrecta = objetivo.capital;
+interface Formas {
+  correctas: (p: Pais) => string[];
+  avisos: (p: Pais) => string[];
+  principal: (p: Pais) => string;
+}
+
+const CAPITAL: Formas = { correctas: formasCorrectas, avisos: (p) => p.antiguos, principal: (p) => p.capital };
+const NOMBRE: Formas = { correctas: nombresCorrectos, avisos: (p) => p.avisosPais ?? [], principal: (p) => p.nombre };
+
+function validarFormas(entrada: string, objetivo: Pais, todos: readonly Pais[], formas: Formas): ResultadoTexto {
+  const formaCorrecta = formas.principal(objetivo);
   const n = normalizar(entrada);
   if (!n) return { tipo: 'vacio', formaCorrecta };
 
-  const correctas = formasCorrectas(objetivo).map(normalizar);
-  const antiguas = objetivo.antiguos.map(normalizar);
+  const correctas = formas.correctas(objetivo).map(normalizar);
+  const avisos = formas.avisos(objetivo).map(normalizar);
   if (correctas.includes(n)) return { tipo: 'correcto', formaCorrecta };
-  if (antiguas.includes(n)) return { tipo: 'antiguo', formaCorrecta };
+  if (avisos.includes(n)) return { tipo: 'antiguo', formaCorrecta };
 
+  const todasDe = (p: Pais) => [...formas.correctas(p), ...formas.avisos(p)];
   const otros = todos.filter((p) => p.id !== objetivo.id);
-  // Coincidencia exacta con otra capital: fallo claro.
-  const exactoOtro = otros.find((p) => todasLasFormas(p).some((f) => normalizar(f) === n));
+  // Coincidencia exacta con otro país: fallo claro.
+  const exactoOtro = otros.find((p) => todasDe(p).some((f) => normalizar(f) === n));
   if (exactoOtro) return { tipo: 'fallo', formaCorrecta, otroPais: exactoOtro };
 
   // Errata: la forma más cercana del país, si entra en el margen
-  // y está estrictamente más cerca que cualquier capital de otro país.
-  let mejor: { d: number; antigua: boolean } | null = null;
-  for (const [lista, antigua] of [[correctas, false], [antiguas, true]] as const) {
+  // y está estrictamente más cerca que cualquier forma de otro país.
+  let mejor: { d: number; aviso: boolean } | null = null;
+  for (const [lista, aviso] of [[correctas, false], [avisos, true]] as const) {
     for (const f of lista) {
       const d = distancia(n, f);
-      if (d <= margenErratas(f.length) && (!mejor || d < mejor.d)) mejor = { d, antigua };
+      if (d <= margenErratas(f.length) && (!mejor || d < mejor.d)) mejor = { d, aviso };
     }
   }
 
-  let masCercanoOtro: { d: number; pais: Pais } | null = null;
-  for (const p of otros) {
-    for (const f of todasLasFormas(p)) {
-      const d = distancia(n, normalizar(f));
-      if (!masCercanoOtro || d < masCercanoOtro.d) masCercanoOtro = { d, pais: p };
-    }
-  }
+  let masCercanoOtro = Infinity;
+  for (const p of otros) for (const f of todasDe(p)) masCercanoOtro = Math.min(masCercanoOtro, distancia(n, normalizar(f)));
 
-  if (mejor && (!masCercanoOtro || mejor.d < masCercanoOtro.d)) {
-    return { tipo: mejor.antigua ? 'antiguo' : 'errata', formaCorrecta };
-  }
-
+  if (mejor && mejor.d < masCercanoOtro) return { tipo: mejor.aviso ? 'antiguo' : 'errata', formaCorrecta };
   return { tipo: 'fallo', formaCorrecta };
+}
+
+/** Capital escrita (modos Escribir y Mapa mudo). */
+export function validarTexto(entrada: string, objetivo: Pais, todos: readonly Pais[]): ResultadoTexto {
+  return validarFormas(entrada, objetivo, todos, CAPITAL);
+}
+
+/** Nombre del país escrito (Mapa mudo). "antiguo" significa aceptado con aviso (p. ej. Holanda). */
+export function validarPais(entrada: string, objetivo: Pais, todos: readonly Pais[]): ResultadoTexto {
+  return validarFormas(entrada, objetivo, todos, NOMBRE);
 }

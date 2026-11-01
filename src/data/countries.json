@@ -149,6 +149,10 @@
         "europa"
       ],
       "region": "europa-sur",
+      "variantesPais": [
+        "Ciudad del Vaticano",
+        "Santa Sede"
+      ],
       "capitalCoords": [
         12.454,
         41.903
@@ -234,6 +238,9 @@
         "europa"
       ],
       "region": "europa-occidental",
+      "avisosPais": [
+        "Holanda"
+      ],
       "capitalCoords": [
         4.89,
         52.374
@@ -520,6 +527,9 @@
         "europa"
       ],
       "region": "europa-central",
+      "variantesPais": [
+        "Chequia"
+      ],
       "capitalCoords": [
         14.421,
         50.088
@@ -663,6 +673,10 @@
         "europa"
       ],
       "region": "balcanes",
+      "variantesPais": [
+        "Bosnia-Herzegovina",
+        "Bosnia"
+      ],
       "capitalCoords": [
         18.356,
         43.849
@@ -845,6 +859,9 @@
         "europa"
       ],
       "region": "europa-este",
+      "variantesPais": [
+        "Belarús"
+      ],
       "capitalCoords": [
         27.567,
         53.9
@@ -888,6 +905,9 @@
         "europa"
       ],
       "region": "europa-este",
+      "variantesPais": [
+        "Moldova"
+      ],
       "capitalCoords": [
         28.858,
         47.006
@@ -1184,6 +1204,9 @@
         "asia"
       ],
       "region": "asia-sur",
+      "variantesPais": [
+        "Bangladesh"
+      ],
       "capitalCoords": [
         90.407,
         23.71
@@ -1289,6 +1312,10 @@
         "asia"
       ],
       "region": "sudeste-continental",
+      "variantesPais": [
+        "Birmania",
+        "Myanmar"
+      ],
       "capitalCoords": [
         96.13,
         19.745
@@ -1499,6 +1526,9 @@
         "asia"
       ],
       "region": "sudeste-insular",
+      "variantesPais": [
+        "Timor Leste"
+      ],
       "capitalCoords": [
         125.574,
         -8.559
@@ -1682,6 +1712,9 @@
         "asia"
       ],
       "region": "golfo",
+      "variantesPais": [
+        "Iraq"
+      ],
       "capitalCoords": [
         44.401,
         33.341
@@ -1724,6 +1757,9 @@
         "asia"
       ],
       "region": "golfo",
+      "variantesPais": [
+        "Arabia Saudí"
+      ],
       "capitalCoords": [
         46.722,
         24.688
@@ -1777,6 +1813,10 @@
         "asia"
       ],
       "region": "golfo",
+      "variantesPais": [
+        "Bahréin",
+        "Bahrein"
+      ],
       "capitalCoords": [
         50.586,
         26.228
@@ -1796,6 +1836,9 @@
         "asia"
       ],
       "region": "golfo",
+      "variantesPais": [
+        "Qatar"
+      ],
       "capitalCoords": [
         51.531,
         25.285
@@ -1817,6 +1860,9 @@
         "asia"
       ],
       "region": "golfo",
+      "variantesPais": [
+        "Emiratos"
+      ],
       "capitalCoords": [
         54.397,
         24.451
@@ -1878,6 +1924,9 @@
         "asia"
       ],
       "region": "asia-central",
+      "variantesPais": [
+        "Kazajstán"
+      ],
       "capitalCoords": [
         71.446,
         51.18
@@ -1954,6 +2003,9 @@
         "asia"
       ],
       "region": "asia-central",
+      "variantesPais": [
+        "Kirguizistán"
+      ],
       "capitalCoords": [
         74.59,
         42.87

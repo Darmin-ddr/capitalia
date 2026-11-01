@@ -139,6 +139,30 @@ TRUCOS = {
   'VAT': [truco('familia', 'Fácil: la capital es la propia Ciudad del Vaticano.')],
 }
 
+# Nombres de país equivalentes, aceptados sin aviso al escribir el país (mapa mudo).
+# Solo formas evidentes del mismo nombre (normativas o grafías habituales), nunca nombres antiguos.
+VARIANTES_PAIS = {
+  'CZE': ['Chequia'],
+  'SAU': ['Arabia Saudí'],
+  'MMR': ['Birmania', 'Myanmar'],
+  'BGD': ['Bangladesh'],
+  'QAT': ['Qatar'],
+  'BHR': ['Bahréin', 'Bahrein'],
+  'KAZ': ['Kazajstán'],
+  'KGZ': ['Kirguizistán'],
+  'TLS': ['Timor Leste'],
+  'ARE': ['Emiratos'],
+  'BIH': ['Bosnia-Herzegovina', 'Bosnia'],
+  'VAT': ['Ciudad del Vaticano', 'Santa Sede'],
+  'MDA': ['Moldova'],
+  'BLR': ['Belarús'],
+  'IRQ': ['Iraq'],
+}
+# Aceptados con aviso, como una errata (decisión del responsable).
+AVISOS_PAIS = {
+  'NLD': ['Holanda'],
+}
+
 def main():
     geo = {}
     for linea in open(sys.argv[1], encoding='utf-8'):
@@ -159,6 +183,8 @@ def main():
           'continentes': cont, 'region': region,
         }
         if extra: p['regionesExtra'] = extra
+        if a3 in VARIANTES_PAIS: p['variantesPais'] = VARIANTES_PAIS[a3]
+        if a3 in AVISOS_PAIS: p['avisosPais'] = AVISOS_PAIS[a3]
         p.update({'capitalCoords': [round(lon, 3), round(lat, 3)], 'geonamesId': gid, 'opcional': False,
                   'trucos': prev.get('trucos') or TRUCOS.get(a3, [])})
         paises.append(p)
