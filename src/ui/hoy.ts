@@ -42,6 +42,12 @@ export interface ServiciosHoy {
   nombreContinente: (c: Continente) => string;
   continenteMapa: () => Continente;
   verContinente: (c: Continente) => void;
+  /** Aviso de instalar (una vez): si toca, abrir la instalación, descartarlo para siempre y saber si ya está instalada. */
+  avisoInstalar: () => boolean;
+  instalar: () => void;
+  descartarInstalar: () => void;
+  instalada: () => boolean;
+  alCambiarInstalacion: (f: () => void) => () => void;
   /** "Qué estudia Hoy": continente al que se limita (el resto, en pausa) o null para todo. */
   foco: () => Continente | null;
   ponerFoco: (c: Continente | null) => void;
@@ -93,6 +99,33 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       .filter((c) => c !== foco)
       .map(s.nombreContinente)
       .join(' y ');
+  }
+
+  let dejarDeEscuchar: (() => void) | null = null;
+
+  /** Aviso de instalar, una sola vez: "Ahora no" lo descarta para siempre (queda la entrada en ⋯). */
+  function avisoInstalar(): HTMLElement | null {
+    if (!s.avisoInstalar()) return null;
+    const aviso = el(
+      'div',
+      'aviso-instalar',
+      el('p', '', el('strong', '', 'Instálala en este dispositivo.'), ' Se abre como una app y funciona también sin conexión.'),
+      el(
+        'div',
+        'acciones',
+        boton('Instalar', 'boton-secundario', () => s.instalar()),
+        boton('Ahora no', 'boton-enlace', () => {
+          s.descartarInstalar();
+          aviso.remove();
+        }),
+      ),
+    );
+    // Si se instala desde aquí (o el navegador avisa de que ya lo está), el aviso sobra.
+    dejarDeEscuchar?.();
+    dejarDeEscuchar = s.alCambiarInstalacion(() => {
+      if (s.instalada()) aviso.remove();
+    });
+    return aviso;
   }
 
   /** Aviso fijo mientras hay continentes en pausa: no es una preferencia, es que no salen. */
@@ -205,6 +238,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       el('ul', 'hoy-cuentas', ...partes),
       cuenta.get('nuevo')?.size ? el('p', 'ayuda', 'Los países nuevos salen dos veces, para fijarlos.') : null,
       el('div', 'acciones', empezar),
+      avisoInstalar(),
       bloqueProgreso(),
     );
     empezar.focus({ preventScroll: true });
@@ -228,6 +262,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
           : 'Mañana habrá más. Si te apetece seguir, avanza en la pestaña Aprender.',
       ),
       el('div', 'acciones', principal, hayAdelantado ? boton('Ir a Aprender', 'boton-secundario', s.irAAprender) : null),
+      avisoInstalar(),
       bloqueProgreso(),
     );
     principal.focus({ preventScroll: true });
@@ -312,6 +347,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   return {
     alSeleccionarPais: (id) => control.alTocarPais?.(id),
     salir() {
+      dejarDeEscuchar?.();
       window.clearTimeout(temporizador);
       teclado.quitar();
       limpiarMapa();

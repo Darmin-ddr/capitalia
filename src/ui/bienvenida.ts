@@ -78,7 +78,7 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
       titulo: 'Instalar y no perder el progreso',
       cuerpo: () => [
         lista(
-          [fuerte('Instalarla'), ': en iPhone o iPad, desde Safari: Compartir → Añadir a pantalla de inicio. En Android, desde Chrome: menú → Instalar aplicación. Así funciona también sin conexión.'],
+          [fuerte('Instalarla'), ': en ⋯ → Instalar la app (en Android y en el ordenador se instala desde ahí; en iPhone o iPad explica los pasos: en Safari, Compartir → Añadir a pantalla de inicio). Así funciona también sin conexión.'],
           [fuerte('Copia de seguridad'), ': en ⋯ → Descargar copia. Conviene hacerla de vez en cuando: si se borran los datos del navegador, el progreso se pierde.'],
           [fuerte('Cambiar de dispositivo'), ': ⋯ → Copiar código en el antiguo y pegarlo en el nuevo.'],
         ),

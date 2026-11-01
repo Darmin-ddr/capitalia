@@ -1713,3 +1713,22 @@ button {
   font-size: 0.75rem;
   color: var(--texto-suave);
 }
+
+/* --- Instalar la app --- */
+.aviso-instalar {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+}
+
+.aviso-instalar p {
+  margin: 0;
+}
+
+.pasos-instalar li {
+  margin-bottom: 6px;
+}

@@ -16,6 +16,7 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 
 ## Cómo te ayuda a aprender
 
+- **Solo un continente si hace falta.** Si los exámenes de Europa y Asia van por separado, Hoy se puede limitar a uno; el otro queda en pausa hasta volver a "Todo".
 - **Hoy: diez minutos al día.** Al abrir la app ves lo que toca, cuántos países llevas aprendidos y el mapa coloreado con tu progreso. La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada), y cada día mete unos pocos países nuevos entre los repasos. Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo.
 - **Aprender, a tu ritmo.** Cada país sube cuatro escalones, de más fácil a más difícil: elegir la capital entre cuatro, colocar capitales en su país, escribirla sin ayuda y, por último, el mapa mudo: ver solo la estrella y escribir país y capital. Sube de escalón al acertarlo dos veces con otras preguntas por medio. Cuando tienes abiertas todas las regiones de un continente, puedes practicarlo entero.
 - **Examen de prueba.** Un mapa mudo del continente entero con las estrellas de las capitales, como el examen de clase, con nota sobre 10 (medio punto si aciertas solo el país o solo la capital). Lo que falles puedes mandarlo a Hoy para repasarlo antes.
@@ -48,7 +49,7 @@ La primera vez que se abre, la app pregunta quién la está usando y ofrece una 
 
 ## Instalarla
 
-Se puede usar directamente en el navegador, pero instalada se abre como una app y **funciona sin conexión**:
+Se puede usar directamente en el navegador, pero instalada se abre como una app y **funciona sin conexión**. Desde la propia app: botón ⋯ → **Instalar la app**. O a mano:
 
 - **iPhone o iPad:** abre la página en Safari, toca Compartir (el cuadrado con la flecha) y luego "Añadir a pantalla de inicio".
 - **Android:** abre la página en Chrome, menú ⋮ y "Instalar aplicación" (o "Añadir a pantalla de inicio").

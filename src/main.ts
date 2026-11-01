@@ -4,8 +4,10 @@ import '@fontsource/nunito/latin-800.css';
 import './ui/estilos.css';
 import { iniciarApp } from './ui/app';
 import { aplicarTema, leerTema } from './ui/tema';
+import { prepararInstalacion } from './ui/instalar';
 
 aplicarTema(leerTema());
+prepararInstalacion();
 
 iniciarApp();
 

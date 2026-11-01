@@ -145,7 +145,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 ## 11. Técnica (propuesta, revisable)
 
-- **PWA estática** desplegada en **GitHub Pages** (GitHub Actions). Instalable y funcional sin conexión (service worker).
+- **PWA estática** desplegada en **GitHub Pages** (GitHub Actions). Instalable y funcional sin conexión (service worker). Entrada "Instalar la app" en ⋯ y un aviso discreto, una sola vez, en la portada de Hoy desde el segundo día de uso: en Chrome y Edge abre la instalación del navegador; en iPhone y iPad (Safari no deja lanzarla desde la página) muestra los pasos; si ya está instalada, no se ofrece.
 - Stack propuesto: Vite + TypeScript, sin framework pesado (o uno ligero si se justifica). `vite-plugin-pwa` para manifest y service worker.
 - Mapa: geometrías de Natural Earth (p. ej. paquete `world-atlas` en TopoJSON) renderizadas en SVG con d3-geo. Resolución suficiente para que los países pequeños existan como forma (50m o superior). Ojo: Natural Earth aplica sus propios criterios en fronteras disputadas; revisar cómo se muestran los casos de 3.2.
 - Datos de países en JSON versionado en el repo (ver sección 12).

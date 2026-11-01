@@ -33,6 +33,7 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 - `scripts/prueba-hoy.cjs <carpeta>`: primer día (nuevos dos veces, nunca seguidos) y sesión de tres regiones con rótulo.
 - `scripts/prueba-examen.cjs <carpeta>`: examen de Europa (nota con medio punto, sin colores, priorizar en Hoy), "Las dos" por continentes y pestañas a 360 px.
 - `scripts/prueba-tema.cjs <carpeta>`: tema Automático/Claro/Oscuro y capturas en oscuro.
+- `scripts/prueba-instalar.cjs <carpeta>`: entrada "Instalar la app" y aviso de una vez (simula el evento de instalación de Chrome; iPhone muestra los pasos de Safari).
 - `scripts/prueba-portada.cjs <carpeta>`: portada de Hoy (cifras, sin selector, mapa del continente), "Europa entera" (bloqueada, tandas de 16) y vuelta a la región elegida.
 - `scripts/prueba-progreso.cjs <carpeta>`: Hoy, guardado y truco propio.
 - `scripts/prueba-regiones.cjs <carpeta> [movil]`: las 13 regiones con progreso simulado y una tanda de Colocar en cada una.

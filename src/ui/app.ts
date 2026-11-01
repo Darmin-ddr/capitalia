@@ -18,6 +18,7 @@ import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
 import { iniciarAprender } from './aprender';
 import { iniciarHoy } from './hoy';
 import { iniciarExamen } from './examen';
+import { alCambiarInstalacion, avisoDescartado, crearInstalar, descartarAviso, formaInstalar } from './instalar';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
 import { crearGuia } from './guia';
@@ -277,6 +278,14 @@ export function iniciarApp(): void {
     };
   }
 
+  const abrirInstalar = crearInstalar();
+  /** Aviso de instalar en la portada: desde el segundo día de uso, si no está instalada ni se ha descartado. */
+  const tocaAvisoInstalar = () => {
+    if (formaInstalar() === 'instalada' || avisoDescartado()) return false;
+    const hoy = new Date().toDateString();
+    return estado.historial.some((r) => new Date(r.t).toDateString() !== hoy);
+  };
+
   function serviciosHoy() {
     const prioridad = () => new Set([...estado.prioridad, ...(estado.ajustes.listaExamen ?? [])]);
     return {
@@ -306,6 +315,11 @@ export function iniciarApp(): void {
         region = regionContinente(c);
         montarMapa();
       },
+      avisoInstalar: tocaAvisoInstalar,
+      instalar: abrirInstalar,
+      descartarInstalar: descartarAviso,
+      instalada: () => formaInstalar() === 'instalada',
+      alCambiarInstalacion,
       foco: () => estado.ajustes.focoHoy,
       ponerFoco(c: Continente | null) {
         estado.ajustes.focoHoy = c;
@@ -424,6 +438,7 @@ export function iniciarApp(): void {
   });
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
     abrirGuia,
+    abrirInstalar: () => (formaInstalar() === 'instalada' ? null : abrirInstalar),
     abrirGuiaAdultos,
     abrirAcercaDe: crearAcercaDe(),
     abrirPanelAdultos: abrirPanel,

@@ -12,6 +12,8 @@ export interface DatosMas {
   abrirGuia?: () => void;
   abrirAcercaDe?: () => void;
   abrirGuiaAdultos?: () => void;
+  /** Instalar la app (null si ya está instalada: no se ofrece). */
+  abrirInstalar?: () => (() => void) | null;
 }
 
 /**
@@ -87,6 +89,8 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
 
     const ayuda = el('div', 'acciones');
     if (datos.abrirGuia) ayuda.append(boton('Cómo aprender con Capitalia', 'boton-principal', () => (dialogo.close(), datos.abrirGuia?.())));
+    const instalar = datos.abrirInstalar?.();
+    if (instalar) ayuda.append(boton('Instalar la app', 'boton-secundario', () => (dialogo.close(), instalar())));
     if (datos.abrirAcercaDe) ayuda.append(boton('Acerca de', 'boton-secundario', () => (dialogo.close(), datos.abrirAcercaDe?.())));
     const temas: { valor: Tema; texto: string }[] = [
       { valor: 'auto', texto: 'Automático' },
