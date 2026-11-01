@@ -2,10 +2,30 @@
 
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
-## Memoria de trabajo
-- Marcar cada fase (`[x]`) al cerrarla y anotar decisiones en "Decisiones" (abajo), en el momento.
-- Commit y push tras cada paso relevante.
-- Antes de cerrar una fase: `npm test`, `npm run build` y prueba en navegador (scripts en `scripts/`, ver `docs/notas-tecnicas.md`).
+## Ahora mismo
+- **Fase en curso:** F2 (Aprender).
+- **Hecho:** F1 completa (lógica con tests: `src/logic/texto.ts` validarPais, `progreso.ts` escalones y migración, `hoy.ts`, `examen.ts`). 146 tests en verde.
+- **Siguiente paso concreto:** pestaña Aprender por región (ver F2), usando `escalonDe`, `registrarEscalon` y `corregirMapaMudo`.
+
+## Cómo retomar (tras una compactación o en otra sesión)
+1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
+2. `git log --oneline -15` en la rama `rediseno-hoy-aprender-examen`.
+3. Seguir por la primera fase sin marcar; si estaba a medias, comprobar sus criterios.
+
+## Modo de trabajo (el mismo que en la noche de la v1)
+- **Autonomía:** el responsable confía en los avances; tomar decisiones sin preguntar y anotarlas en "Decisiones de implementación" (opción elegida, motivo, si se puede revertir), **en el momento**, no al final.
+- **Memoria:** actualizar "Ahora mismo" al cerrar cada paso; commit y push tras cada paso relevante (nunca más de una hora sin subir).
+- **Calidad antes de cerrar una fase:** `npm test`, `npx tsc --noEmit`, `npm run build` y prueba en navegador con Playwright (móvil, iPad y PC; claro y oscuro donde toque). Revisar capturas, no solo los recuentos.
+- **Rama:** todo en `rediseno-hoy-aprender-examen`. **No fusionar con la rama publicada** (`claude/hito-1-plan-7opthj`, la que despliega Pages y usa el alumno) **hasta que el responsable lo apruebe**: al terminar F5, dejarlo listo y avisar.
+- **Datos:** los listados de clase mandan (CLAUDE.md). Nada de notas políticas ni nombres antiguos.
+- **Reglas de producto:** las de CLAUDE.md (sobrio, sin castigos, sin rachas, 44 px, teclado).
+
+## Notas del entorno (Windows)
+- Playwright no es dependencia del proyecto: está en la carpeta temporal de la sesión; ejecutar los scripts con `NODE_PATH` apuntando a su `node_modules` (si se pierde, `npm i playwright` y `npx playwright install chromium` en una carpeta fuera del repo).
+- Preview: `npx vite preview --port 4173 --strictPort` en segundo plano.
+- La herramienta PowerShell bloquea algunos textos largos (here-strings con `/**` o `*'`): escribir ficheros con el editor y hacer commit con `git commit -F <fichero>`.
+- El repositorio usa CRLF en Windows: editar con el editor, no reescribir ficheros enteros desde scripts.
+- Llega a veces un aviso repetido "Sigue con docs/plan-v1.md..." de una tarea programada antigua de otra sesión: el plan v1 está completo, así que se ignora sin hacer nada.
 
 ## Decisiones del responsable
 - Tres modos: **Hoy** (rutina diaria con nuevos intercalados), **Aprender** (extra, por escalones) y **Examen** (mapa mudo del continente). Explorar se queda. Desaparecen Practicar y "Preparar examen".
