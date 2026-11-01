@@ -8,7 +8,7 @@
 
 ## Comandos
 - `npm test`, `npm run build`, `npx vite preview --port 4173 --strictPort` (en segundo plano).
-- Pruebas en navegador: `node scripts/prueba-modos.cjs <carpeta-capturas>` con el preview levantado.
+- Pruebas en navegador: `node scripts/prueba-hoy.cjs <carpeta-capturas>` (y las demás de la lista de abajo) con el preview levantado.
   Ojo: para tocar países usar `locator.dispatchEvent('click')`, no `tap()`: el centro del
   rectángulo de Croacia cae en Bosnia.
 - No usar `pkill -f "vite preview"` en la misma orden que otras cosas: mata la propia shell (código 144).
@@ -28,12 +28,15 @@
   Con pasos de aprendizaje cortos: un Good nuevo -> Learning con due a 10 min; otro Good -> Review a 2 días.
 
 ## Scripts de prueba en navegador (todos con el preview en el puerto 4173)
-- `scripts/prueba-modos.cjs <carpeta>`: los cuatro modos de Practicar en móvil, iPad y PC.
-- `scripts/prueba-progreso.cjs <carpeta>`: repaso, guardado y truco propio.
-- `scripts/prueba-regiones.cjs <carpeta> [movil]`: las 13 regiones con progreso simulado.
+Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) comprueban y dicen OK o FALLO en cada punto, y salen con código 1 si algo falla.
+- `scripts/prueba-aprender.cjs <carpeta>`: escalones, Colocar por tandas, mapa mudo (medio punto, Holanda) en móvil y PC.
+- `scripts/prueba-hoy.cjs <carpeta>`: primer día (nuevos dos veces, nunca seguidos) y sesión de tres regiones con rótulo.
+- `scripts/prueba-examen.cjs <carpeta>`: examen de Europa (nota con medio punto, sin colores, priorizar en Hoy), "Las dos" por continentes y pestañas a 360 px.
+- `scripts/prueba-tema.cjs <carpeta>`: tema Automático/Claro/Oscuro y capturas en oscuro.
+- `scripts/prueba-progreso.cjs <carpeta>`: Hoy, guardado y truco propio.
+- `scripts/prueba-regiones.cjs <carpeta> [movil]`: las 13 regiones con progreso simulado y una tanda de Colocar en cada una.
 - `scripts/prueba-pwa.cjs <carpeta>`: sin conexión y copia por código.
-- `scripts/prueba-panel.cjs <carpeta> [movil]`: panel de adultos y modo examen.
-- `scripts/capturas-oscuro.cjs <carpeta>`: capturas en modo oscuro.
+- `scripts/prueba-panel.cjs <carpeta> [movil]`: panel de adultos y lista de examen.
 - `scripts/prueba-zoom.cjs <carpeta>`: zoom, arrastre, rueda y pellizco simulado.
 - `scripts/prueba-accesibilidad.cjs`: objetivos táctiles de 44 px en todas las pantallas y recorrido con teclado.
 - `scripts/prueba-guia.cjs <carpeta> [movil]`: bienvenida, guía del alumno (pregunta y taller), guía de adultos, casillas de continente del examen y Acerca de.
@@ -50,11 +53,14 @@
 - Zoom: `src/logic/vista.ts` (0,6x a 8x, holgura del 35 % para desplazarse).
 - La app usa `src/data/mapa-50m.json`, generado con `node scripts/recortar-mapa.cjs` a partir de world-atlas (dependencia de desarrollo). Si se añaden países fuera del recuadro, ampliar el recuadro del script y regenerar.
 
-## Arquitectura de la interfaz (O1-O4)
-- `src/ui/app.ts`: estado (progreso), región actual, mapa, pestañas, `Motor` (registrar respuestas, modo por dominio, trucos), avisos.
-- `src/ui/ronda.ts`: controlador común de rondas de preguntas sueltas; `src/ui/preguntas.ts`: una función por modo (elegir, escribir, al revés).
-- `src/ui/colocar.ts`: modo 3, aparte (va por tandas).
-- `src/ui/repaso.ts` (sesión y examen), `practicar.ts`, `explorar.ts`, `regiones.ts` (selector), `mas.ts` (copia), `panel.ts` (adultos).
+## Arquitectura de la interfaz (v2)
+- `src/ui/app.ts`: estado (progreso), región actual, mapa, pestañas (Hoy, Aprender, Examen, Explorar), `Motor` (registrar respuesta en FSRS y en el escalón, trucos), avisos. Monta el mapa de la región, el de otra región cuando Hoy salta (con rótulo) y el mapa mudo del examen (sin colores ni selector de región).
+- Lógica v2: `src/logic/hoy.ts` (sesión de Hoy agrupada por regiones, nuevos autorregulados, `ColaHoy`), `progreso.ts` (escalones y migración desde la v1), `examen.ts` (ámbitos, corrección de mapa mudo con medio punto, nota), `texto.ts` (validación de capital y de país).
+- `src/ui/hoy.ts`: bucle propio de preguntas (el mapa puede cambiar de región entre preguntas). `src/ui/aprender.ts`: escalera y tandas. `src/ui/examen.ts`: configuración, preguntas y nota.
+- `src/ui/ronda.ts`: rondas de preguntas sueltas con mapa fijo (Aprender); `src/ui/preguntas.ts`: una función por tipo (elegir, escribir, al revés, mapa mudo).
+- `src/ui/colocar.ts`: Colocar, aparte (va por tandas).
+- `src/ui/explorar.ts`, `regiones.ts` (selector), `mas.ts` (copia y tema), `tema.ts` (Automático/Claro/Oscuro, guardado aparte del progreso), `panel.ts` (adultos).
+- Medio punto en mapa mudo: "repasar" para FSRS y fallo para el escalón y la cola (`OpcionesRespuesta.escalon`).
 - `src/ui/bienvenida.ts` (primer arranque y guía de adultos), `guia.ts` (guía del alumno), `acerca.ts` (versión y créditos; la autoría está en `AUTORIA`).
 - Los atajos de teclado de las preguntas (`Teclado` en `comun.ts`) se ignoran mientras haya un `<dialog>` abierto.
 - Cambios de ajustes que afectan a los datos (Kosovo, examen, importar) recargan la página.

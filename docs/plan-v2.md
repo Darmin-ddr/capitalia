@@ -3,9 +3,9 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
 ## Ahora mismo
-- **Fase en curso:** F5 (navegación, tema y documentación).
-- **Hecho:** F1 (lógica), F2 (Aprender, `scripts/prueba-aprender.cjs`), F3 (Hoy, `scripts/prueba-hoy.cjs`) y F4 (Examen, `src/ui/examen.ts`, `scripts/prueba-examen.cjs`). Las cuatro pestañas ya están y caben a 360 px.
-- **Siguiente paso concreto:** tema Automático/Claro/Oscuro en ⋯; luego guías, README, SPEC, notas técnicas, panel (máximo de nuevos) y adaptar los scripts de prueba antiguos.
+- **Estado:** F1 a F5 terminadas en la rama `rediseno-hoy-aprender-examen`. **Sin fusionar** con la rama publicada: espera la aprobación del responsable.
+- **Siguiente paso:** que el responsable la pruebe (en local con `npm run build` y `npx vite preview`) y, si le parece bien, fusionar con `claude/hito-1-plan-7opthj` para publicarla.
+- **Pendientes que no bloquean:** el color del mapa sigue el dominio FSRS (no los escalones); el resumen del panel tampoco muestra escalones. Pruebas con el alumno en iPad y iPhone reales.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -57,11 +57,11 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 ### [x] F4. Examen
 - Mapa del continente sin colores de progreso, con todas las estrellas; ámbito y número de preguntas; nota y lista de fallos.
 
-### [ ] F5. Navegación, tema y documentación
+### [x] F5. Navegación, tema y documentación
 - Pestañas Hoy / Aprender / Examen / Explorar (comprobar que caben en móvil).
 - Ajuste de tema en ⋯.
 - Guías, README, SPEC, notas técnicas; panel de adultos (máximo de nuevos por día).
-- Pruebas en navegador completas y fusión con la rama publicada.
+- Pruebas en navegador completas. La fusión con la rama publicada queda para cuando el responsable la apruebe.
 
 ## Decisiones de implementación
 - **E1. Subida de escalón:** dos aciertos en el modo del escalón (Colocar admite Al revés, que es su versión suelta). Un fallo reinicia el contador sin bajar; una errata ni suma ni resta (`progreso.ts`, `registrarEscalon`).
@@ -83,4 +83,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E17. Examen sin corrección en el momento:** como en clase, se responde todo y al final se ve la nota y la lista de fallos (con lo que se escribió). En blanco vale como "no lo sé". El mapa mudo no lleva colores de región ni de progreso, tampoco mientras se responde; el selector de región se oculta durante el examen.
 - **E18. Priorizar en Hoy es un botón** al final del examen ("Repasarlos antes en Hoy"), como pide la SPEC 4.4 ("opción de priorizarlos"). El examen cuenta para FSRS pero no mueve escalones.
 - **E19. Pestañas en móvil:** Hoy, Aprender, Examen y Explorar más ⋯ caben en una fila desde 360 px (texto algo más pequeño por debajo de 380 px), con objetivos de 44 px.
+- **E20. Versión 2.0.0** (se ve en Acerca de): cambia la estructura de la app. Se puede dejar en 1.x si se prefiere.
+- **E21. Tema guardado aparte del progreso** (`localStorage`, clave `capitalia-tema`): es una preferencia del dispositivo, no del alumno; no viaja con la copia de seguridad.
+- **E22. Se retiran `prueba-modos.cjs` y `capturas-oscuro.cjs`** (probaban Practicar); los sustituyen `prueba-aprender`, `prueba-hoy` y `prueba-tema`.
 

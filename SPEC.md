@@ -56,16 +56,17 @@ El examen real de clase es un **mapa mudo con puntos en las capitales**: hay que
 5. **Al revés:** se muestra una capital y hay que tocar su país. Solo en Hoy, para dar variedad.
 
 ### 4.3 Escalones de aprendizaje
-Cada país pasa por: **Elegir → Colocar → Escribir → Mapa mudo**. Sube de escalón al **acertar dos veces con otras preguntas por medio** (evita el espejismo de dominio de acertar seguido en una tarde). Un fallo reinicia el contador del escalón, sin bajar de escalón. Al superar el Mapa mudo, el país queda **aprendido** y pasa al repaso espaciado de Hoy. El "dominado" a largo plazo lo decide FSRS (sección 6).
+Cada país pasa por: **Elegir → Colocar → Escribir → Mapa mudo**. Sube de escalón al **acertar dos veces con otras preguntas por medio** (evita el espejismo de dominio de acertar seguido en una tarde). Un fallo reinicia el contador del escalón, sin bajar de escalón; en Mapa mudo, el medio punto cuenta como fallo para el escalón, y una errata ni suma ni resta. En Aprender, cada tanda pregunta una vez por cada país pendiente de la región (los de Colocar, juntos en el pool), así que los dos aciertos llegan en tandas distintas. Al superar el Mapa mudo, el país queda **aprendido** y pasa al repaso espaciado de Hoy. El "dominado" a largo plazo lo decide FSRS (sección 6).
 
 ### 4.4 Examen
 - Mapa mudo del **continente entero** (como el examen real), sin colores de progreso, con las estrellas de las capitales; se resalta una y se escriben país y capital.
-- Se elige qué entra (Europa, Asia, todo o la lista del examen del panel) y cuántas preguntas (10, 20 o todas).
+- Se elige qué entra (Europa, Asia, todo o la lista del examen del panel) y cuántas preguntas (10, 20 o todas). "Todo" va por continentes: primero el mapa de Europa y luego el de Asia (uno solo de los dos continentes no cabe bien en pantalla).
+- Sin corrección en el momento, como en clase: se responde todo y al final se ve la nota. Sin colores de progreso en el mapa mientras dura.
 - Sin trucos ni repeticiones. **Nota sobre 10**: 1 punto si país y capital son correctos, **medio punto** si solo uno de los dos. Al final, lista de fallos y opción de priorizarlos en Hoy.
 - **Los resultados cuentan para la planificación**: acierto completo como acierto, medio acierto como "repasar" (Hard), fallo como fallo (Again).
 
 ### 4.5 Mapa con varias regiones
-En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra dominio real). Al cambiar, transición breve con el nombre de la región; el tiempo de respuesta cuenta desde que el mapa está quieto.
+En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra dominio real). Al cambiar, transición breve con el nombre de la región; el tiempo de respuesta cuenta desde que el mapa está quieto. Para no marear, la sesión va por bloques de región (primero las regiones con repasos, al final la de los nuevos) y un fallo se repite dentro del bloque de su región.
 
 ## 5. Pedagogía y feedback
 
@@ -112,6 +113,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 ## 7. Sesiones
 
 - **Hoy:** corta (orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar. Empieza con unos repasos y reparte los países nuevos entre ellos, separados para que cada uno salga varias veces.
+- Los países que están en aprendizaje salen en Hoy una vez al día (si ya se han respondido hoy, esperan a mañana).
 - **Nuevos por día, autorregulados entre 5 y 10** según el porcentaje de aciertos recientes; si hay muchos repasos pendientes (por ejemplo, tras días sin entrar), 5. El adulto puede ajustar el máximo.
 - **Examen configurado por el adulto** (fecha y países): Hoy da prioridad a esos países a medida que se acerca la fecha. El antiguo "Preparar examen" desaparece (lo absorben Hoy y Examen).
 
@@ -119,7 +121,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 - Protegido con **PIN** (guardado como hash). Es una cerradura de niños, no seguridad real: todo es local.
 - Muestra: dominio por región, países que más se atascan, actividad reciente.
-- Configura: lista de examen (con casillas para marcar Europa o Asia enteras, o una región entera), países opcionales (Kosovo; Taiwán está en el listado y siempre activo), desbloqueo de todas las regiones, edición de trucos, reinicio de progreso.
+- Configura: lista de examen (con casillas para marcar Europa o Asia enteras, o una región entera), máximo de países nuevos al día (5 a 10), países opcionales (Kosovo; Taiwán está en el listado y siempre activo), desbloqueo de todas las regiones, edición de trucos, reinicio de progreso.
 
 ## 9. Persistencia y dispositivos
 
@@ -137,7 +139,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 - Tipografía redondeada y legible (p. ej. Nunito), tamaños generosos.
 - Capital marcada con estrella pequeña. Microestados (Vaticano, Mónaco, San Marino, Liechtenstein, Andorra, Malta, Singapur, Baréin, Maldivas...) con círculo ampliado y tocable; zoom/pan en el mapa.
 - Distribución: en móvil, mapa arriba y tarjeta de pregunta abajo; en iPad y PC, mapa a la izquierda y panel a la derecha.
-- Modo oscuro automático.
+- Modo oscuro automático, con opción de fijar Claro u Oscuro en ⋯ (preferencia del dispositivo, no viaja con la copia).
 - Objetivos táctiles amplios (mínimo 44 px).
 
 ## 11. Técnica (propuesta, revisable)
@@ -163,11 +165,11 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 - `nota`: texto neutro opcional.
 - `trucos`: lista de { tipo, texto }.
 
-Progreso (local): estado FSRS por tarjeta, nivel/modo por país, historial de respuestas (fecha, modo, acierto, tiempo, pista), trucos propios, configuración y hash del PIN.
+Progreso (local): estado FSRS por tarjeta, escalón de aprendizaje por país (y si está aprendido), países priorizados en Hoy, historial de respuestas (fecha, modo, acierto, tiempo, pista), trucos propios, configuración y hash del PIN.
 
 ## 13. Hitos
 
-**Estado:** los siete hitos están cubiertos en la v1.0 (ver `docs/informe-noche.md`). Pendiente: pruebas con el usuario real en iPad y iPhone, y revisión de trucos y regiones.
+**Estado:** los siete hitos están cubiertos en la v1.0 (ver `docs/informe-noche.md`). La v2 (Hoy, Aprender y Examen, sección 4) está en `docs/plan-v2.md`. Pendiente: pruebas con el usuario real en iPad y iPhone, y revisión de trucos y regiones.
 
 1. **Prototipo de una región** (p. ej. Europa nórdica o Balcanes): mapa, modos 1 y 2, feedback. Probar en iPad.
 2. Resto de modos (3, 4, 5) y validación tolerante de texto.

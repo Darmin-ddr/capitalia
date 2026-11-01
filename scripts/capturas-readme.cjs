@@ -41,9 +41,18 @@ void datos;
     return p;
   };
 
-  // 1. Escritorio: Repaso con el mapa coloreado.
+  // 1. Escritorio: una pregunta de Hoy con el mapa coloreado.
   const pc = await preparar({ viewport: { width: 1280, height: 760 } });
-  await pc.screenshot({ path: `${destino}/repaso-escritorio.png` });
+  await pc.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }).click();
+  await pc.waitForTimeout(1500);
+  await pc.screenshot({ path: `${destino}/hoy-escritorio.png` });
+
+  // 1b. Escritorio: examen de prueba (mapa mudo de Europa).
+  await pc.locator('.modo[data-modo="examen"]').click();
+  await pc.locator('text=Empezar examen').click();
+  await pc.waitForTimeout(400);
+  await pc.screenshot({ path: `${destino}/examen-escritorio.png` });
+  await pc.locator('.modo[data-modo="hoy"]').click();
 
   // 2. Móvil: Explorar con un truco.
   const movil = await preparar({ ...devices['iPhone 13'], deviceScaleFactor: 1 });

@@ -125,6 +125,12 @@ async function responder(p, tap, mal = false) {
     await p.goto('http://localhost:4173/');
     await p.waitForSelector('.hoy-cuentas');
     console.log('multi inicio:', (await p.locator('.hoy-cuentas').innerText()).replace(/\n/g, ' '));
+    // Contar los rótulos de región que aparecen (un observador en la página no se pierde ninguno).
+    await p.evaluate(() => {
+      window.__rotulos = 0;
+      new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList?.contains('rotulo-region')) window.__rotulos++; })
+        .observe(document.getElementById('mapa'), { childList: true });
+    });
     await p.locator('.contenido-modo .acciones .boton-principal').click();
     const regionesVistas = [];
     let rotulos = 0, capturaRotulo = false, pasos = 0, falladoUno = false;
@@ -132,7 +138,6 @@ async function responder(p, tap, mal = false) {
     while (!(await p.locator('.resumen-titulo').count()) && pasos++ < 80) {
       const rotulo = p.locator('.rotulo-region');
       if (await rotulo.count()) {
-        rotulos++;
         if (!capturaRotulo) { capturaRotulo = true; await p.screenshot({ path: `${out}/pc-hoy-rotulo.png` }); }
         await p.waitForTimeout(1200);
       }
@@ -146,6 +151,7 @@ async function responder(p, tap, mal = false) {
         await p.waitForTimeout(mal ? 200 : 1500);
       } else if (!r) await p.waitForTimeout(200);
     }
+    rotulos = await p.evaluate(() => window.__rotulos);
     console.log('multi secuencia:', secuencia.map((x) => x.join(':')).join(' '));
     console.log('multi regiones:', regionesVistas.join(' → '));
     comprobar(regionesVistas.length === 3, `multi: tres regiones, una tras otra, también con un fallo (${regionesVistas.length})`);

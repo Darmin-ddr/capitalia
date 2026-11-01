@@ -6,7 +6,7 @@
 
 Funciona en el navegador del móvil, la tableta o el ordenador. Gratis, sin cuentas y sin anuncios.
 
-![Capitalia en el ordenador: el mapa de Europa occidental coloreado según lo aprendido y una pregunta de repaso](docs/capturas/repaso-escritorio.png)
+![Capitalia en el ordenador: el mapa de Europa occidental coloreado según lo aprendido y una pregunta de Hoy](docs/capturas/hoy-escritorio.png)
 
 ## Qué es
 
@@ -16,10 +16,12 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 
 ## Cómo te ayuda a aprender
 
-- **Repaso diario automático.** La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada). Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo. Unos diez minutos al día bastan.
-- **Cuatro tipos de pregunta, de más fácil a más difícil:** elegir la capital entre cuatro, colocar capitales en su país, encontrar el país de una capital y escribirla sin ayuda. Cada país sube de nivel cuando ya te lo sabes.
+- **Hoy: diez minutos al día.** La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada), y cada día mete unos pocos países nuevos entre los repasos. Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo.
+- **Aprender, a tu ritmo.** Cada país sube cuatro escalones, de más fácil a más difícil: elegir la capital entre cuatro, colocar capitales en su país, escribirla sin ayuda y, por último, el mapa mudo: ver solo la estrella y escribir país y capital. Sube de escalón al acertarlo dos veces con otras preguntas por medio.
+- **Examen de prueba.** Un mapa mudo del continente entero con las estrellas de las capitales, como el examen de clase, con nota sobre 10 (medio punto si aciertas solo el país o solo la capital). Lo que falles puedes mandarlo a Hoy para repasarlo antes.
 - **El mapa es tu marcador.** Cada país se colorea a medida que lo dominas, y las regiones se van abriendo de una en una.
 - **Trucos de memoria.** Algunos países traen uno, y puedes inventar los tuyos (la app incluye una guía para fabricarlos).
+- **Modo claro y oscuro**, automático o a elegir.
 - **Fallar no castiga.** Cuando fallas, ves la respuesta y el truco, y ese país vuelve a salir en unos minutos. No hay rachas ni puntos que perder.
 - **Escribir sin agobios.** No hace falta poner tildes ni mayúsculas, y si se te escapa una letra te lo damos por bueno (pero vuelve a salir para afianzarlo).
 
@@ -27,14 +29,16 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
   <img src="docs/capturas/explorar-movil.png" alt="Capitalia en el móvil: modo Explorar con la capital de los Países Bajos y su truco" width="300">
 </p>
 
+![Examen de prueba: mapa mudo de Europa con las estrellas de las capitales y una resaltada](docs/capturas/examen-escritorio.png)
+
 ## Para familias y docentes
 
 La app tiene un **panel para adultos** protegido con un PIN (botón ⋯, arriba a la derecha):
 
 - **Resumen:** cómo va cada región, qué países se le atascan al alumno y cuántos días ha practicado.
-- **Examen:** marca los países que entran (puedes marcar Europa o Asia enteras, o una región) y la fecha. El alumno verá "Preparar examen", que pregunta primero lo más flojo sin alterar su repaso normal.
+- **Examen:** marca los países que entran (puedes marcar Europa o Asia enteras, o una región) y la fecha. Hoy les dará prioridad, y el alumno podrá hacer un examen de prueba solo con ellos.
 - **Trucos:** revisa, cambia o desactiva los trucos de memoria que trae la app.
-- **Ajustes:** desbloquear todas las regiones (si el curso va en otro orden), cambiar el PIN o reiniciar el progreso.
+- **Ajustes:** cuántos países nuevos al día como mucho, desbloquear todas las regiones (si el curso va en otro orden), cambiar el PIN o reiniciar el progreso.
 
 La primera vez que se abre, la app pregunta quién la está usando y ofrece una guía breve tanto al alumno como a los adultos.
 
@@ -98,4 +102,5 @@ Documentación del proyecto:
 - [`CLAUDE.md`](CLAUDE.md): normas de trabajo.
 - [`docs/notas-tecnicas.md`](docs/notas-tecnicas.md): estructura del código, scripts y cómo probar.
 - [`docs/informe-noche.md`](docs/informe-noche.md): historial de la v1.0, decisiones tomadas y pruebas manuales pendientes.
+- [`docs/plan-v2.md`](docs/plan-v2.md): rediseño v2 (Hoy, Aprender y Examen) y sus decisiones.
 - [`docs/listas/`](docs/listas/): listados de clase con los países y capitales.
