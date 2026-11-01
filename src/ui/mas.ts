@@ -10,6 +10,7 @@ export interface DatosMas {
   abrirPanelAdultos?: () => void;
   abrirGuia?: () => void;
   abrirAcercaDe?: () => void;
+  abrirGuiaAdultos?: () => void;
 }
 
 /**
@@ -107,7 +108,12 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
         dialogo.close();
         datos.abrirPanelAdultos?.();
       });
-      contenido.append(el('h3', 'dialogo-subtitulo', 'Adultos'), el('div', 'acciones', abrirPanel));
+      const guiaAdultos = datos.abrirGuiaAdultos
+        ? boton('Guía para madres y padres', 'boton-secundario', () => (dialogo.close(), datos.abrirGuiaAdultos?.()))
+        : null;
+      const accionesAdultos = el('div', 'acciones', abrirPanel);
+      if (guiaAdultos) accionesAdultos.append(guiaAdultos);
+      contenido.append(el('h3', 'dialogo-subtitulo', 'Adultos'), accionesAdultos);
     }
     contenido.append(el('div', 'acciones acciones-cerrar', boton('Cerrar', 'boton-secundario', () => dialogo.close())));
     dialogo.replaceChildren(contenido);

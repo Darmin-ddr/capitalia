@@ -65,7 +65,8 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 - El adulto puede editar o desactivar trucos desde el panel.
 
 ### 5.4 Guía para aprender
-- **"Cómo aprender con Capitalia"**: guía breve dirigida al alumno, en tono cercano y sin infantilizar. Se abre sola la primera vez y siempre desde el botón ⋯.
+- **Primer arranque**: "¿Quién la está abriendo ahora?". El alumno va a su guía; la madre o el padre, a una **guía breve para adultos** (cómo funciona, qué se configura en el panel, instalar y copia de seguridad, cómo ayudar sin presionar) que termina en "Configurar ahora" (abre el panel) o "Pasar al alumno". Las dos guías están siempre en el botón ⋯.
+- **"Cómo aprender con Capitalia"**: guía breve dirigida al alumno, en tono cercano y sin infantilizar. Se abre sola la primera vez que la usa el alumno.
 - Explica el uso de la app y **cómo aprender con ella**: práctica de recuerdo (intentar antes de mirar), repaso espaciado (poco y a menudo), el valor de los errores, la dificultad deseable de los modos, y técnicas para fabricar trucos propios (a qué te suena, imagen exagerada, significado, parejas y familias).
 - Dos partes interactivas: una pregunta sobre cómo repartir el estudio y un **taller** que guía paso a paso para inventar un truco y guardarlo como truco propio (propone el país que más se ha fallado de la región).
 - **"Acerca de"**: versión, autoría y créditos de datos y librerías (GeoNames exige atribución por su licencia CC BY).

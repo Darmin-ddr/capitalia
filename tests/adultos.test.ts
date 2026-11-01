@@ -97,3 +97,19 @@ describe('modo examen', () => {
     expect(regionesConExamen(null, ps).size).toBe(0);
   });
 });
+
+import { estadoGrupo, marcarGrupo } from '../src/logic/adultos';
+
+describe('casillas de grupo del examen (región o continente)', () => {
+  it('todos, ninguno o parcial', () => {
+    expect(estadoGrupo(['A', 'B'], new Set(['A', 'B', 'X']))).toBe('todos');
+    expect(estadoGrupo(['A', 'B'], new Set(['X']))).toBe('ninguno');
+    expect(estadoGrupo(['A', 'B'], new Set(['A']))).toBe('parcial');
+    expect(estadoGrupo([], new Set(['A']))).toBe('ninguno');
+  });
+  it('marcar y desmarcar un grupo no toca los demás países', () => {
+    const s = marcarGrupo(['A', 'B'], new Set(['X']), true);
+    expect([...s].sort()).toEqual(['A', 'B', 'X']);
+    expect([...marcarGrupo(['A', 'X'], s, false)]).toEqual(['B']);
+  });
+});

@@ -28,6 +28,8 @@ export function validarEstado(datos: unknown): EstadoProgreso | null {
     regionesCelebradas: Array.isArray(d.regionesCelebradas) ? d.regionesCelebradas : [],
     ultimaRegion: typeof d.ultimaRegion === 'string' ? d.ultimaRegion : null,
     guiaVista: d.guiaVista === true,
+    // Quien ya vio la guía del alumno no necesita la bienvenida.
+    bienvenidaVista: d.bienvenidaVista === true || d.guiaVista === true,
     ajustes: { ...base.ajustes, ...(d.ajustes ?? {}) },
   };
 }

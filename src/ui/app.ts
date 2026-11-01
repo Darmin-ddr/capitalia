@@ -21,6 +21,7 @@ import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
 import { crearGuia } from './guia';
 import { crearAcercaDe } from './acerca';
+import { crearBienvenida } from './bienvenida';
 import { crearPanelAdultos, textoDias } from './panel';
 import { diasHastaExamen, regionesConExamen, seleccionarExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
@@ -260,8 +261,19 @@ export function iniciarApp(): void {
     },
     alEmpezar: () => cambiarPestana('repaso'),
   });
+  const { abrirBienvenida, abrirGuiaAdultos } = crearBienvenida({
+    abrirGuiaAlumno: abrirGuia,
+    abrirPanel,
+    alElegir() {
+      if (!estado.bienvenidaVista) {
+        estado.bienvenidaVista = true;
+        guardar();
+      }
+    },
+  });
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
     abrirGuia,
+    abrirGuiaAdultos,
     abrirAcercaDe: crearAcercaDe(),
     abrirPanelAdultos: abrirPanel,
     estado: () => estado,
@@ -274,7 +286,8 @@ export function iniciarApp(): void {
   });
   montarMapa();
   cambiarPestana('repaso');
-  // La primera vez, la guía se abre sola.
-  if (!estado.guiaVista) abrirGuia();
+  // Primer arranque: "¿quién eres?". Después, si el alumno aún no ha visto su guía, se le abre sola.
+  if (!estado.bienvenidaVista) abrirBienvenida();
+  else if (!estado.guiaVista) abrirGuia();
 
 }

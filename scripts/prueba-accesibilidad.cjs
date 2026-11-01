@@ -40,6 +40,12 @@ async function medir(p, pantalla, fallos) {
     await ir('#boton-mas'); await medir(p, `${nombre}/mas`, fallos);
     await p.getByRole('button', { name: 'Acerca de' }).click(); await medir(p, `${nombre}/acerca`, fallos);
     await p.keyboard.press('Escape');
+    await ir('#boton-mas'); await p.getByRole('button', { name: 'Guía para madres y padres' }).click();
+    for (let i = 0; i < 4; i++) {
+      await medir(p, `${nombre}/guia-adultos-${i + 1}`, fallos);
+      if (i < 3) await p.locator('dialog[open]').getByRole('button', { name: 'Siguiente' }).click();
+    }
+    await p.keyboard.press('Escape');
     await ir('#boton-mas'); await p.getByRole('button', { name: 'Cómo aprender con Capitalia' }).click();
     for (let i = 0; i < 8; i++) {
       if (i === 1) await p.getByRole('button', { name: 'Diez minutos cada día' }).click();

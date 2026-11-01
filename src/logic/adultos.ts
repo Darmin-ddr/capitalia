@@ -145,3 +145,22 @@ export function regionesConExamen(lista: readonly string[] | null, paises: reado
   for (const p of paises) if (ids.has(p.id)) [p.region, ...(p.regionesExtra ?? [])].forEach((r) => regiones.add(r));
   return regiones;
 }
+
+/** Estado de una casilla de grupo (región o continente) según los países marcados. */
+export type EstadoGrupo = 'todos' | 'ninguno' | 'parcial';
+
+export function estadoGrupo(ids: readonly string[], seleccion: ReadonlySet<string>): EstadoGrupo {
+  const marcados = ids.filter((id) => seleccion.has(id)).length;
+  if (ids.length > 0 && marcados === ids.length) return 'todos';
+  return marcados === 0 ? 'ninguno' : 'parcial';
+}
+
+/** Marca o desmarca de golpe todos los países de un grupo. Devuelve la selección nueva. */
+export function marcarGrupo(ids: readonly string[], seleccion: ReadonlySet<string>, marcar: boolean): Set<string> {
+  const nueva = new Set(seleccion);
+  for (const id of ids) {
+    if (marcar) nueva.add(id);
+    else nueva.delete(id);
+  }
+  return nueva;
+}

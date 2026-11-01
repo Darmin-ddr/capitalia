@@ -6,6 +6,8 @@ import {
   hashPin,
   paisesAtascados,
   pinValido,
+  estadoGrupo,
+  marcarGrupo,
 } from '../logic/adultos';
 import { estadoVacio, type EstadoProgreso } from '../logic/progreso';
 import type { Pais, Region } from '../logic/types';
@@ -202,7 +204,6 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
 
   function pintarExamen(cuerpo: HTMLElement): void {
     const estado = datos.estado();
-    const seleccion = new Set(estado.ajustes.listaExamen ?? []);
     const fecha = el('input', 'campo-texto campo-fecha');
     fecha.type = 'date';
     fecha.value = estado.ajustes.fechaExamen ?? '';
@@ -213,46 +214,68 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       contador.textContent = `${seleccion.size} países en el examen` + (dias !== null ? ` · ${textoDias(dias)}` : '');
     };
 
-    const grupos = el('div', 'grupos-examen');
-    for (const r of [...datos.regiones].sort((a, b) => (a.continente === b.continente ? a.orden - b.orden : a.continente === 'europa' ? -1 : 1))) {
-      const paises = datos.paisesDe(r.id).filter((p) => p.region === r.id); // cada país en su región principal
-      if (!paises.length) continue;
-      const todos = el('input');
-      todos.type = 'checkbox';
-      const casillas: HTMLInputElement[] = [];
-      const lista = el('div', 'casillas');
-      for (const p of paises) {
-        const c = el('input');
-        c.type = 'checkbox';
-        c.checked = seleccion.has(p.id);
-        c.addEventListener('change', () => {
-          if (c.checked) seleccion.add(p.id);
-          else seleccion.delete(p.id);
-          sincronizar();
-          actualizarContador();
-        });
-        casillas.push(c);
-        lista.append(el('label', 'casilla', c, ` ${p.nombre}`));
-      }
-      const sincronizar = () => {
-        const marcadas = casillas.filter((c) => c.checked).length;
-        todos.checked = marcadas === casillas.length;
-        todos.indeterminate = marcadas > 0 && marcadas < casillas.length;
-      };
-      todos.addEventListener('change', () => {
-        casillas.forEach((c, i) => {
-          c.checked = todos.checked;
-          if (todos.checked) seleccion.add(paises[i].id);
-          else seleccion.delete(paises[i].id);
-        });
-        actualizarContador();
+    // Casillas de continente ("Europa", "Asia"), de región y de país, sincronizadas.
+    // Rusia y Turquía cuentan en los dos continentes (están en los dos listados).
+    let seleccion = new Set(estado.ajustes.listaExamen ?? []);
+    const casillasPais = new Map<string, HTMLInputElement>();
+    const grupos: { ids: string[]; casilla: HTMLInputElement }[] = [];
+    const casillaGrupo = (ids: string[]) => {
+      const c = el('input');
+      c.type = 'checkbox';
+      c.addEventListener('change', () => {
+        seleccion = marcarGrupo(ids, seleccion, c.checked);
+        refrescar();
       });
-      sincronizar();
-      const detalles = el('details', 'grupo-examen', el('summary', '', el('label', 'casilla', todos, ` ${r.nombre}`)), lista);
-      grupos.append(detalles);
+      grupos.push({ ids, casilla: c });
+      return c;
+    };
+    const refrescar = () => {
+      for (const [id, c] of casillasPais) c.checked = seleccion.has(id);
+      for (const g of grupos) {
+        const e = estadoGrupo(g.ids, seleccion);
+        g.casilla.checked = e === 'todos';
+        g.casilla.indeterminate = e === 'parcial';
+      }
+      actualizarContador();
+    };
+
+    const bloques = el('div', 'grupos-examen');
+    for (const continente of ['europa', 'asia'] as const) {
+      const regionesC = datos.regiones.filter((r) => r.continente === continente).sort((a, b) => a.orden - b.orden);
+      const idsContinente = [...new Set(regionesC.flatMap((r) => datos.paisesDe(r.id).map((p) => p.id)))];
+      const nombreC = continente === 'europa' ? 'Europa' : 'Asia';
+      const bloque = el(
+        'div',
+        'bloque-continente',
+        el('label', 'casilla casilla-continente', casillaGrupo(idsContinente), ` ${nombreC} entera (${idsContinente.length} países)`),
+      );
+      for (const r of regionesC) {
+        const paises = datos.paisesDe(r.id).filter((p) => p.region === r.id); // cada país en su región principal
+        if (!paises.length) continue;
+        const lista = el('div', 'casillas');
+        for (const p of paises) {
+          const c = el('input');
+          c.type = 'checkbox';
+          c.addEventListener('change', () => {
+            if (c.checked) seleccion.add(p.id);
+            else seleccion.delete(p.id);
+            refrescar();
+          });
+          casillasPais.set(p.id, c);
+          lista.append(el('label', 'casilla', c, ` ${p.nombre}`));
+        }
+        const detalles = el(
+          'details',
+          'grupo-examen',
+          el('summary', '', el('label', 'casilla', casillaGrupo(paises.map((p) => p.id)), ` ${r.nombre}`)),
+          lista,
+        );
+        bloque.append(detalles);
+      }
+      bloques.append(bloque);
     }
     fecha.addEventListener('change', actualizarContador);
-    actualizarContador();
+    refrescar();
 
     const guardar = boton('Guardar examen', 'boton-principal', () => {
       estado.ajustes.listaExamen = seleccion.size ? [...seleccion] : null;
@@ -274,11 +297,11 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       el(
         'p',
         'ayuda',
-        'Marca los países que entran en el examen y su fecha. En Repaso aparecerá "Preparar examen", que pregunta primero lo más flojo. Los fallos en modo examen no alteran la planificación normal.',
+        'Marca los países que entran en el examen (puedes marcar un continente o una región enteros) y su fecha. En Repaso aparecerá "Preparar examen", que pregunta primero lo más flojo. Los fallos en modo examen no alteran la planificación normal.',
       ),
       el('label', 'etiqueta-campo', 'Fecha del examen', fecha),
       contador,
-      grupos,
+      bloques,
       el('div', 'acciones', guardar, quitar),
       aviso,
     );

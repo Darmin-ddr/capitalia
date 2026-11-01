@@ -57,6 +57,8 @@ export interface EstadoProgreso {
   ultimaRegion: string | null;
   /** La guía se ha visto (para no abrirla sola cada vez). */
   guiaVista: boolean;
+  /** Se ha pasado la bienvenida del primer arranque ("¿quién eres?"). */
+  bienvenidaVista: boolean;
   ajustes: Ajustes;
 }
 
@@ -69,6 +71,7 @@ export function estadoVacio(): EstadoProgreso {
     regionesCelebradas: [],
     ultimaRegion: null,
     guiaVista: false,
+    bienvenidaVista: false,
     ajustes: {
       opcionalesActivados: [],
       listaExamen: null,
