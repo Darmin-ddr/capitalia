@@ -18,7 +18,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 
 ## Fases
 
-### [ ] F1. Lógica y datos (con tests)
+### [x] F1. Lógica y datos (con tests)
 - Variantes de nombre de país en los datos (`variantesPais`, `avisosPais`) y validación del nombre del país.
 - Escalones por país en el estado (`aprendizaje`), con la regla de subida y paso a "aprendido".
 - Migración del progreso v1: nivel FSRS 3 → aprendido; 2 → escalón Escribir; 1 → Colocar; sin empezar → nada.
@@ -44,4 +44,10 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - Pruebas en navegador completas y fusión con la rama publicada.
 
 ## Decisiones de implementación
-*(se anotan aquí al tomarlas)*
+- **E1. Subida de escalón:** dos aciertos en el modo del escalón (Colocar admite Al revés, que es su versión suelta). Un fallo reinicia el contador sin bajar; una errata ni suma ni resta (`progreso.ts`, `registrarEscalon`).
+- **E2. Región superada** (abre la siguiente): todos sus países en el escalón Escribir o más. Antes era "todos en repaso FSRS"; se acepta también eso para no bloquear a quien venga de la v1.
+- **E3. Conversión de la v1:** dominado → aprendido; en repaso → Escribir; aprendiendo → Colocar. Se hace sola al cargar el progreso.
+- **E4. Composición de Hoy:** 3 repasos de calentamiento; luego los nuevos repartidos entre el resto; cada nuevo sale dos veces, separado por 3 preguntas. Orden de los repasos: países priorizados (examen, fallados) y luego los más atrasados. Los nuevos salen primero de la región actual.
+- **E5. Nuevos autorregulados:** con menos de 10 respuestas recientes, la media (7-8); 90 % de aciertos o más, el máximo (10); 80 %, unos 8; 70 %, 6; menos, 5. Con más de 40 repasos pendientes, 5. Se descuentan los países empezados hoy, para que dos sesiones el mismo día no doblen los nuevos.
+- **E6. Tipo de pregunta de los aprendidos en Hoy:** al azar entre Mapa mudo, Escribir y Al revés; más Mapa mudo (50 %) cuando el país ya es estable.
+- **E7. Corrección de Mapa mudo:** una errata o un aviso (Holanda) valen el punto en la nota, pero el país se repasa (cuenta como "repasar" para la planificación y no sube de escalón).
