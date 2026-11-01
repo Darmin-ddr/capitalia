@@ -41,6 +41,8 @@ export interface Ajustes {
   trucosEditados: Record<string, string>;
   /** Hash del PIN del panel de adultos. */
   pinHash: string | null;
+  /** El adulto ha abierto todas las regiones (sin esperar al desbloqueo progresivo). */
+  todasDesbloqueadas: boolean;
 }
 
 export interface EstadoProgreso {
@@ -71,6 +73,7 @@ export function estadoVacio(): EstadoProgreso {
       trucosDesactivados: [],
       trucosEditados: {},
       pinHash: null,
+      todasDesbloqueadas: false,
     },
   };
 }

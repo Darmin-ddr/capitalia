@@ -71,7 +71,7 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 
 ## 6. Repetición espaciada
 
-- **Entre días:** FSRS mediante la librería `ts-fsrs`, parámetros por defecto. Una tarjeta por país (país a capital). El modo "al revés" puede compartir tarjeta o tener la suya; decidir en implementación y documentar.
+- **Entre días:** FSRS mediante la librería `ts-fsrs`, parámetros por defecto. Una tarjeta por país (país a capital). El modo "al revés" puede compartir tarjeta o tener la suya; **decidido: comparte la tarjeta del país** (ver `docs/informe-noche.md`, D2).
 - **Dentro de la sesión:** cola corta de reaprendizaje; lo fallado reaparece a los pocos minutos.
 - **Nota FSRS deducida, nunca preguntada:**
   - Fallo: Again.
@@ -85,7 +85,7 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 ## 7. Sesiones
 
 - **Sesión normal:** corta (objetivo orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar.
-- **Modo examen:** se elige fecha y regiones/lista. Repasa sobre todo lo flojo. No debe alterar la planificación FSRS normal salvo para registrar aciertos (decidir en implementación y documentar).
+- **Modo examen:** se elige fecha y regiones/lista. Repasa sobre todo lo flojo. No debe alterar la planificación FSRS normal salvo para registrar aciertos (**decidido:** los fallos en modo examen solo van al historial; los aciertos actualizan la tarjeta. El examen se prepara región a región; ver `docs/informe-noche.md`, D13 y D14).
 
 ## 8. Panel de adultos
 

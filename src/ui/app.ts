@@ -49,6 +49,7 @@ export function iniciarApp(): void {
   const regionesDe = (c: Continente) => regiones.filter((r) => r.continente === c).sort((a, b) => a.orden - b.orden);
   /** Desbloqueadas por progreso, más las que tienen países del examen (para poder prepararlo). */
   const desbloqueadas = (c: Continente) => {
+    if (estado.ajustes.todasDesbloqueadas) return new Set(regionesDe(c).map((r) => r.id));
     const abiertas = regionesDesbloqueadas(estado, regionesDe(c), paisesDeRegion);
     for (const id of regionesConExamen(estado.ajustes.listaExamen, activos)) if (regionDe(id)?.continente === c) abiertas.add(id);
     return abiertas;

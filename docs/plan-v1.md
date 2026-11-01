@@ -79,7 +79,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 - Rendimiento: recortar el mapa a Europa y Asia si reduce mucho el peso.
 - Repasar los textos de la interfaz (tono cercano y breve, español de España).
 
-### [ ] O6. Informe final
+### [x] O6. Informe final
 
 - `docs/informe-noche.md` completo: lo hecho, lo que requiere atención, las decisiones (opciones, elección, motivo, reversibilidad) y la **lista de pruebas manuales** (sobre todo iPad, iPhone y Safari).
 - Resumen en el chat con el enlace a la web y al informe.

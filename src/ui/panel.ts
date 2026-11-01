@@ -359,6 +359,15 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       return el('label', 'casilla', c, ` ${p.nombre} (${p.capital})`);
     });
 
+    const todas = el('input');
+    todas.type = 'checkbox';
+    todas.checked = estado.ajustes.todasDesbloqueadas;
+    todas.addEventListener('change', () => {
+      estado.ajustes.todasDesbloqueadas = todas.checked;
+      datos.guardar();
+      cambiosQueRecargan = true;
+    });
+
     const mensaje = el('p', 'mensaje-copia');
     mensaje.setAttribute('role', 'status');
     const pin1 = el('input', 'campo-texto campo-pin');
@@ -389,6 +398,9 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     });
 
     cuerpo.append(
+      el('h3', 'dialogo-subtitulo', 'Regiones'),
+      el('label', 'casilla', todas, ' Desbloquear todas las regiones'),
+      el('p', 'ayuda', 'Normalmente se abren de una en una según el progreso. Útil si el examen o el curso van por otro orden.'),
       el('h3', 'dialogo-subtitulo', 'Países opcionales'),
       el('p', 'ayuda', 'No están en los listados de clase. Desactivados por defecto.'),
       ...casillas,

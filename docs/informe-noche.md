@@ -2,12 +2,21 @@
 
 Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
+## Resumen
+
+**La v1.0 está lista para probar:** se han cumplido los objetivos O1 a O4 del plan y parte de O5.
+
+- **Web:** https://darmin-ddr.github.io/capitalia/ (se publica sola con cada cambio de la rama `claude/hito-1-plan-7opthj`).
+- **Qué hay:** los 94 países de tus listados en 13 regiones; pestaña **Repaso** con repetición espaciada (FSRS) que elige qué preguntar y en qué modo; **Practicar** con los cuatro modos a elegir; **Explorar** con "Inventa tu truco"; el mapa se colorea según lo que se domina; panel para adultos con PIN, examen, trucos y ajustes; instalable, funciona sin conexión y tiene copia de seguridad.
+- **Qué falta del SPEC:** zoom y desplazamiento del mapa; QR para la copia (descartado, ver D11); arrastrar en el modo Colocar (era opcional).
+- **Lo más importante que revisar:** los trucos (escritos por mí, sin revisar), la división en regiones (D8) y la lista de pruebas manuales del final, sobre todo en iPad.
+- **Para probar todas las regiones** sin tener que superarlas: Panel para adultos → Ajustes → "Desbloquear todas las regiones".
+- **Tests:** 75 tests automáticos de la lógica y los datos, y seis scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
+
 ## Ahora mismo
 
-- **Objetivo en curso:** O6 (informe final).
-- **Hecho de él:** el informe se ha ido rellenando por objetivos.
-- **Falta:** resumen inicial, revisión final del informe y lista de pruebas manuales completa.
-- **Siguiente paso:** redactar el resumen y la lista de pruebas.
+- **Objetivo en curso:** ninguno: plan terminado (O1-O4 hechos, O5 parcial, O6 hecho).
+- **Siguiente paso:** que el responsable pruebe en iPad y revise trucos y regiones; después, correcciones.
 
 ## Estado
 
@@ -18,7 +27,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 | O3. PWA y exportar/importar | Hecho |
 | O4. Panel de adultos y modo examen | Hecho |
 | O5. Pulido | Hecho (parcial) |
-| O6. Informe final | Pendiente |
+| O6. Informe final | Hecho |
 
 ## Lo hecho
 
@@ -52,7 +61,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Resumen:** barra de dominio por región (sin empezar, aprendiendo, en repaso, dominados), los países que más fallos han tenido en 30 días y un gráfico de actividad de 14 días.
 - **Examen:** fecha y casillas por región y país. Las regiones con países del examen se desbloquean y llevan 📝 en el selector.
 - **Trucos:** editar o desactivar el truco de cualquier país (por región). Si el alumno tiene truco propio, se indica.
-- **Ajustes:** países opcionales (Kosovo), cambiar PIN y reiniciar progreso (doble confirmación; conserva ajustes y trucos propios).
+- **Ajustes:** desbloquear todas las regiones (D16), países opcionales (Kosovo), cambiar PIN y reiniciar progreso (doble confirmación; conserva ajustes y trucos propios).
 - **Modo examen:** en Repaso aparece "Preparar examen" cuando hay examen: pregunta los países del examen de la región actual, de más flojo a más sólido, cada uno en el modo de su nivel. Los fallos no tocan la planificación FSRS; los aciertos sí.
 - Probado en Chromium (iPad y móvil) el flujo completo: crear PIN, resumen, examen, editar truco, activar Kosovo, preparar examen con un fallo (tarjeta sin cambios), PIN incorrecto. 75 tests.
 
@@ -90,6 +99,20 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 ### D4. Sesión normal (O1)
 - **Elección:** hasta 20 países: primero los vencidos de cualquier región desbloqueada, luego hasta 5 nuevos de la región actual, y si sobra sitio, repaso adelantado de la región actual. Dentro de la sesión, cada país sale hasta acertarse (la cola del hito 2).
 - **Reversibilidad:** total (`src/logic/sesionDiaria.ts`).
+
+### D5. Almacenamiento (O1)
+- **Elección:** `localStorage` con una sola clave genérica (`progreso-capitales`), datos con número de versión. Si no se puede leer o escribir, la app funciona en memoria y avisa. Si lo guardado no se entiende, se aparta una copia (`progreso-capitales-ilegible`) en vez de borrarlo.
+- **Alternativa descartada:** IndexedDB (más robusta para grandes volúmenes, pero asíncrona y más compleja; el progreso ocupa pocos KB).
+- **Reversibilidad:** media: cambiar de almacenamiento exigiría migrar los datos guardados.
+
+### D6. Pestañas (O1)
+- **Elección:** tres pestañas: **Repaso** (sesión automática; se abre por defecto), **Practicar** (modo a elegir) y **Explorar**.
+- **Motivo:** el uso diario debería ser "abrir y repasar" sin decidir nada; elegir modo queda para quien quiera.
+- **Reversibilidad:** total.
+
+### D7. Trucos propios (O1)
+- **Elección:** "Inventa tu truco" está en Explorar (ficha del país), con un máximo de 160 caracteres. El truco propio sustituye al predefinido en el feedback de fallo de todos los modos.
+- **Pendiente:** el SPEC no dice si también debe ofrecerse en el momento del fallo; no lo he añadido para no cargar esa pantalla.
 
 ### D8. Regiones (O2)
 - **Europa:** Europa del sur (8, con los microestados), Europa occidental (8), Islas Británicas y nórdicos (7), Europa central y bálticos (7), Balcanes (9), Europa del este (7, con Rusia, Turquía y Chipre).
@@ -131,26 +154,40 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Elección:** "¿Lo has olvidado?" borra el PIN y vuelve a los ajustes iniciales (sin examen, trucos sin editar), conservando el progreso. Como todo es local, no hay otra forma razonable de recuperarlo; un alumno podría usarlo, pero solo perdería la lista de examen.
 - **Reversibilidad:** total.
 
-### D6. Pestañas (O1)
-- **Elección:** tres pestañas: **Repaso** (sesión automática; se abre por defecto), **Practicar** (modo a elegir) y **Explorar**.
-- **Motivo:** el uso diario debería ser "abrir y repasar" sin decidir nada; elegir modo queda para quien quiera.
+### D16. Desbloquear todas las regiones desde el panel (O4, añadido al final)
+- **Elección:** casilla en Panel → Ajustes que abre todas las regiones sin esperar al progreso.
+- **Motivo:** el desbloqueo progresivo es del SPEC, pero si el curso o el examen van en otro orden (o para probar la app), hace falta poder saltárselo.
 - **Reversibilidad:** total.
-
-### D7. Trucos propios (O1)
-- **Elección:** "Inventa tu truco" está en Explorar (ficha del país), con un máximo de 160 caracteres. El truco propio sustituye al predefinido en el feedback de fallo de todos los modos.
-- **Pendiente:** el SPEC no dice si también debe ofrecerse en el momento del fallo; no lo he añadido para no cargar esa pantalla.
-
-### D5. Almacenamiento (O1)
-- **Elección:** `localStorage` con una sola clave genérica (`progreso-capitales`), datos con número de versión. Si no se puede leer o escribir, la app funciona en memoria y avisa. Si lo guardado no se entiende, se aparta una copia (`progreso-capitales-ilegible`) en vez de borrarlo.
-- **Alternativa descartada:** IndexedDB (más robusta para grandes volúmenes, pero asíncrona y más compleja; el progreso ocupa pocos KB).
-- **Reversibilidad:** media: cambiar de almacenamiento exigiría migrar los datos guardados.
 
 ## Pruebas manuales pendientes
 
-*(lo que no se ha podido comprobar desde aquí: iPad, iPhone, Safari, instalación, teclado en pantalla...)*
+Lo que no he podido comprobar desde aquí (solo tengo Chromium simulando tamaños de pantalla y toques). Por orden de importancia:
 
-- **Microestados con el dedo:** en Europa del sur, tocar Vaticano, San Marino, Mónaco, Andorra y Malta (círculos). En Oriente Próximo, comprobar que se puede tocar Israel sin dar al círculo de Palestina, que está muy cerca.
-- **Instalar en pantalla de inicio** en iPad y iPhone (Safari: Compartir → Añadir a pantalla de inicio) y en Android (Chrome: menú → Instalar aplicación). Abrirla en modo avión después de haberla usado con conexión.
-- **Copia de seguridad en iPad/iPhone:** "Descargar copia" (dónde se guarda el fichero en Safari), "Copiar código" y pegarlo en otro dispositivo, e "Importar fichero" desde Archivos.
-- **Panel para adultos en iPad/iPhone:** teclado numérico al escribir el PIN, selector de fecha del examen, casillas de países, y que los avisos de confirmación (reiniciar, importar) aparezcan bien en Safari.
-- **Selector de región:** abrirlo y cerrarlo en iPad y iPhone (usa `<dialog>`, que Safari soporta desde la versión 15.4).
+### En iPad (Safari)
+1. **Abrir la web** y comprobar que el mapa se ve y responde. En horizontal, mapa a la izquierda y panel a la derecha; en vertical, uno encima del otro.
+2. **Tocar países con el dedo** en Explorar: Montenegro, Macedonia del Norte, Croacia (forma rara), Eslovenia. En **Europa del sur**: los círculos de Vaticano, San Marino, Mónaco, Andorra y Malta. En **Cáucaso y Oriente Próximo**: Israel, Líbano y Palestina (círculos muy juntos).
+3. **Repaso:** una sesión completa. Los aciertos pasan solos; en los fallos sale el truco y el botón Siguiente. Comprobar que lo fallado vuelve a salir.
+4. **Practicar → Colocar:** tocar capital y después país, varias tandas.
+5. **Practicar → Escribir:** que el teclado no tape el campo ni el mapa entero; probar una errata (p. ej. "Liubiana") y una respuesta con tildes y sin ellas.
+6. **Practicar → Al revés:** tocar el país de la capital que se muestra.
+7. **Selector de región** (botón con el nombre de la región): abrir, cambiar de región, cerrar tocando fuera.
+8. **Panel para adultos** (botón ⋯): crear PIN (¿sale teclado numérico?), ver Resumen, poner un examen con fecha (selector de fecha de Safari), editar un truco, activar "Desbloquear todas las regiones".
+9. **Preparar examen** en Repaso, en una región con 📝.
+10. **Modo oscuro:** cambiar el iPad a oscuro y repasar las pantallas.
+
+### Instalación y datos (iPad o iPhone)
+11. **Añadir a pantalla de inicio** (Compartir → Añadir a pantalla de inicio). Abrir desde el icono: que se vea sin barras del navegador y con el icono de la estrella.
+12. **Sin conexión:** tras usarla con conexión, activar el modo avión y abrirla desde el icono.
+13. **Progreso guardado:** cerrar la app del todo, volver a abrir: el mapa sigue coloreado y la región es la última usada.
+14. **Copia de seguridad:** ⋯ → Descargar copia (¿dónde guarda Safari el fichero?); Copiar código y pegarlo en otro dispositivo (⋯ → pegar → Importar código); Importar fichero desde la app Archivos.
+15. **Actualizaciones:** cuando publique cambios, la app instalada debería cogerlos al cerrarla y volverla a abrir (a veces hace falta abrirla dos veces).
+
+### En iPhone y Android
+16. Lo mismo que en iPad en versión corta: mapa arriba y panel abajo, selector de región sobre la esquina del mapa, Escribir con el teclado en pantalla, y el panel de adultos (en Android, que las casillas y el selector de fecha funcionen).
+
+### En PC (Chrome)
+17. **Teclado:** teclas 1 a 4 en Elegir, Enter para Siguiente, Tab para recorrer los países del mapa y Enter para elegirlos.
+
+### Contenido
+18. **Leer todos los trucos** (Panel → Trucos, región por región) y desactivar o reescribir los que no convenzan.
+19. **Comprobar las regiones** con el libro o el profesor.
