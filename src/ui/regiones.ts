@@ -8,6 +8,8 @@ export interface DatosSelector {
   desbloqueadas(c: Continente): ReadonlySet<string>;
   nivel(paisId: string): Nivel;
   actual(): Region;
+  /** Países del examen en cada región (0 si ninguno). */
+  conExamen(regionId: string): number;
   elegir(regionId: string): void;
 }
 
@@ -52,10 +54,11 @@ export function prepararSelectorRegiones(disparador: HTMLButtonElement, datos: D
         const detalle = abierta
           ? `${empezados} de ${paises.length} en repaso · ${dominados} dominados`
           : `Se abre al tener en repaso todos los países de ${ordenadas[i - 1]?.nombre ?? 'la anterior'}`;
+        const examen = datos.conExamen(r.id);
         b.append(
           el('span', 'region-muestra'),
           el('span', 'region-textos', el('span', 'region-titulo', r.nombre, actual ? ' (ahora)' : ''), el('span', 'region-detalle', detalle)),
-          el('span', 'region-estado', abierta ? '' : '🔒'),
+          el('span', 'region-estado', !abierta ? '🔒' : examen ? `📝 ${examen}` : ''),
         );
         if (!abierta) b.setAttribute('aria-label', `${r.nombre}, bloqueada. ${detalle}`);
         b.addEventListener('click', () => {

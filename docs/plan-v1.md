@@ -64,7 +64,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 - Exportar e importar el progreso como fichero y como código de texto; QR si es sencillo.
 - Criterios: el build genera el service worker; en Chromium, la app recarga sin red; exportar e importar conserva el progreso (con test de la lógica).
 
-### [ ] O4. Panel de adultos y modo examen (hito 5)
+### [x] O4. Panel de adultos y modo examen (hito 5)
 
 - Acceso con PIN (guardado como hash; es una cerradura de niños, no seguridad).
 - Muestra: dominio por región, países que más se atascan, actividad reciente.

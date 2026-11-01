@@ -19,6 +19,8 @@ import { iniciarPracticar } from './practicar';
 import { iniciarRepaso } from './repaso';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
+import { crearPanelAdultos, textoDias } from './panel';
+import { diasHastaExamen, regionesConExamen, seleccionarExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
 
 type Pestana = 'explorar' | 'repaso' | 'practicar';
@@ -45,7 +47,13 @@ export function iniciarApp(): void {
   const regionDe = (id: string) => regiones.find((r) => r.id === id);
   const paisesDeRegion = (regionId: string) => filtrarRegion(activos, regionId);
   const regionesDe = (c: Continente) => regiones.filter((r) => r.continente === c).sort((a, b) => a.orden - b.orden);
-  const desbloqueadas = (c: Continente) => regionesDesbloqueadas(estado, regionesDe(c), paisesDeRegion);
+  /** Desbloqueadas por progreso, más las que tienen países del examen (para poder prepararlo). */
+  const desbloqueadas = (c: Continente) => {
+    const abiertas = regionesDesbloqueadas(estado, regionesDe(c), paisesDeRegion);
+    for (const id of regionesConExamen(estado.ajustes.listaExamen, activos)) if (regionDe(id)?.continente === c) abiertas.add(id);
+    return abiertas;
+  };
+  const enExamen = (p: Pais) => estado.ajustes.listaExamen?.includes(p.id) ?? false;
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
   const paisesContinente = () => activos.filter((p) => p.continentes.includes(region.continente));
 
@@ -85,9 +93,9 @@ export function iniciarApp(): void {
   };
 
   const motor: Motor = {
-    registrar(paisId, modoId, resultado, tiempoMs) {
+    registrar(paisId, modoId, resultado, tiempoMs, opciones) {
       const antes = desbloqueadas(region.continente);
-      registrarRespuesta(estado, paisId, modoId, resultado, tiempoMs, new Date());
+      registrarRespuesta(estado, paisId, modoId, resultado, tiempoMs, new Date(), opciones);
       guardar();
       actualizarNiveles();
       comprobarHitos(antes);
@@ -154,17 +162,33 @@ export function iniciarApp(): void {
     };
     if (nueva === 'explorar') modo = iniciarExplorar(panel, mapa, paisesRegion, trucos);
     else if (nueva === 'practicar') modo = iniciarPracticar(panel, mapa, paisesRegion, activos, Math.random, ctx.alExplorar, motor);
-    else
-      modo = iniciarRepaso(panel, ctx, () => {
-        const abiertas = desbloqueadas(region.continente);
-        return crearSesion({
-          estado,
-          region: paisesRegion,
-          desbloqueados: activos.filter((p) => abiertas.has(p.region)),
-          ahora: new Date(),
-          rng: Math.random,
-        });
-      });
+    else {
+      const lista = estado.ajustes.listaExamen;
+      const examenRegion = paisesRegion.filter(enExamen);
+      const dias = diasHastaExamen(estado.ajustes.fechaExamen, new Date());
+      modo = iniciarRepaso(
+        panel,
+        ctx,
+        () => {
+          const abiertas = desbloqueadas(region.continente);
+          return crearSesion({
+            estado,
+            region: paisesRegion,
+            desbloqueados: activos.filter((p) => abiertas.has(p.region)),
+            ahora: new Date(),
+            rng: Math.random,
+          });
+        },
+        lista?.length
+          ? {
+              cuando: dias === null ? null : textoDias(dias),
+              ids: () => seleccionarExamen(estado, examenRegion),
+              total: lista.length,
+              enRegion: examenRegion.length,
+            }
+          : null,
+      );
+    }
   }
 
   /** Cambia la región en estudio (la recuerda para la próxima vez). */
@@ -200,8 +224,18 @@ export function iniciarApp(): void {
     nivel: (id) => nivelDominio(estado.tarjetas[id]),
     actual: () => region,
     elegir: irARegion,
+    conExamen: (id) => paisesDeRegion(id).filter(enExamen).length,
+  });
+  const abrirPanel = crearPanelAdultos({
+    estado: () => estado,
+    guardar,
+    regiones,
+    paisesDe: paisesDeRegion,
+    todos,
+    recargar: () => window.location.reload(),
   });
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
+    abrirPanelAdultos: abrirPanel,
     estado: () => estado,
     reemplazar(nuevo) {
       estado = nuevo;

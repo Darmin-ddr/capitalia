@@ -994,3 +994,184 @@ button {
 .acciones-cerrar {
   margin-top: 18px;
 }
+
+/* ---------- Panel de adultos ---------- */
+
+.dialogo-panel {
+  width: min(96vw, 760px);
+}
+
+.selector-panel {
+  margin-top: 8px;
+}
+
+.campo-pin {
+  max-width: 260px;
+  letter-spacing: 0.3em;
+}
+
+.tabla-dominio {
+  display: grid;
+  gap: 6px;
+}
+
+.fila-dominio {
+  display: grid;
+  grid-template-columns: minmax(110px, 38%) 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.fila-cifra {
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-suave);
+}
+
+.barra-dominio {
+  display: flex;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--pais);
+}
+
+.tramo,
+.muestra {
+  display: inline-block;
+}
+
+.muestra {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+  --color-pais: var(--color-region);
+}
+
+.nivel-tramo-0 {
+  background: var(--pais);
+}
+
+.nivel-tramo-1 {
+  background: color-mix(in srgb, var(--color-pais) 35%, var(--pais));
+}
+
+.nivel-tramo-2 {
+  background: color-mix(in srgb, var(--color-pais) 65%, var(--pais));
+}
+
+.nivel-tramo-3 {
+  background: var(--color-pais);
+}
+
+.leyenda {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  white-space: pre-wrap;
+}
+
+.lista-simple {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.grafico-actividad {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 4px;
+  height: 90px;
+  align-items: end;
+}
+
+.columna-actividad {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+}
+
+.barra-actividad {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--acento);
+}
+
+.dia-actividad {
+  font-size: 0.7rem;
+  color: var(--texto-suave);
+}
+
+.etiqueta-campo {
+  display: grid;
+  gap: 4px;
+  font-weight: 700;
+  max-width: 260px;
+}
+
+.grupos-examen {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 12px;
+}
+
+.grupo-examen {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 4px 12px;
+}
+
+.grupo-examen summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.casillas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0 12px;
+  padding-bottom: 8px;
+}
+
+.casilla {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.casilla input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--acento);
+}
+
+.lista-trucos {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.fila-truco-titulo {
+  margin: 0 0 4px;
+}
+
+.boton-peligro {
+  border-color: var(--fallo);
+  color: var(--fallo);
+}
+
+.info-examen {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.selector-repaso {
+  grid-template-columns: 1fr 1fr;
+}

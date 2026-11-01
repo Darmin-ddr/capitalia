@@ -18,6 +18,8 @@ export interface OpcionesRonda {
   textosResumen?: { titulo: string; otra: string };
   /** Si es true, no se baraja el orden inicial (el repaso ya viene ordenado por prioridad). */
   respetarOrden?: boolean;
+  /** Ronda de examen: los fallos no alteran la planificación FSRS (SPEC 7). */
+  examen?: boolean;
 }
 
 /**
@@ -75,7 +77,7 @@ export function iniciarRonda(ctx: Contexto, op: OpcionesRonda): ModoPractica {
         if (respondida) return { recuperado: false };
         respondida = true;
         const r = cola.responder(resultado);
-        motor.registrar(id, modo, resultado, performance.now() - inicio);
+        motor.registrar(id, modo, resultado, performance.now() - inicio, { examen: op.examen });
         if (resultado === 'acierto') {
           temporizador = window.setTimeout(siguiente, PAUSA_TRAS_ACIERTO_MS + (r.recuperado ? 500 : 0));
         }

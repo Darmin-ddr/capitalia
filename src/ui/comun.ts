@@ -27,7 +27,7 @@ export interface Contexto {
 /** Servicios de la app que usan los modos: guardar progreso y consultar trucos y dominio. */
 export interface Motor {
   /** Registra una respuesta en el progreso (FSRS + historial) y lo guarda. */
-  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number): void;
+  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: { examen?: boolean }): void;
   /** Modo que le toca a un país según su dominio. */
   modoPara(paisId: string): ModoId;
   /** Truco a mostrar (el del alumno si lo inventó; null si no hay). */
