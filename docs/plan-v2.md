@@ -3,7 +3,7 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Se hizo en la rama `rediseno-hoy-aprender-examen` y se fusionó con la rama publicada el 2026-11-01. La rama publicada se llama ahora `main` (antes `claude/hito-1-plan-7opthj`).
 
 ## Ahora mismo
-- **Estado:** v2 terminada (F1 a F6), aprobada por el responsable, fusionada y **publicada** (versión 2.0.0) el 2026-11-01. Rama publicada: `main` (Pages publica con cada push a `main`).
+- **Estado:** v2 terminada (F1 a F6), aprobada por el responsable, fusionada y **publicada** el 2026-11-01 (salió como 2.0.0; numeración correcta: 1.1.0). Rama publicada: `main` (Pages publica con cada push a `main`). En curso, en la rama `hoy-solo-un-continente`: "Qué estudia Hoy" (versión 1.2.0), sin fusionar.
 - **Siguiente paso:** que el alumno la use y recoger lo que se vea raro.
 - **Pendientes que no bloquean:** pruebas con el alumno en iPad y iPhone reales; Explorar en "Europa entera" no tiene prueba automática propia.
 
@@ -88,7 +88,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Se hizo en la rama `redis
 - **E17. Examen sin corrección en el momento:** como en clase, se responde todo y al final se ve la nota y la lista de fallos (con lo que se escribió). En blanco vale como "no lo sé". El mapa mudo no lleva colores de región ni de progreso, tampoco mientras se responde; el selector de región se oculta durante el examen.
 - **E18. Priorizar en Hoy es un botón** al final del examen ("Repasarlos antes en Hoy"), como pide la SPEC 4.4 ("opción de priorizarlos"). El examen cuenta para FSRS pero no mueve escalones.
 - **E19. Pestañas en móvil:** Hoy, Aprender, Examen y Explorar más ⋯ caben en una fila desde 360 px (texto algo más pequeño por debajo de 380 px), con objetivos de 44 px.
-- **E20. Versión 2.0.0** (se ve en Acerca de): cambia la estructura de la app. Se puede dejar en 1.x si se prefiere.
+- **E20. Versión:** se publicó como 2.0.0, pero el responsable prefiere 1.1.0 para este rediseño (la app es la misma y el progreso sigue valiendo) y 1.2.0 para "Qué estudia Hoy". Desde la 1.2.0, Acerca de dice 1.2.0.
 - **E21. Tema guardado aparte del progreso** (`localStorage`, clave `capitalia-tema`): es una preferencia del dispositivo, no del alumno; no viaja con la copia de seguridad.
 - **E22. Se retiran `prueba-modos.cjs` y `capturas-oscuro.cjs`** (probaban Practicar); los sustituyen `prueba-aprender`, `prueba-hoy` y `prueba-tema`.
 - **E23. Examen: acercar el mapa a los países pequeños.** Si el país de la estrella mide menos de 70 px en el mapa del continente, el mapa se acerca (hasta 3x) centrado en la capital; con uno grande, vuelve a la vista entera. Siempre se dibuja el continente entero con todas sus estrellas, también con la lista del panel (antes solo se dibujaban los países de la lista y no había referencias).
@@ -105,4 +105,6 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Se hizo en la rama `redis
 - **E34. Tarea programada `bf6b8f47`** ("Sigue con docs/plan-v1.md…", cada hora): era una tarea solo de esta sesión de Claude Code, heredada de la sesión en la nube; por eso no aparecía en ningún sitio. Cancelada (el plan v1 estaba terminado).
 - **E35. Resumen del panel por escalones:** "Aprendidos por región" con la misma leyenda que el mapa (Sin empezar, Elegir o Colocar, Escribir o Mapa mudo, Aprendidos); antes contaba el dominio FSRS y no cuadraba con la portada. La leyenda usa un color fijo (el de la región del mapa podía ser casi gris y no se leía).
 - **E36. "¿Qué significan estos datos?"** en el Resumen del panel (pedido por el responsable): desplegable cerrado por defecto que explica los escalones y la barra de aprendidos, los que más se atascan (fallos de 30 días), la actividad (14 días, sin castigar días sin practicar) y cómo avanza (Hoy, nuevos de 5 a 10, Aprender, Examen).
+- **E37. "Qué estudia Hoy"** (versión 1.2.0, pedido por el responsable, por si los exámenes de Europa y Asia son por separado): en la portada, Todo / Solo Europa / Solo Asia. No es una preferencia: lo que queda fuera se **anula** en Hoy (ni repasos ni nuevos), por eso pide confirmar con el efecto escrito y, mientras dura, hay un aviso fijo con "Volver a Todo" (un toque). Lo puede cambiar el alumno; el panel de adultos muestra cuál está activo. No se pierde nada: al volver, los repasos atrasados salen primero. El Examen de prueba propone el continente activo.
+- **E38. Rusia y Turquía con un solo continente:** con "Solo Asia", el orden y el mapa usan sus regiones asiáticas (Asia central y Cáucaso y Oriente Próximo), así que salen en su sitio de Asia y no los primeros (su región principal es europea).
 

@@ -26,7 +26,7 @@ import { crearBienvenida } from './bienvenida';
 import { crearPanelAdultos } from './panel';
 import { diasHastaExamen, regionesConExamen } from '../logic/adultos';
 import { nivelMapa } from '../logic/progreso';
-import { continenteQueToca, continentesCurso, ordenCurso, resumenPortada } from '../logic/portada';
+import { continenteQueToca, continentesCurso, ordenCurso, paisesDeHoy, resumenPortada } from '../logic/portada';
 
 type Pestana = 'hoy' | 'aprender' | 'examen' | 'explorar';
 
@@ -97,11 +97,23 @@ export function iniciarApp(): void {
    * continentes que se añadan en el futuro. Los nuevos salen por orden del curso, y
    * empezar un país abre su región (`regionesDesbloqueadas`).
    */
-  const disponibles = () => activos;
+  const disponibles = () => paisesDeHoy(activos, estado.ajustes.focoHoy);
   /** Todas las regiones abiertas, de todos los continentes. */
   const todasAbiertas = () => new Set(continentesCurso(regiones).flatMap((c) => [...desbloqueadas(c)]));
   /** Orden en que Hoy saca países nuevos: el del curso (Europa y luego Asia, cada una por regiones). */
-  const ordenRegiones = () => ordenCurso(regiones).map((r) => r.id);
+  const ordenRegiones = () => {
+    const foco = estado.ajustes.focoHoy;
+    // Con un solo continente, solo sus regiones: Rusia y Turquía (de región principal europea) van al final, no primero.
+    return ordenCurso(regiones)
+      .filter((r) => !foco || r.continente === foco)
+      .map((r) => r.id);
+  };
+  /** Región en cuyo mapa se pregunta un país en Hoy: la principal o, con un solo continente, la suya de ese continente. */
+  const regionEnHoy = (pais: Pais) => {
+    const foco = estado.ajustes.focoHoy;
+    const ids = [pais.region, ...(pais.regionesExtra ?? [])];
+    return (foco && ids.map(regionDe).find((r) => r?.continente === foco)) || regionDe(pais.region);
+  };
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
   const paisesContinente = () => activos.filter((p) => p.continentes.includes(region.continente));
 
@@ -211,7 +223,7 @@ export function iniciarApp(): void {
     botonRegion.hidden = nueva === 'hoy' || nueva === 'examen';
     if (nueva === 'hoy') {
       // Portada: el continente que toca, coloreado según lo aprendido.
-      region = regionContinente(continenteQueToca(estado, activos, regiones));
+      region = regionContinente(estado.ajustes.focoHoy ?? continenteQueToca(estado, activos, regiones));
       montarMapa();
     } else if (nueva !== 'examen' && (mapaDeExamen || region.id !== regionElegida.id)) {
       // Aprender y Explorar vuelven a la región elegida, aunque Hoy haya movido el mapa.
@@ -241,6 +253,7 @@ export function iniciarApp(): void {
       candidatos: activos,
       rng: Math.random,
       listaExamen: () => estado.ajustes.listaExamen,
+      ambitoInicial: () => estado.ajustes.focoHoy,
       mapaContinente(continente: Continente, paises: readonly Pais[]) {
         // Mapa mudo del continente: sin colores de región ni de progreso (SPEC 4.4).
         const cambio = mapaDeExamen;
@@ -293,13 +306,20 @@ export function iniciarApp(): void {
         region = regionContinente(c);
         montarMapa();
       },
+      foco: () => estado.ajustes.focoHoy,
+      ponerFoco(c: Continente | null) {
+        estado.ajustes.focoHoy = c;
+        guardar();
+        cambiarPestana('hoy');
+      },
       modoPara: (id: string) => modoHoy(estado, id, Math.random),
       mapaPara(pais: Pais) {
         // En Hoy las preguntas van siempre en el mapa de su región (no en el del continente entero de la portada).
         const enEsta = !esContinente(region) && paisesDeRegion(region.id).some((p) => p.id === pais.id);
         let transicionMs = 0;
-        if (!enEsta && regionDe(pais.region)) {
-          region = regionDe(pais.region)!;
+        const destino = regionEnHoy(pais);
+        if (!enEsta && destino) {
+          region = destino;
           montarMapa();
           transicionMs = mostrarRotuloRegion(region.nombre);
         }

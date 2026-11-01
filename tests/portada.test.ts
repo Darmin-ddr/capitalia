@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { continenteQueToca, ordenCurso, resumenPortada } from '../src/logic/portada';
+import { continenteQueToca, ordenCurso, paisesDeHoy, resumenPortada } from '../src/logic/portada';
 import { estadoVacio, nivelMapa, registrarEscalon } from '../src/logic/progreso';
 import type { Pais, Region } from '../src/logic/types';
 
@@ -59,5 +59,14 @@ describe('portada de Hoy', () => {
     expect(nivelMapa(e, 'A')).toBe(2);
     e.aprendizaje.A.aprendido = true;
     expect(nivelMapa(e, 'A')).toBe(3);
+  });
+});
+
+describe('qué estudia Hoy', () => {
+  it('todo, o solo un continente (los de los dos continentes entran siempre)', () => {
+    const ps = [pais('A'), pais('C', ['asia']), pais('R', ['europa', 'asia'])];
+    expect(paisesDeHoy(ps, null).map((p) => p.id)).toEqual(['A', 'C', 'R']);
+    expect(paisesDeHoy(ps, 'asia').map((p) => p.id)).toEqual(['C', 'R']);
+    expect(paisesDeHoy(ps, 'europa').map((p) => p.id)).toEqual(['A', 'R']);
   });
 });

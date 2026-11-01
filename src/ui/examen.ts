@@ -14,6 +14,8 @@ export interface ServiciosExamen {
   rng: Rng;
   /** Lista de examen del panel (null si no hay). */
   listaExamen: () => readonly string[] | null;
+  /** Continente al que está limitado Hoy (se propone por defecto), o null. */
+  ambitoInicial: () => Continente | null;
   /** Monta el mapa mudo de un continente con estos países; devuelve el mapa y cuánto dura el rótulo (0 si no cambia). */
   mapaContinente: (continente: Continente, paises: readonly Pais[]) => { mapa: Mapa; transicionMs: number };
   /** Añade países a los priorizados de Hoy. */
@@ -55,7 +57,7 @@ let ultimaCantidad: Cantidad = 20;
 export function iniciarExamen(panel: HTMLElement, s: ServiciosExamen): Modo {
   const contenedor = el('div', 'contenido-modo');
   panel.replaceChildren(contenedor);
-  let ambito: AmbitoExamen = ultimoAmbito === 'lista' && !s.listaExamen()?.length ? 'europa' : ultimoAmbito;
+  let ambito: AmbitoExamen = s.ambitoInicial() ?? (ultimoAmbito === 'lista' && !s.listaExamen()?.length ? 'europa' : ultimoAmbito);
   let cantidad: Cantidad = ultimaCantidad;
   let mapa: Mapa | null = null;
 

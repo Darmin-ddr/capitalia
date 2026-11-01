@@ -42,6 +42,9 @@ export interface ServiciosHoy {
   nombreContinente: (c: Continente) => string;
   continenteMapa: () => Continente;
   verContinente: (c: Continente) => void;
+  /** "Qué estudia Hoy": continente al que se limita (el resto, en pausa) o null para todo. */
+  foco: () => Continente | null;
+  ponerFoco: (c: Continente | null) => void;
   irAAprender: () => void;
   alExplorar: () => void;
 }
@@ -84,9 +87,65 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     return s.candidatos.find((p) => p.id === id)?.nombre ?? id;
   }
 
+  /** Los continentes que quedan fuera cuando Hoy se limita a uno ("Asia", "Asia y América"...). */
+  function enPausa(foco: Continente): string {
+    return s.continentes
+      .filter((c) => c !== foco)
+      .map(s.nombreContinente)
+      .join(' y ');
+  }
+
+  /** Aviso fijo mientras hay continentes en pausa: no es una preferencia, es que no salen. */
+  function avisoPausa(): HTMLElement | null {
+    const foco = s.foco();
+    if (!foco) return null;
+    const aviso = el(
+      'div',
+      'aviso-pausa',
+      el('p', '', el('strong', '', `Solo ${s.nombreContinente(foco)}.`), ` ${enPausa(foco)}: en pausa. Hoy no te pregunta sus países, ni repasos ni nuevos, hasta que vuelvas a «Todo». No se pierde nada.`),
+      boton('Volver a Todo', 'boton-secundario', () => s.ponerFoco(null)),
+    );
+    aviso.setAttribute('role', 'status');
+    return aviso;
+  }
+
+  /** "Qué estudia Hoy": Todo o un solo continente; limitarlo pide confirmar, con el efecto escrito. */
+  function bloqueFoco(): HTMLElement {
+    const foco = s.foco();
+    const confirmacion = el('div', 'confirmar-foco');
+    const opciones: { valor: Continente | null; texto: string }[] = [
+      { valor: null, texto: 'Todo' },
+      ...s.continentes.map((c) => ({ valor: c, texto: `Solo ${s.nombreContinente(c)}` })),
+    ];
+    const selector = el('div', 'selector-practica selector-foco');
+    selector.setAttribute('role', 'group');
+    selector.setAttribute('aria-label', 'Qué estudia Hoy');
+    for (const o of opciones) {
+      const b = boton(o.texto, 'selector-opcion', () => {
+        if (o.valor === foco) return;
+        if (o.valor === null) {
+          s.ponerFoco(null);
+          return;
+        }
+        const c = o.valor;
+        const si = boton(`Sí, solo ${s.nombreContinente(c)}`, 'boton-principal', () => s.ponerFoco(c));
+        rellenar(
+          confirmacion,
+          el('p', '', el('strong', '', `${enPausa(c)} quedará en pausa.`), ` Hoy no te preguntará sus países, ni repasos ni nuevos, hasta que vuelvas a «Todo». No se pierde nada: al volver, retomas donde lo dejaste.`),
+          el('div', 'acciones', si, boton('Cancelar', 'boton-secundario', () => confirmacion.replaceChildren())),
+        );
+        si.focus({ preventScroll: true });
+      });
+      b.setAttribute('aria-pressed', String(o.valor === foco));
+      selector.append(b);
+    }
+    return el('div', 'campo-etiquetado bloque-foco', el('span', 'etiqueta-campo', 'Qué estudia Hoy'), selector, confirmacion);
+  }
+
   /** Portada: cifras de lo aprendido (logros, sin rachas) y el continente que se ve en el mapa. */
   function bloqueProgreso(): HTMLElement {
     const r = s.resumen();
+    const foco = s.foco();
     const barras = el('div', 'barras-continente');
     for (const c of r.porContinente) {
       const porcentaje = c.total ? Math.round((c.aprendidos / c.total) * 100) : 0;
@@ -96,7 +155,13 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       barra.setAttribute('role', 'img');
       barra.setAttribute('aria-label', `${s.nombreContinente(c.continente)}: ${c.aprendidos} de ${c.total} aprendidos`);
       barras.append(
-        el('div', 'fila-continente', el('span', 'fila-nombre', s.nombreContinente(c.continente)), barra, el('span', 'fila-cifra', `${c.aprendidos}/${c.total}`)),
+        el(
+          'div',
+          `fila-continente${foco && foco !== c.continente ? ' pausada' : ''}`,
+          el('span', 'fila-nombre', s.nombreContinente(c.continente), foco && foco !== c.continente ? el('span', 'etiqueta-pausa', 'en pausa') : null),
+          barra,
+          el('span', 'fila-cifra', `${c.aprendidos}/${c.total}`),
+        ),
       );
     }
     const dias = s.diasExamen();
@@ -123,6 +188,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
         ? el('p', 'ayuda', `Examen${dias !== null ? ` (${textoDiasExamen(dias)})` : ''}: ${r.examen.aprendidos} de ${r.examen.total} países aprendidos.`)
         : null,
       el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Ver en el mapa'), selector),
+      bloqueFoco(),
     );
   }
 
@@ -147,6 +213,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     rellenar(
       contenedor,
       el('h2', 'titulo-panel', 'Hoy'),
+      avisoPausa(),
       el('p', 'resumen', `Hoy toca: ${items.length} preguntas, unos ${minutos} minutos.`),
       el('ul', 'hoy-cuentas', ...partes),
       cuenta.get('nuevo')?.size ? el('p', 'ayuda', 'Los países nuevos salen dos veces, para fijarlos.') : null,
@@ -164,6 +231,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     rellenar(
       contenedor,
       el('h2', 'titulo-panel', 'Hoy'),
+      avisoPausa(),
       el('p', 'resumen', 'Lo de hoy ya está hecho.'),
       el(
         'p',

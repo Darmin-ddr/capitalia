@@ -2,7 +2,7 @@ import { createEmptyCard, fsrs, generatorParameters, State, type Card } from 'ts
 import { CONFIG, type ModoId } from './config';
 import { deducirNota } from './nota';
 import type { Resultado } from './sesion';
-import type { Pais, Region } from './types';
+import type { Continente, Pais, Region } from './types';
 
 /** Tarjeta FSRS en formato guardable (fechas como texto ISO). */
 export interface TarjetaGuardada {
@@ -45,6 +45,8 @@ export interface Ajustes {
   todasDesbloqueadas: boolean;
   /** Máximo de países nuevos por día en Hoy (se autorregula hasta este valor). */
   maxNuevos: number;
+  /** Continente al que se limita Hoy (el resto queda en pausa); null = todo. */
+  focoHoy: Continente | null;
 }
 
 /**
@@ -106,6 +108,7 @@ export function estadoVacio(): EstadoProgreso {
       pinHash: null,
       todasDesbloqueadas: false,
       maxNuevos: CONFIG.nuevosMaximo,
+      focoHoy: null,
     },
   };
 }

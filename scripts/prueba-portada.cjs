@@ -116,6 +116,52 @@ async function abrir(b, perfil, estado) {
     await ctx.close();
   }
 
+  // 4. "Qué estudia Hoy": solo Asia (Europa en pausa), con confirmación y aviso; Volver a Todo.
+  for (const [nombre, o] of [['movil', devices['iPhone 13']], ['pc', { viewport: { width: 1366, height: 800 } }]]) {
+    const { ctx, p } = await abrir(b, o, estadoConProgreso());
+    p.on('pageerror', (e) => errores.push('foco ' + nombre + ': ' + e.message));
+    const tap = o.hasTouch ? 'tap' : 'click';
+    await p.waitForSelector('.selector-foco');
+    await p.locator('.selector-foco .selector-opcion', { hasText: 'Solo Asia' })[tap]();
+    const confirmar = await p.locator('.confirmar-foco').innerText();
+    comprobar(confirmar.includes('Europa quedará en pausa') && confirmar.includes('No se pierde nada'), `${nombre}: confirmación con el efecto escrito`);
+    comprobar(await p.locator('.aviso-pausa').count() === 0, `${nombre}: sin confirmar, aún no cambia nada`);
+    await p.screenshot({ path: `${out}/${nombre}-foco-confirmar.png`, fullPage: nombre === 'movil' });
+    await p.getByRole('button', { name: 'Sí, solo Asia' })[tap]();
+    await p.waitForSelector('.aviso-pausa');
+    const aviso = await p.locator('.aviso-pausa').innerText();
+    comprobar(aviso.includes('Solo Asia') && aviso.includes('Europa: en pausa'), `${nombre}: aviso fijo → ${aviso.split('\n')[0]}`);
+    comprobar((await p.locator('.fila-continente.pausada').innerText()).includes('en pausa'), `${nombre}: la barra de Europa dice "en pausa"`);
+    comprobar((await p.locator('path.pais.jugable[data-id="JPN"]').count()) > 0, `${nombre}: el mapa de la portada es Asia`);
+    await p.screenshot({ path: `${out}/${nombre}-foco-asia.png`, fullPage: nombre === 'movil' });
+    // Las preguntas de Hoy son todas de Asia (Rusia y Turquía cuentan como de los dos).
+    await p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' })[tap]();
+    const continentes = new Set();
+    for (let i = 0; i < 4; i++) {
+      await p.waitForTimeout(1300);
+      const id = (await p.locator('.capa-capital g').first().getAttribute('data-id').catch(() => null))
+        ?? (await p.locator('path.pais.objetivo').first().getAttribute('data-id').catch(() => null));
+      if (id) continentes.add(paises.find((x) => x.id === id).continentes.join('+'));
+      const opcion = p.locator('.opcion');
+      if (await opcion.count()) await opcion.first()[tap]();
+      const sig = p.locator('.feedback .boton-principal');
+      await p.waitForTimeout(300);
+      if (await sig.count()) await sig[tap]();
+    }
+    // Empieza por Asia oriental (Rusia y Turquía, de región principal europea, van al final).
+    comprobar(continentes.size > 0 && [...continentes].every((c) => c === 'asia'), `${nombre}: las preguntas de Hoy son de Asia, empezando por Asia oriental (${[...continentes]})`);
+    // Se recuerda, el Examen propone Asia y el panel lo dice.
+    await p.reload(); await p.waitForSelector('.portada-progreso');
+    comprobar(await p.locator('.aviso-pausa').count() === 1, `${nombre}: se recuerda al recargar`);
+    await p.locator('.modo[data-modo="examen"]')[tap]();
+    comprobar((await p.locator('.selector-opcion[aria-pressed="true"]').first().innerText()) === 'Asia', `${nombre}: el Examen propone Asia`);
+    await p.locator('.modo[data-modo="hoy"]')[tap]();
+    await p.locator('.aviso-pausa').getByRole('button', { name: 'Volver a Todo' })[tap]();
+    await p.waitForTimeout(300);
+    comprobar(await p.locator('.aviso-pausa').count() === 0, `${nombre}: "Volver a Todo" quita la pausa en un toque`);
+    await ctx.close();
+  }
+
   console.log('errores de página:', errores.length ? errores : 'ninguno');
   console.log(fallosPrueba ? `${fallosPrueba} comprobaciones fallidas` : 'todas las comprobaciones bien');
   await b.close();

@@ -59,3 +59,12 @@ export function continenteQueToca(estado: EstadoProgreso, activos: readonly Pais
   const orden = continentesCurso(regiones);
   return orden.find((c) => activos.some((p) => p.continentes.includes(c) && !estado.aprendizaje[p.id]?.aprendido)) ?? orden[0];
 }
+
+/**
+ * Países con los que trabaja Hoy: todos, o solo los del continente elegido
+ * ("Qué estudia Hoy"). El resto queda en pausa: ni repasos ni nuevos.
+ * Rusia y Turquía, que son de los dos continentes, entran en ambos casos.
+ */
+export function paisesDeHoy(activos: readonly Pais[], foco: Continente | null): Pais[] {
+  return foco ? activos.filter((p) => p.continentes.includes(foco)) : [...activos];
+}

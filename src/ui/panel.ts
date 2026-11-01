@@ -193,7 +193,16 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     const total = act.reduce((s, d) => s + d.respuestas, 0);
     const diasActivos = act.filter((d) => d.respuestas > 0).length;
 
+    const foco = estado.ajustes.focoHoy;
+    const nombreC = (c: string) => (c === 'europa' ? 'Europa' : c === 'asia' ? 'Asia' : c);
+    const otros = [...new Set(datos.regiones.map((r) => r.continente))].filter((c) => c !== foco).map(nombreC).join(' y ');
     cuerpo.append(
+      el(
+        'p',
+        foco ? 'aviso-pausa-panel' : 'ayuda',
+        el('strong', '', 'Qué estudia Hoy: '),
+        foco ? `solo ${nombreC(foco)}. ${otros} en pausa (no sale en Hoy). Se cambia en la portada de Hoy.` : 'todo. Se puede limitar a un continente desde la portada de Hoy.',
+      ),
       explicacionResumen(),
       el('h3', 'dialogo-subtitulo', 'Aprendidos por región'),
       tabla,
