@@ -17,6 +17,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 - **Guía "Cómo aprender con Capitalia"** (8 pasos, se abre sola la primera vez y desde ⋯): uso de la app y técnicas de aprendizaje para el alumno; con una pregunta interactiva y un taller para fabricar y guardar un truco propio. Ver SPEC 5.4.
 - **"Acerca de"** (desde ⋯): versión 1.0.0, fecha, autoría y créditos (Natural Earth, GeoNames con su atribución CC BY, ts-fsrs, Nunito, d3-geo).
+- **Icono nuevo:** mosaico de regiones en los pasteles de la app con una chincheta azul y la estrella de capital (más reconocible que la estrella sola en la pantalla de inicio). Generado con `scripts/generar-icono-svg.py` y `scripts/generar-iconos.cjs`.
 - Probado en Chromium (iPad y móvil): la guía se abre sola solo la primera vez, el taller guarda el truco, se reabre desde ⋯; objetivos táctiles de 44 px también en la guía y en "Acerca de" (`scripts/prueba-guia.cjs`, `scripts/prueba-accesibilidad.cjs`).
 
 ## Ahora mismo

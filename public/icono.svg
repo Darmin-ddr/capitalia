@@ -1,4 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#2f62a8"/>
-  <polygon points="256.0,112.0 292.4,211.8 398.7,215.6 315.0,281.2 344.2,383.4 256.0,324.0 167.8,383.4 197.0,281.2 113.3,215.6 219.6,211.8" fill="#ffffff" stroke="#ffffff" stroke-width="18" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath></defs><g clip-path="url(#r)"><rect width="512" height="512" fill="#cdd69a"/>
+  <polygon points="0,0 230,0 205,120 120,175 0,150" fill="#f2cf92"/>
+  <polygon points="230,0 512,0 512,130 380,160 290,105 205,120" fill="#c8b6e2"/>
+  <polygon points="0,150 120,175 150,300 70,390 0,380" fill="#b9d5d6"/>
+  <polygon points="380,160 512,130 512,360 420,330 360,250" fill="#f0b8cc"/>
+  <polygon points="0,380 70,390 150,300 250,330 300,440 260,512 0,512" fill="#dcc2a4"/>
+  <polygon points="420,330 512,360 512,512 260,512 300,440 360,410" fill="#b9d5d6"/>
+  <g fill="none" stroke="#ffffff" stroke-width="9" stroke-linejoin="round">
+    <polyline points="230,0 205,120 120,175 0,150"/>
+    <polyline points="205,120 290,105 380,160 512,130"/>
+    <polyline points="120,175 150,300 70,390 0,380"/>
+    <polyline points="380,160 360,250 420,330 512,360"/>
+    <polyline points="150,300 250,330 300,440 260,512"/>
+    <polyline points="300,440 360,410 420,330"/>
+    <polyline points="250,330 360,250"/>
+  </g><path d="M256 440 C 206 360, 138 310, 138 215 A 118 118 0 1 1 374 215 C 374 310, 306 360, 256 440 Z" fill="#1f2a37" opacity="0.18" transform="translate(6 10)"/><path d="M256 440 C 206 360, 138 310, 138 215 A 118 118 0 1 1 374 215 C 374 310, 306 360, 256 440 Z" fill="#2f62a8" stroke="#ffffff" stroke-width="14" stroke-linejoin="round"/><polygon points="256.0,151.0 271.9,193.2 316.9,195.2 281.7,223.3 293.6,266.8 256.0,242.0 218.4,266.8 230.3,223.3 195.1,195.2 240.1,193.2" fill="#ffffff" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/></g></svg>
