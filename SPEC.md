@@ -2,7 +2,7 @@
 
 Capitales de Europa y Asia. Versión 0.2 (31/10/2026). Documento vivo: actualizar cuando cambie una decisión.
 
-Nombre provisional: Capitalia (repo `capitalia`). Puede cambiar más adelante; no acoplar el nombre en rutas o claves de almacenamiento difíciles de migrar.
+Nombre provisional: Capitalia (repo `capitalia`). Puede cambiar más adelante; no acoplar el nombre en rutas o claves de almacenamiento difíciles de migrar. La presentación de la app (subtítulo, descripción, manifest) es genérica, "capitales sobre el mapa", para poder añadir más regiones del mundo sin renombrarla.
 
 ## 1. Objetivo
 

@@ -29,7 +29,7 @@ export function crearAcercaDe(): () => void {
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Capitalia'),
       el('p', 'ayuda', `Versión ${__VERSION__} · ${__FECHA_COMPILACION__}`),
-      el('p', '', 'Capitales de Europa y Asia sobre el mapa, para 3º de ESO.'),
+      el('p', '', 'Capitales sobre el mapa. Ahora incluye Europa y Asia, según los listados de 3º de ESO.'),
       el('p', '', AUTORIA),
       el('p', 'ayuda', 'Sin anuncios ni cuentas: tu progreso se guarda solo en este dispositivo y no se envía a ningún sitio.'),
       el('h3', 'dialogo-subtitulo', 'Créditos'),

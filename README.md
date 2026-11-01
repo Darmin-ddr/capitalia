@@ -1,6 +1,6 @@
 # Capitalia
 
-Herramienta para aprender las capitales de Europa y Asia sobre un mapa (3º de ESO).
+Herramienta para aprender capitales sobre un mapa. Ahora incluye Europa y Asia (listados de 3º de ESO).
 La especificación del producto está en [`SPEC.md`](SPEC.md) y las normas de trabajo en [`CLAUDE.md`](CLAUDE.md).
 
 Estado: **v1.0 en pruebas** (Europa y Asia completas; repaso con FSRS; cinco modos; panel de adultos; modo examen; instalable y sin conexión). Ver [`docs/informe-noche.md`](docs/informe-noche.md).

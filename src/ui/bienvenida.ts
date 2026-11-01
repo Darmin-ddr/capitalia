@@ -45,7 +45,7 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
     });
     mostrar(
       el('h2', 'dialogo-titulo', 'Hola'),
-      p('Capitalia sirve para aprender las capitales de Europa y Asia sobre el mapa, unos minutos al día.'),
+      p('Capitalia sirve para aprender capitales sobre el mapa, unos minutos al día.'),
       p('¿Quién la está abriendo ahora?'),
       el('div', 'acciones acciones-columna', alumno, adulto),
     );

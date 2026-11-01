@@ -20,9 +20,9 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['icono.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Capitalia: capitales de Europa y Asia',
+        name: 'Capitalia: capitales sobre el mapa',
         short_name: 'Capitalia',
-        description: 'Aprende las capitales de Europa y Asia sobre el mapa.',
+        description: 'Aprende las capitales del mundo sobre el mapa.',
         lang: 'es',
         start_url: './',
         scope: './',
