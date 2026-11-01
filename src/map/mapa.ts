@@ -14,8 +14,12 @@ export type EstadoPais = 'objetivo' | 'acierto' | 'fallo' | 'seleccion';
 
 const SVG = 'http://www.w3.org/2000/svg';
 
-/** Por debajo de este tamaño en pantalla (px), un país se dibuja además con un círculo tocable. */
+/**
+ * Por debajo de este tamaño en pantalla (px) o de esta superficie (px²), un país se dibuja
+ * además con un círculo tocable. La superficie cubre archipiélagos dispersos como Maldivas.
+ */
 const TAM_MINIMO = 16;
+const AREA_MINIMA = 250;
 /** Radio del área tocable de los círculos (diámetro >= 44 px, SPEC 10). */
 const RADIO_TOQUE = 22;
 const RADIO_VISIBLE = 8;
@@ -85,6 +89,8 @@ export interface OpcionesMapa {
   activos: ReadonlySet<string>;
   /** Países de la región en juego: encuadre y países tocables. */
   region: readonly Pais[];
+  /** Países de la región que no cuentan para el encuadre (invitados de otro continente). */
+  fueraDeEncuadre?: ReadonlySet<string>;
   /** Otros países con progreso visible (resto del continente), no tocables. */
   contexto?: readonly Pais[];
   /** Color pastel de cada país (el de su región). */
@@ -175,17 +181,27 @@ export class Mapa {
     this.ancho = width;
     this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-    const formasRegion = this.formas.filter((f) => f.pais && this.idsRegion.has(f.pais.id)).map((f) => f.feature);
-    const region: FeatureCollection = { type: 'FeatureCollection', features: formasRegion };
+    // Encuadre: las formas de la región, salvo los países enormes (Rusia) y los
+    // invitados de otro continente, que cuentan solo por su capital.
+    const encuadre: Feature[] = [];
+    for (const f of this.formas) {
+      if (!f.pais || !this.idsRegion.has(f.pais.id)) continue;
+      const [[a0], [a1]] = geoBounds(f.feature);
+      const anchura = a1 >= a0 ? a1 - a0 : a1 + 360 - a0;
+      if (anchura > 60 || this.op.fueraDeEncuadre?.has(f.pais.id)) {
+        encuadre.push({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: f.pais.capitalCoords } });
+      } else encuadre.push(f.feature);
+    }
+    const region: FeatureCollection = { type: 'FeatureCollection', features: encuadre };
     const [[x0, y0], [x1, y1]] = geoBounds(region);
-    // Regiones que cruzan el antimeridiano no existen en Europa/Asia de los listados
-    // salvo Rusia, que se encuadra por su parte europea al estar en ambos mapas.
     const centroLon = x1 >= x0 ? (x0 + x1) / 2 : (x0 + x1 + 360) / 2;
     const margen = Math.max(12, Math.min(width, height) * 0.06);
+    // Hueco arriba si algo se superpone al mapa (el selector de región en móvil).
+    const reserva = parseFloat(getComputedStyle(this.op.contenedor).getPropertyValue('--reserva-superior')) || 0;
     this.proyeccion = geoAzimuthalEqualArea()
       .rotate([-centroLon, -(y0 + y1) / 2])
       .clipAngle(60)
-      .fitExtent([[margen, margen], [width - margen, height - margen]], region);
+      .fitExtent([[margen, margen + reserva], [width - margen, height - margen]], region);
     const ruta = geoPath(this.proyeccion);
 
     this.capaPaises.replaceChildren();
@@ -223,7 +239,7 @@ export class Mapa {
       else this.capaPaises.append(el);
 
       // Países diminutos (microestados): círculo tocable en su capital.
-      if (Math.max(bx1 - bx0, by1 - by0) < TAM_MINIMO) {
+      if (Math.max(bx1 - bx0, by1 - by0) < TAM_MINIMO || ruta.area(forma.feature) < AREA_MINIMA) {
         const punto = this.proyeccion(forma.pais!.capitalCoords);
         if (punto) this.capaCirculos.append(this.circulo(id!, punto, enRegion));
       }

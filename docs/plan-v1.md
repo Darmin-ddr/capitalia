@@ -47,7 +47,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 - **Región dominada** (todas sus tarjetas con estabilidad de varios días, umbral configurable): confeti y desbloqueo de la siguiente región.
 - Criterios: tests de nota deducida, selección de la sesión, cálculo de dominio y almacenamiento que falla. Recargar la página conserva el progreso.
 
-### [ ] O2. Datos completos de Europa y Asia (hito 4)
+### [x] O2. Datos completos de Europa y Asia (hito 4)
 
 - Todos los países de los dos listados (unos 93 distintos; Rusia y Turquía están en ambos). Kosovo se mantiene opcional y desactivado.
 - Regiones de 6 a 10 países, con nombre y color pastel, propuestas por mí y documentadas.

@@ -129,8 +129,29 @@ button {
 
 .region-actual {
   margin-left: auto;
-  color: var(--texto-suave);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 45vw;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
   font-weight: 700;
+  cursor: pointer;
+}
+
+.region-nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.region-flecha {
+  color: var(--texto-suave);
+  font-size: 0.8em;
 }
 
 @media (max-width: 480px) {
@@ -144,9 +165,36 @@ button {
   .modo {
     padding: 0 14px;
   }
-  /* En pantallas estrechas la región no cabe en la barra; el mapa ya la muestra. */
-  .region-actual {
+  /* En pantallas estrechas se oculta el nombre de la app para que quepan pestañas y región. */
+  .marca {
     display: none;
+  }
+  .barra {
+    gap: 8px;
+    padding: 6px 12px;
+  }
+  .modo {
+    padding: 0 11px;
+    font-size: 0.95rem;
+  }
+  .mapa {
+    --reserva-superior: 48px;
+  }
+  /* El selector de región va sobre la esquina del mapa: en la barra no cabe. */
+  .region-actual {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 72px);
+    left: calc(env(safe-area-inset-left) + 24px);
+    z-index: 5;
+    max-width: calc(100vw - 48px);
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 0.95rem;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  }
+  .modos {
+    flex: 1;
+    justify-content: space-between;
   }
 }
 
@@ -285,7 +333,7 @@ button {
 .pais.contexto {
   stroke: var(--tierra-borde);
   stroke-width: 0.6;
-  opacity: 0.75;
+  opacity: 0.5;
 }
 
 .pais.contexto:not([class*='nivel-']) {
@@ -372,6 +420,10 @@ button {
 
 .ficha {
   min-height: 7.5em;
+}
+
+.ficha:has(.ayuda) {
+  min-height: 0;
 }
 
 .ficha-pais {
@@ -820,4 +872,90 @@ button {
 .campo-truco:focus {
   outline: none;
   border-color: var(--acento);
+}
+
+/* ---------- Selector de regiones ---------- */
+
+.dialogo-regiones {
+  width: min(92vw, 480px);
+  max-height: 85dvh;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+.dialogo-regiones::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+
+.dialogo-contenido {
+  padding: 16px 20px 20px;
+}
+
+.dialogo-titulo {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+}
+
+.dialogo-subtitulo {
+  margin: 14px 0 6px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.lista-regiones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.region-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--borde);
+  background: var(--superficie);
+  text-align: left;
+  cursor: pointer;
+}
+
+.region-item.actual {
+  border-color: var(--acento);
+}
+
+.region-item:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.region-muestra {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-pais);
+}
+
+.region-textos {
+  flex: 1;
+  display: grid;
+}
+
+.region-titulo {
+  font-weight: 800;
+}
+
+.region-detalle {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
 }

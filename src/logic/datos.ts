@@ -9,8 +9,12 @@ export function paisesActivos(paises: readonly Pais[], opcionalesActivados: Read
   return paises.filter((p) => !p.opcional || opcionalesActivados.has(p.id));
 }
 
+export function perteneceARegion(p: Pais, regionId: string): boolean {
+  return p.region === regionId || (p.regionesExtra?.includes(regionId) ?? false);
+}
+
 export function paisesDeRegion(paises: readonly Pais[], regionId: string): Pais[] {
-  return paises.filter((p) => p.region === regionId);
+  return paises.filter((p) => perteneceARegion(p, regionId));
 }
 
 /** Primer truco del país, o null si no tiene. (Los trucos propios llegan en hitos posteriores.) */

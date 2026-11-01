@@ -103,6 +103,8 @@ describe('validarTexto', () => {
   });
 
   it('cada capital de los datos se valida como correcta', () => {
-    for (const p of paises) expect(v(p.capital, p, paises).tipo, p.capital).toBe('correcto');
+    for (const p of paises) {
+      for (const forma of p.capital.split(' / ')) expect(v(forma, p, paises).tipo, forma).toBe('correcto');
+    }
   });
 });

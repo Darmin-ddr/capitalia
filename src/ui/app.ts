@@ -1,5 +1,5 @@
 import { paises as todos, regiones } from '../data';
-import { paisesActivos } from '../logic/datos';
+import { paisesActivos, paisesDeRegion as filtrarRegion } from '../logic/datos';
 import { Almacen, almacenDelNavegador } from '../logic/almacen';
 import {
   modoSegunDominio,
@@ -17,6 +17,8 @@ import type { Motor } from './comun';
 import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
 import { iniciarPracticar } from './practicar';
 import { iniciarRepaso } from './repaso';
+import { prepararSelectorRegiones } from './regiones';
+import { nivelDominio } from '../logic/progreso';
 
 type Pestana = 'explorar' | 'repaso' | 'practicar';
 
@@ -37,9 +39,10 @@ export function iniciarApp(): void {
   let mapa: Mapa | null = null;
   let modo: Modo | null = null;
   let pestana: Pestana = 'repaso';
+  let actualizarSelector: (() => void) | null = null;
 
   const regionDe = (id: string) => regiones.find((r) => r.id === id);
-  const paisesDeRegion = (regionId: string) => activos.filter((p) => p.region === regionId);
+  const paisesDeRegion = (regionId: string) => filtrarRegion(activos, regionId);
   const regionesDe = (c: Continente) => regiones.filter((r) => r.continente === c).sort((a, b) => a.orden - b.orden);
   const desbloqueadas = (c: Continente) => regionesDesbloqueadas(estado, regionesDe(c), paisesDeRegion);
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
@@ -107,6 +110,15 @@ export function iniciarApp(): void {
     }
   }
 
+  /** Color del país en el mapa del continente actual (Rusia y Turquía cambian según el mapa). */
+  function colorEnContinente(id: string): string {
+    const p = activos.find((x) => x.id === id);
+    if (!p) return '#cccccc';
+    const ids = [p.region, ...(p.regionesExtra ?? [])];
+    const r = ids.map(regionDe).find((x) => x?.continente === region.continente);
+    return r?.color ?? '#cccccc';
+  }
+
   function montarMapa(): void {
     mapa?.destruir();
     const paisesRegion = paisesDeRegion(region.id);
@@ -116,13 +128,13 @@ export function iniciarApp(): void {
       activos: new Set(activos.map((p) => p.id)),
       region: paisesRegion,
       contexto: paisesContinente(),
-      colorDe: (id) => regionDe(activos.find((p) => p.id === id)?.region ?? '')?.color ?? '#cccccc',
+      fueraDeEncuadre: new Set(paisesRegion.filter((p) => p.regionesExtra?.includes(region.id)).map((p) => p.id)),
+      colorDe: (id) => colorEnContinente(id),
       onSeleccion: (id) => modo?.alSeleccionarPais(id),
     });
     actualizarNiveles();
     document.documentElement.style.setProperty('--region-base', region.color);
-    const etiqueta = document.getElementById('region-actual');
-    if (etiqueta) etiqueta.textContent = region.nombre;
+    actualizarSelector?.();
   }
 
   function cambiarPestana(nueva: Pestana): void {
@@ -180,9 +192,15 @@ export function iniciarApp(): void {
   void navigator.storage?.persist?.().catch(() => undefined);
 
   for (const b of botonesPestana) b.addEventListener('click', () => cambiarPestana(b.dataset.modo as Pestana));
+  actualizarSelector = prepararSelectorRegiones(document.getElementById('region-actual') as HTMLButtonElement, {
+    regiones,
+    paisesDe: paisesDeRegion,
+    desbloqueadas,
+    nivel: (id) => nivelDominio(estado.tarjetas[id]),
+    actual: () => region,
+    elegir: irARegion,
+  });
   montarMapa();
   cambiarPestana('repaso');
 
-  // Expuesto para el selector de regiones (O2) y el panel de adultos (O4).
-  Object.assign(window, { __capitalia: { irARegion, estado } });
 }

@@ -1,11 +1,638 @@
 {
   "fuentes": {
-    "nombres": "Nombres de país y capital: listados de clase de 3º de ESO (docs/listas/Europa.md), fuente de verdad del proyecto. Kosovo no figura en el listado; se usa la forma recomendada por Fundéu (Pristina).",
-    "capitalCoords": "GeoNames (geonames.org, CC BY 4.0), lugares con código PPLC, vía el paquete npm all-the-cities 3.1.0. Se indica el identificador GeoNames de cada capital en 'geonamesId'. Coordenadas redondeadas a 3 decimales.",
+    "nombres": "Nombres de país y capital: listados de clase de 3º de ESO (docs/listas/), fuente de verdad del proyecto. Kosovo no figura en los listados (opcional, desactivado); se usa la forma de Fundéu (Pristina).",
+    "capitalCoords": "GeoNames (geonames.org, CC BY 4.0), lugares con código PPLC, vía el paquete npm all-the-cities 3.1.0 (ver scripts/geonames-capitales.py). Excepciones: Sri Lanka usa el lugar «Sri Jayewardenepura Kotte» (GeoNames marca Colombo como PPLC; el listado da Kotte); Palestina usa Ramallah; Israel usa Jerusalem (PPLA en GeoNames). Identificador GeoNames en «geonamesId». Coordenadas redondeadas a 3 decimales.",
     "isoNumerico": "ISO 3166-1 numérico, comprobado contra los identificadores de world-atlas 2.0.2 (Natural Earth 50m). Kosovo no tiene código ISO numérico: en world-atlas aparece sin id y con nombre 'Kosovo'.",
-    "trucos": "Redactados para el prototipo. Todos pendientes de revisión por un adulto (revisado: false)."
+    "trucos": "Redactados por Claude. Todos pendientes de revisión por un adulto (revisado: false)."
   },
   "paises": [
+    {
+      "id": "ESP",
+      "isoNumerico": "724",
+      "nombre": "España",
+      "capital": "Madrid",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        -3.703,
+        40.416
+      ],
+      "geonamesId": 3117735,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "PRT",
+      "isoNumerico": "620",
+      "nombre": "Portugal",
+      "capital": "Lisboa",
+      "variantes": [
+        "Lisbon"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        -9.133,
+        38.717
+      ],
+      "geonamesId": 2267057,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ITA",
+      "isoNumerico": "380",
+      "nombre": "Italia",
+      "capital": "Roma",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        12.511,
+        41.892
+      ],
+      "geonamesId": 3169070,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "AND",
+      "isoNumerico": "020",
+      "nombre": "Andorra",
+      "capital": "Andorra la Vieja",
+      "variantes": [
+        "Andorra la Vella"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        1.521,
+        42.508
+      ],
+      "geonamesId": 3041563,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MCO",
+      "isoNumerico": "492",
+      "nombre": "Mónaco",
+      "capital": "Mónaco",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        7.417,
+        43.733
+      ],
+      "geonamesId": 2993458,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital se llama igual que el país.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "SMR",
+      "isoNumerico": "674",
+      "nombre": "San Marino",
+      "capital": "San Marino",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        12.446,
+        43.937
+      ],
+      "geonamesId": 3168070,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital se llama igual que el país.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "VAT",
+      "isoNumerico": "336",
+      "nombre": "Vaticano",
+      "capital": "Ciudad del Vaticano",
+      "variantes": [
+        "Vaticano"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        12.454,
+        41.903
+      ],
+      "geonamesId": 6691831,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital es la propia Ciudad del Vaticano.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "MLT",
+      "isoNumerico": "470",
+      "nombre": "Malta",
+      "capital": "La Valeta",
+      "variantes": [
+        "Valeta",
+        "Valletta"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-sur",
+      "capitalCoords": [
+        14.515,
+        35.9
+      ],
+      "geonamesId": 2562305,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "FRA",
+      "isoNumerico": "250",
+      "nombre": "Francia",
+      "capital": "París",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        2.349,
+        48.853
+      ],
+      "geonamesId": 2988507,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "BEL",
+      "isoNumerico": "056",
+      "nombre": "Bélgica",
+      "capital": "Bruselas",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        4.349,
+        50.85
+      ],
+      "geonamesId": 2800866,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "NLD",
+      "isoNumerico": "528",
+      "nombre": "Países Bajos",
+      "capital": "Ámsterdam",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        4.89,
+        52.374
+      ],
+      "geonamesId": 2759794,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Ámsterdam: un dique («dam») en el río Amstel.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "LUX",
+      "isoNumerico": "442",
+      "nombre": "Luxemburgo",
+      "capital": "Luxemburgo",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        6.13,
+        49.612
+      ],
+      "geonamesId": 2960316,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital se llama igual que el país.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "DEU",
+      "isoNumerico": "276",
+      "nombre": "Alemania",
+      "capital": "Berlín",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        13.411,
+        52.524
+      ],
+      "geonamesId": 2950159,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "CHE",
+      "isoNumerico": "756",
+      "nombre": "Suiza",
+      "capital": "Berna",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        7.447,
+        46.948
+      ],
+      "geonamesId": 2661552,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "AUT",
+      "isoNumerico": "040",
+      "nombre": "Austria",
+      "capital": "Viena",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        16.372,
+        48.208
+      ],
+      "geonamesId": 2761369,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LIE",
+      "isoNumerico": "438",
+      "nombre": "Liechtenstein",
+      "capital": "Vaduz",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-occidental",
+      "capitalCoords": [
+        9.522,
+        47.142
+      ],
+      "geonamesId": 3042030,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "GBR",
+      "isoNumerico": "826",
+      "nombre": "Reino Unido",
+      "capital": "Londres",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        -0.126,
+        51.509
+      ],
+      "geonamesId": 2643743,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "IRL",
+      "isoNumerico": "372",
+      "nombre": "Irlanda",
+      "capital": "Dublín",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        -6.249,
+        53.333
+      ],
+      "geonamesId": 2964574,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ISL",
+      "isoNumerico": "352",
+      "nombre": "Islandia",
+      "capital": "Reikiavik",
+      "variantes": [
+        "Reykjavik"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        -21.895,
+        64.135
+      ],
+      "geonamesId": 3413829,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Reikiavik significa «bahía humeante», por el vapor de sus aguas termales.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "NOR",
+      "isoNumerico": "578",
+      "nombre": "Noruega",
+      "capital": "Oslo",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        10.746,
+        59.913
+      ],
+      "geonamesId": 3143244,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "SWE",
+      "isoNumerico": "752",
+      "nombre": "Suecia",
+      "capital": "Estocolmo",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        18.069,
+        59.329
+      ],
+      "geonamesId": 2673730,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "FIN",
+      "isoNumerico": "246",
+      "nombre": "Finlandia",
+      "capital": "Helsinki",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        24.935,
+        60.17
+      ],
+      "geonamesId": 658225,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "DNK",
+      "isoNumerico": "208",
+      "nombre": "Dinamarca",
+      "capital": "Copenhague",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-norte",
+      "capitalCoords": [
+        12.566,
+        55.676
+      ],
+      "geonamesId": 2618425,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "POL",
+      "isoNumerico": "616",
+      "nombre": "Polonia",
+      "capital": "Varsovia",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        21.012,
+        52.23
+      ],
+      "geonamesId": 756135,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "CZE",
+      "isoNumerico": "203",
+      "nombre": "República Checa",
+      "capital": "Praga",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        14.421,
+        50.088
+      ],
+      "geonamesId": 3067696,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "SVK",
+      "isoNumerico": "703",
+      "nombre": "Eslovaquia",
+      "capital": "Bratislava",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        17.107,
+        48.148
+      ],
+      "geonamesId": 3060972,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "HUN",
+      "isoNumerico": "348",
+      "nombre": "Hungría",
+      "capital": "Budapest",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        19.04,
+        47.498
+      ],
+      "geonamesId": 3054643,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "historia",
+          "texto": "Budapest son dos ciudades unidas por el Danubio: Buda y Pest.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "EST",
+      "isoNumerico": "233",
+      "nombre": "Estonia",
+      "capital": "Tallin",
+      "variantes": [
+        "Tallinn"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        24.754,
+        59.437
+      ],
+      "geonamesId": 588409,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LVA",
+      "isoNumerico": "428",
+      "nombre": "Letonia",
+      "capital": "Riga",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        24.106,
+        56.946
+      ],
+      "geonamesId": 456172,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LTU",
+      "isoNumerico": "440",
+      "nombre": "Lituania",
+      "capital": "Vilna",
+      "variantes": [
+        "Vilnius"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-central",
+      "capitalCoords": [
+        25.28,
+        54.689
+      ],
+      "geonamesId": 593116,
+      "opcional": false,
+      "trucos": []
+    },
     {
       "id": "ALB",
       "isoNumerico": "008",
@@ -13,9 +640,14 @@
       "capital": "Tirana",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [19.819, 41.328],
+      "capitalCoords": [
+        19.819,
+        41.328
+      ],
       "geonamesId": 3183875,
       "opcional": false,
       "trucos": []
@@ -27,9 +659,14 @@
       "capital": "Sarajevo",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [18.356, 43.849],
+      "capitalCoords": [
+        18.356,
+        43.849
+      ],
       "geonamesId": 3191281,
       "opcional": false,
       "trucos": []
@@ -41,9 +678,14 @@
       "capital": "Sofía",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [23.324, 42.698],
+      "capitalCoords": [
+        23.324,
+        42.698
+      ],
       "geonamesId": 727011,
       "opcional": false,
       "trucos": [
@@ -61,9 +703,14 @@
       "capital": "Zagreb",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [15.978, 45.814],
+      "capitalCoords": [
+        15.978,
+        45.814
+      ],
       "geonamesId": 3186886,
       "opcional": false,
       "trucos": []
@@ -73,11 +720,18 @@
       "isoNumerico": "705",
       "nombre": "Eslovenia",
       "capital": "Liubliana",
-      "variantes": ["Ljubljana"],
+      "variantes": [
+        "Ljubljana"
+      ],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [14.505, 46.051],
+      "capitalCoords": [
+        14.505,
+        46.051
+      ],
       "geonamesId": 3196359,
       "opcional": false,
       "trucos": []
@@ -89,9 +743,14 @@
       "capital": "Atenas",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [23.728, 37.984],
+      "capitalCoords": [
+        23.728,
+        37.984
+      ],
       "geonamesId": 264371,
       "opcional": false,
       "trucos": [
@@ -107,11 +766,18 @@
       "isoNumerico": "807",
       "nombre": "Macedonia del Norte",
       "capital": "Skopie",
-      "variantes": ["Skopje"],
+      "variantes": [
+        "Skopje"
+      ],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [21.431, 41.996],
+      "capitalCoords": [
+        21.431,
+        41.996
+      ],
       "geonamesId": 785842,
       "opcional": false,
       "trucos": []
@@ -123,9 +789,14 @@
       "capital": "Podgorica",
       "variantes": [],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [19.264, 42.441],
+      "capitalCoords": [
+        19.264,
+        42.441
+      ],
       "geonamesId": 3193044,
       "opcional": false,
       "trucos": [
@@ -141,11 +812,18 @@
       "isoNumerico": "688",
       "nombre": "Serbia",
       "capital": "Belgrado",
-      "variantes": ["Beograd"],
+      "variantes": [
+        "Beograd"
+      ],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [20.465, 44.804],
+      "capitalCoords": [
+        20.465,
+        44.804
+      ],
       "geonamesId": 792680,
       "opcional": false,
       "trucos": [
@@ -157,15 +835,1197 @@
       ]
     },
     {
+      "id": "BLR",
+      "isoNumerico": "112",
+      "nombre": "Bielorrusia",
+      "capital": "Minsk",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-este",
+      "capitalCoords": [
+        27.567,
+        53.9
+      ],
+      "geonamesId": 625144,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "UKR",
+      "isoNumerico": "804",
+      "nombre": "Ucrania",
+      "capital": "Kiev",
+      "variantes": [
+        "Kyiv"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-este",
+      "capitalCoords": [
+        30.524,
+        50.455
+      ],
+      "geonamesId": 703448,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MDA",
+      "isoNumerico": "498",
+      "nombre": "Moldavia",
+      "capital": "Chisinau",
+      "variantes": [
+        "Chisináu",
+        "Kishinev"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-este",
+      "capitalCoords": [
+        28.858,
+        47.006
+      ],
+      "geonamesId": 618426,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ROU",
+      "isoNumerico": "642",
+      "nombre": "Rumanía",
+      "capital": "Bucarest",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-este",
+      "capitalCoords": [
+        26.106,
+        44.432
+      ],
+      "geonamesId": 683506,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "RUS",
+      "isoNumerico": "643",
+      "nombre": "Rusia",
+      "capital": "Moscú",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa",
+        "asia"
+      ],
+      "region": "europa-este",
+      "regionesExtra": [
+        "asia-central"
+      ],
+      "capitalCoords": [
+        37.616,
+        55.752
+      ],
+      "geonamesId": 524901,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "TUR",
+      "isoNumerico": "792",
+      "nombre": "Turquía",
+      "capital": "Ankara",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa",
+        "asia"
+      ],
+      "region": "europa-este",
+      "regionesExtra": [
+        "oriente-proximo"
+      ],
+      "capitalCoords": [
+        32.854,
+        39.92
+      ],
+      "geonamesId": 323786,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "CYP",
+      "isoNumerico": "196",
+      "nombre": "Chipre",
+      "capital": "Nicosia",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "europa"
+      ],
+      "region": "europa-este",
+      "capitalCoords": [
+        33.364,
+        35.175
+      ],
+      "geonamesId": 146268,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "CHN",
+      "isoNumerico": "156",
+      "nombre": "China",
+      "capital": "Pekín",
+      "variantes": [
+        "Beijing"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        116.397,
+        39.907
+      ],
+      "geonamesId": 1816670,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Pekín significa «capital del norte».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "JPN",
+      "isoNumerico": "392",
+      "nombre": "Japón",
+      "capital": "Tokio",
+      "variantes": [
+        "Tokyo"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        139.692,
+        35.69
+      ],
+      "geonamesId": 1850147,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Tokio y Kioto tienen las mismas sílabas cambiadas de orden. La capital es Tokio.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "KOR",
+      "isoNumerico": "410",
+      "nombre": "Corea del Sur",
+      "capital": "Seúl",
+      "variantes": [
+        "Seoul"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        126.978,
+        37.566
+      ],
+      "geonamesId": 1835848,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "PRK",
+      "isoNumerico": "408",
+      "nombre": "Corea del Norte",
+      "capital": "Pionyang",
+      "variantes": [
+        "Pyongyang"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        125.754,
+        39.034
+      ],
+      "geonamesId": 1871859,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MNG",
+      "isoNumerico": "496",
+      "nombre": "Mongolia",
+      "capital": "Ulán Bator",
+      "variantes": [
+        "Ulan Bator",
+        "Ulaanbaatar"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        106.883,
+        47.908
+      ],
+      "geonamesId": 2028462,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Ulán Bator significa «héroe rojo».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "TWN",
+      "isoNumerico": "158",
+      "nombre": "Taiwán",
+      "capital": "Taipéi",
+      "variantes": [
+        "Taipei"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-oriental",
+      "capitalCoords": [
+        121.532,
+        25.048
+      ],
+      "geonamesId": 1668341,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "IND",
+      "isoNumerico": "356",
+      "nombre": "India",
+      "capital": "Nueva Delhi",
+      "variantes": [
+        "New Delhi"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        77.224,
+        28.636
+      ],
+      "geonamesId": 1261481,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "PAK",
+      "isoNumerico": "586",
+      "nombre": "Pakistán",
+      "capital": "Islamabad",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        73.043,
+        33.721
+      ],
+      "geonamesId": 1176615,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Islamabad significa «ciudad del islam».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "BGD",
+      "isoNumerico": "050",
+      "nombre": "Bangladés",
+      "capital": "Daca",
+      "variantes": [
+        "Dhaka"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        90.407,
+        23.71
+      ],
+      "geonamesId": 1185241,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "NPL",
+      "isoNumerico": "524",
+      "nombre": "Nepal",
+      "capital": "Katmandú",
+      "variantes": [
+        "Kathmandu"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        85.321,
+        27.702
+      ],
+      "geonamesId": 1283240,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "BTN",
+      "isoNumerico": "064",
+      "nombre": "Bután",
+      "capital": "Timbu",
+      "variantes": [
+        "Thimphu"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        89.642,
+        27.466
+      ],
+      "geonamesId": 1252416,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LKA",
+      "isoNumerico": "144",
+      "nombre": "Sri Lanka",
+      "capital": "Sri Jayawardenepura Kotte",
+      "variantes": [
+        "Sri Jayewardenepura Kotte",
+        "Kotte"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        79.907,
+        6.883
+      ],
+      "geonamesId": 1238992,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MDV",
+      "isoNumerico": "462",
+      "nombre": "Maldivas",
+      "capital": "Malé",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-sur",
+      "capitalCoords": [
+        73.509,
+        4.175
+      ],
+      "geonamesId": 1282027,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MMR",
+      "isoNumerico": "104",
+      "nombre": "Birmania (Myanmar)",
+      "capital": "Naipyidó",
+      "variantes": [
+        "Naypyidaw",
+        "Nay Pyi Taw"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        96.13,
+        19.745
+      ],
+      "geonamesId": 6611854,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "THA",
+      "isoNumerico": "764",
+      "nombre": "Tailandia",
+      "capital": "Bangkok",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        100.501,
+        13.754
+      ],
+      "geonamesId": 1609350,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LAO",
+      "isoNumerico": "418",
+      "nombre": "Laos",
+      "capital": "Vientián",
+      "variantes": [
+        "Vientiane"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        102.6,
+        17.967
+      ],
+      "geonamesId": 1651944,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "KHM",
+      "isoNumerico": "116",
+      "nombre": "Camboya",
+      "capital": "Nom Pen",
+      "variantes": [
+        "Phnom Penh"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        104.916,
+        11.562
+      ],
+      "geonamesId": 1821306,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "VNM",
+      "isoNumerico": "704",
+      "nombre": "Vietnam",
+      "capital": "Hanói",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        105.841,
+        21.024
+      ],
+      "geonamesId": 1581130,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "MYS",
+      "isoNumerico": "458",
+      "nombre": "Malasia",
+      "capital": "Kuala Lumpur",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-continental",
+      "capitalCoords": [
+        101.687,
+        3.141
+      ],
+      "geonamesId": 1735161,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Kuala Lumpur significa «confluencia fangosa»: donde se juntan dos ríos.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "SGP",
+      "isoNumerico": "702",
+      "nombre": "Singapur",
+      "capital": "Singapur",
+      "variantes": [
+        "Singapore"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-insular",
+      "capitalCoords": [
+        103.85,
+        1.29
+      ],
+      "geonamesId": 1880252,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital se llama igual que el país.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "IDN",
+      "isoNumerico": "360",
+      "nombre": "Indonesia",
+      "capital": "Yakarta",
+      "variantes": [
+        "Jakarta"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-insular",
+      "capitalCoords": [
+        106.845,
+        -6.215
+      ],
+      "geonamesId": 1642911,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "PHL",
+      "isoNumerico": "608",
+      "nombre": "Filipinas",
+      "capital": "Manila",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-insular",
+      "capitalCoords": [
+        120.982,
+        14.604
+      ],
+      "geonamesId": 1701668,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "BRN",
+      "isoNumerico": "096",
+      "nombre": "Brunéi",
+      "capital": "Bandar Seri Begawan",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-insular",
+      "capitalCoords": [
+        114.94,
+        4.89
+      ],
+      "geonamesId": 1820906,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "TLS",
+      "isoNumerico": "626",
+      "nombre": "Timor Oriental",
+      "capital": "Dili",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "sudeste-insular",
+      "capitalCoords": [
+        125.574,
+        -8.559
+      ],
+      "geonamesId": 1645457,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "GEO",
+      "isoNumerico": "268",
+      "nombre": "Georgia",
+      "capital": "Tiflis",
+      "variantes": [
+        "Tbilisi"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        44.834,
+        41.694
+      ],
+      "geonamesId": 611717,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ARM",
+      "isoNumerico": "051",
+      "nombre": "Armenia",
+      "capital": "Ereván",
+      "variantes": [
+        "Yerevan"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        44.514,
+        40.181
+      ],
+      "geonamesId": 616052,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "AZE",
+      "isoNumerico": "031",
+      "nombre": "Azerbaiyán",
+      "capital": "Bakú",
+      "variantes": [
+        "Baku"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        49.892,
+        40.378
+      ],
+      "geonamesId": 587084,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "SYR",
+      "isoNumerico": "760",
+      "nombre": "Siria",
+      "capital": "Damasco",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        36.291,
+        33.51
+      ],
+      "geonamesId": 170654,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "LBN",
+      "isoNumerico": "422",
+      "nombre": "Líbano",
+      "capital": "Beirut",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        35.502,
+        33.893
+      ],
+      "geonamesId": 276781,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ISR",
+      "isoNumerico": "376",
+      "nombre": "Israel",
+      "capital": "Jerusalén",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        35.216,
+        31.769
+      ],
+      "geonamesId": 281184,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "PSE",
+      "isoNumerico": "275",
+      "nombre": "Palestina",
+      "capital": "Jerusalén Este / Ramala",
+      "variantes": [
+        "Ramallah"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        35.204,
+        31.9
+      ],
+      "geonamesId": 282239,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "JOR",
+      "isoNumerico": "400",
+      "nombre": "Jordania",
+      "capital": "Amán",
+      "variantes": [
+        "Amman"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "oriente-proximo",
+      "capitalCoords": [
+        35.945,
+        31.955
+      ],
+      "geonamesId": 250441,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "IRQ",
+      "isoNumerico": "368",
+      "nombre": "Irak",
+      "capital": "Bagdad",
+      "variantes": [
+        "Baghdad"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        44.401,
+        33.341
+      ],
+      "geonamesId": 98182,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "IRN",
+      "isoNumerico": "364",
+      "nombre": "Irán",
+      "capital": "Teherán",
+      "variantes": [
+        "Tehran"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        51.422,
+        35.694
+      ],
+      "geonamesId": 112931,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "SAU",
+      "isoNumerico": "682",
+      "nombre": "Arabia Saudita",
+      "capital": "Riad",
+      "variantes": [
+        "Riyadh"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        46.722,
+        24.688
+      ],
+      "geonamesId": 108410,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Riad significa «jardines», algo raro en pleno desierto.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "KWT",
+      "isoNumerico": "414",
+      "nombre": "Kuwait",
+      "capital": "Kuwait",
+      "variantes": [
+        "Ciudad de Kuwait",
+        "Kuwait City"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        47.978,
+        29.37
+      ],
+      "geonamesId": 285787,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "familia",
+          "texto": "Fácil: la capital se llama igual que el país.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "BHR",
+      "isoNumerico": "048",
+      "nombre": "Baréin",
+      "capital": "Manama",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        50.586,
+        26.228
+      ],
+      "geonamesId": 290340,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "QAT",
+      "isoNumerico": "634",
+      "nombre": "Catar",
+      "capital": "Doha",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        51.531,
+        25.285
+      ],
+      "geonamesId": 290030,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "ARE",
+      "isoNumerico": "784",
+      "nombre": "Emiratos Árabes Unidos",
+      "capital": "Abu Dabi",
+      "variantes": [
+        "Abu Dhabi"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        54.397,
+        24.451
+      ],
+      "geonamesId": 292968,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "OMN",
+      "isoNumerico": "512",
+      "nombre": "Omán",
+      "capital": "Mascate",
+      "variantes": [
+        "Muscat"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        58.408,
+        23.584
+      ],
+      "geonamesId": 287286,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "YEM",
+      "isoNumerico": "887",
+      "nombre": "Yemen",
+      "capital": "Saná",
+      "variantes": [
+        "Sanaa"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "golfo",
+      "capitalCoords": [
+        44.207,
+        15.355
+      ],
+      "geonamesId": 71137,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "KAZ",
+      "isoNumerico": "398",
+      "nombre": "Kazajistán",
+      "capital": "Astaná",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        71.446,
+        51.18
+      ],
+      "geonamesId": 1526273,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Astaná significa «capital» en kazajo. No tiene pérdida.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "UZB",
+      "isoNumerico": "860",
+      "nombre": "Uzbekistán",
+      "capital": "Taskent",
+      "variantes": [
+        "Tashkent"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        69.216,
+        41.265
+      ],
+      "geonamesId": 1512569,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Taskent significa «ciudad de piedra».",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "TKM",
+      "isoNumerico": "795",
+      "nombre": "Turkmenistán",
+      "capital": "Asgabat",
+      "variantes": [
+        "Ashgabat",
+        "Asjabad"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        58.383,
+        37.95
+      ],
+      "geonamesId": 162183,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "KGZ",
+      "isoNumerico": "417",
+      "nombre": "Kirguistán",
+      "capital": "Biskek",
+      "variantes": [
+        "Bishkek"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        74.59,
+        42.87
+      ],
+      "geonamesId": 1528675,
+      "opcional": false,
+      "trucos": []
+    },
+    {
+      "id": "TJK",
+      "isoNumerico": "762",
+      "nombre": "Tayikistán",
+      "capital": "Dusambé",
+      "variantes": [
+        "Dushanbe"
+      ],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        68.779,
+        38.536
+      ],
+      "geonamesId": 1221874,
+      "opcional": false,
+      "trucos": [
+        {
+          "tipo": "palabras",
+          "texto": "Dusambé significa «lunes» en tayiko: allí había un mercado los lunes.",
+          "revisado": false
+        }
+      ]
+    },
+    {
+      "id": "AFG",
+      "isoNumerico": "004",
+      "nombre": "Afganistán",
+      "capital": "Kabul",
+      "variantes": [],
+      "antiguos": [],
+      "continentes": [
+        "asia"
+      ],
+      "region": "asia-central",
+      "capitalCoords": [
+        69.172,
+        34.528
+      ],
+      "geonamesId": 1138958,
+      "opcional": false,
+      "trucos": []
+    },
+    {
       "id": "XKX",
       "isoNumerico": null,
       "nombre": "Kosovo",
       "capital": "Pristina",
-      "variantes": ["Prishtina", "Prishtinë"],
+      "variantes": [
+        "Prishtina",
+        "Prishtinë"
+      ],
       "antiguos": [],
-      "continentes": ["europa"],
+      "continentes": [
+        "europa"
+      ],
       "region": "balcanes",
-      "capitalCoords": [21.167, 42.673],
+      "capitalCoords": [
+        21.167,
+        42.673
+      ],
       "geonamesId": 786714,
       "opcional": true,
       "trucos": []

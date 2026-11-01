@@ -20,6 +20,11 @@ export interface Pais {
   antiguos: string[];
   continentes: Continente[];
   region: string;
+  /**
+   * Regiones de otro continente en las que también aparece (transcontinentales:
+   * Rusia y Turquía salen en un mapa de Europa y en otro de Asia, con una sola tarjeta).
+   */
+  regionesExtra?: string[];
   /** [longitud, latitud] */
   capitalCoords: [number, number];
   geonamesId?: number;
