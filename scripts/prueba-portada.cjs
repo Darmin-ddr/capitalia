@@ -18,7 +18,9 @@ function estadoConProgreso() {
   paises.filter((p) => ['europa-sur', 'balcanes'].includes(p.region)).forEach((p, i) => {
     aprendizaje[p.id] = { escalon: 3, aciertos: 0, aprendido: true, ...(i < 2 ? { aprendidoEl: hace(2) } : { aprendidoEl: hace(30) }) };
   });
-  const fecha = new Date(Date.now() + 5 * 864e5).toISOString().slice(0, 10);
+  // Fecha local (con toISOString, pasada la medianoche en España saldría el día anterior en UTC).
+  const f = new Date(Date.now() + 5 * 864e5);
+  const fecha = `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`;
   return base({ aprendizaje }, { listaExamen: ['ESP', 'FRA', 'DEU', 'JPN'], fechaExamen: fecha });
 }
 
@@ -153,6 +155,25 @@ async function abrir(b, perfil, estado) {
     await p.locator('.modo[data-modo="examen"]')[tap]();
     comprobar((await p.locator('.selector-opcion[aria-pressed="true"]').first().innerText()) === 'Asia', `${nombre}: el Examen propone Asia`);
     await p.locator('.modo[data-modo="hoy"]')[tap]();
+    // "Entendido": el aviso se pliega a un recordatorio pequeño y Empezar queda a la vista.
+    await p.locator('.aviso-pausa').getByRole('button', { name: 'Entendido' })[tap]();
+    const plegado = await p.locator('.aviso-pausa-plegado').innerText().catch(() => '');
+    comprobar(plegado.includes('Solo Asia') && plegado.includes('Europa en pausa'), `${nombre}: plegado, destaca "Solo Asia" → ${plegado.replace(/\n/g, ' ')}`);
+    const empezarVisible = await p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }).evaluate((x) => {
+      const r = x.getBoundingClientRect();
+      return r.bottom <= innerHeight;
+    });
+    comprobar(empezarVisible, `${nombre}: con el aviso plegado, Empezar se ve sin desplazarse`);
+    await p.screenshot({ path: `${out}/${nombre}-foco-plegado.png` });
+    await p.reload(); await p.waitForSelector('.portada-progreso');
+    comprobar(await p.locator('.aviso-pausa-plegado').count() === 1, `${nombre}: plegado se recuerda al recargar`);
+    await p.locator('.aviso-pausa-plegado')[tap]();
+    comprobar(await p.locator('.aviso-pausa').getByRole('button', { name: 'Volver a Todo' }).count() === 1, `${nombre}: tocar el recordatorio despliega el aviso`);
+    await p.locator('.aviso-pausa').getByRole('button', { name: 'Entendido' })[tap]();
+    // Cambiar de continente: situación nueva, el aviso sale completo.
+    await p.locator('.selector-foco .selector-opcion', { hasText: 'Solo Europa' })[tap]();
+    await p.waitForSelector('.aviso-pausa');
+    comprobar(await p.locator('.aviso-pausa-plegado').count() === 0 && (await p.locator('.aviso-pausa').innerText()).includes('Asia: en pausa'), `${nombre}: al cambiar de continente, el aviso sale completo`);
     await p.locator('.aviso-pausa').getByRole('button', { name: 'Volver a Todo' })[tap]();
     await p.waitForTimeout(300);
     comprobar(await p.locator('.aviso-pausa').count() === 0, `${nombre}: "Volver a Todo" quita la pausa en un toque`);

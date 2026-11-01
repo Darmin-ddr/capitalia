@@ -1732,3 +1732,36 @@ button {
 .pasos-instalar li {
   margin-bottom: 6px;
 }
+
+/* Aviso de pausa plegado ("Entendido"): solo el recordatorio, destacado; al tocarlo se despliega. */
+.aviso-pausa.plegado {
+  padding: 0;
+}
+
+.aviso-pausa-plegado {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.aviso-pausa-detalle {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.aviso-pausa-plegado::after {
+  content: '▾';
+  margin-left: auto;
+  color: var(--texto-suave);
+}

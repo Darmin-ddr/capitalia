@@ -59,6 +59,26 @@ const TIPOS: Record<ItemHoy['tipo'], string> = { repaso: 'repasos', aprendiendo:
 /** Segundos por pregunta para estimar la duración de la sesión. */
 const SEGUNDOS_PREGUNTA = 25;
 
+/** El alumno plegó el aviso de pausa (con "Entendido") para este continente: se recuerda en este dispositivo. */
+const CLAVE_AVISO_PAUSA = 'capitalia-aviso-pausa-plegado';
+
+function avisoPausaPlegado(foco: Continente): boolean {
+  try {
+    return localStorage.getItem(CLAVE_AVISO_PAUSA) === foco;
+  } catch {
+    return false;
+  }
+}
+
+function plegarAvisoPausa(foco: Continente | null): void {
+  try {
+    if (foco) localStorage.setItem(CLAVE_AVISO_PAUSA, foco);
+    else localStorage.removeItem(CLAVE_AVISO_PAUSA);
+  } catch {
+    // Sin almacenamiento: el aviso saldrá desplegado la próxima vez. No es grave.
+  }
+}
+
 function textoDiasExamen(dias: number): string {
   if (dias > 1) return `faltan ${dias} días`;
   if (dias === 1) return 'es mañana';
@@ -132,14 +152,47 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   function avisoPausa(): HTMLElement | null {
     const foco = s.foco();
     if (!foco) return null;
-    const aviso = el(
-      'div',
-      'aviso-pausa',
-      el('p', '', el('strong', '', `Solo ${s.nombreContinente(foco)}.`), ` ${enPausa(foco)}: en pausa. Hoy no te pregunta sus países, ni repasos ni nuevos, hasta que vuelvas a «Todo». No se pierde nada.`),
-      boton('Volver a Todo', 'boton-secundario', () => s.ponerFoco(null)),
-    );
-    aviso.setAttribute('role', 'status');
-    return aviso;
+    const caja = el('div', 'aviso-pausa');
+    caja.setAttribute('role', 'status');
+    const pintar = (plegado: boolean) => {
+      if (plegado) {
+        // Plegado: solo el recordatorio, destacado; tocarlo vuelve a desplegar el aviso.
+        const recordatorio = el(
+          'button',
+          'aviso-pausa-plegado',
+          el('strong', '', `Solo ${s.nombreContinente(foco)}`),
+          el('span', 'aviso-pausa-detalle', `${enPausa(foco)} en pausa`),
+        );
+        recordatorio.type = 'button';
+        recordatorio.setAttribute('aria-expanded', 'false');
+        recordatorio.setAttribute('aria-label', `Solo ${s.nombreContinente(foco)}; ${enPausa(foco)} en pausa. Ver el aviso`);
+        recordatorio.addEventListener('click', () => {
+          plegarAvisoPausa(null);
+          pintar(false);
+        });
+        caja.className = 'aviso-pausa plegado';
+        caja.replaceChildren(recordatorio);
+        return;
+      }
+      caja.className = 'aviso-pausa';
+      caja.replaceChildren(
+        el('p', '', el('strong', '', `Solo ${s.nombreContinente(foco)}.`), ` ${enPausa(foco)}: en pausa. Hoy no te pregunta sus países, ni repasos ni nuevos, hasta que vuelvas a «Todo». No se pierde nada.`),
+        el(
+          'div',
+          'acciones',
+          boton('Volver a Todo', 'boton-secundario', () => {
+            plegarAvisoPausa(null);
+            s.ponerFoco(null);
+          }),
+          boton('Entendido', 'boton-secundario', () => {
+            plegarAvisoPausa(foco);
+            pintar(true);
+          }),
+        ),
+      );
+    };
+    pintar(avisoPausaPlegado(foco));
+    return caja;
   }
 
   /** "Qué estudia Hoy": Todo o un solo continente. Sin confirmación: el aviso fijo explica el efecto y deshacerlo es un toque. */
@@ -154,7 +207,10 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     selector.setAttribute('aria-label', 'Qué estudia Hoy');
     for (const o of opciones) {
       const b = boton(o.texto, 'selector-opcion', () => {
-        if (o.valor !== foco) s.ponerFoco(o.valor);
+        if (o.valor === foco) return;
+        // Situación nueva: el aviso vuelve a salir completo.
+        plegarAvisoPausa(null);
+        s.ponerFoco(o.valor);
       });
       b.setAttribute('aria-pressed', String(o.valor === foco));
       selector.append(b);
@@ -236,8 +292,9 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       avisoPausa(),
       el('p', 'resumen', `Hoy toca: ${items.length} preguntas, unos ${minutos} minutos.`),
       el('ul', 'hoy-cuentas', ...partes),
-      cuenta.get('nuevo')?.size ? el('p', 'ayuda', 'Los países nuevos salen dos veces, para fijarlos.') : null,
       el('div', 'acciones', empezar),
+      // Secundario: debajo del botón, para que Empezar quepa en la pantalla del móvil.
+      cuenta.get('nuevo')?.size ? el('p', 'ayuda', 'Los países nuevos salen dos veces, para fijarlos.') : null,
       avisoInstalar(),
       bloqueProgreso(),
     );
