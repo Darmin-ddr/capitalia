@@ -31,9 +31,16 @@ export interface Motor {
    * Registra una respuesta en el progreso (FSRS, historial y escalón de
    * aprendizaje) y lo guarda. Devuelve si el país ha subido de escalón.
    */
-  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: { examen?: boolean }): CambioEscalon;
+  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: OpcionesRespuesta): CambioEscalon;
   /** Truco a mostrar (el del alumno si lo inventó; null si no hay). */
   truco(paisId: string): string | null;
+}
+
+export interface OpcionesRespuesta {
+  /** Respuesta de examen (no mueve escalones). */
+  examen?: boolean;
+  /** Resultado para el escalón y la cola, si es distinto (medio punto en mapa mudo: "repasar" para FSRS, fallo aquí). */
+  escalon?: Resultado;
 }
 
 /** Un modo de práctica en marcha. */

@@ -501,6 +501,7 @@ export class Mapa {
     const [x, y] = punto;
     // Estrella y texto a tamaño constante en pantalla, aunque el mapa esté acercado.
     const grupo = document.createElementNS(SVG, 'g');
+    grupo.dataset.id = pais.id;
     grupo.setAttribute('transform', `translate(${x} ${y}) scale(${1 / this.vista.k})`);
 
     const estrella = document.createElementNS(SVG, 'path');

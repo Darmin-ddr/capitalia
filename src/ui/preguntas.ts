@@ -7,7 +7,7 @@ import { corregirMapaMudo } from '../logic/examen';
 import { conArticulo, preposicionDe } from '../logic/mensajes';
 import type { Mapa } from '../map/mapa';
 import { boton, el } from './dom';
-import { nombreResaltado, pintarAcierto, pintarAviso, pintarFallo, type Teclado } from './comun';
+import { nombreResaltado, pintarAcierto, pintarAviso, pintarFallo, type OpcionesRespuesta, type Teclado } from './comun';
 
 /** Lo que recibe una pregunta suelta (modos 2, 4 y 5). */
 export interface ArgsPregunta {
@@ -23,7 +23,7 @@ export interface ArgsPregunta {
   /** Truco a mostrar en el fallo (el propio del alumno si lo tiene). */
   truco: string | null;
   /** Comunica el resultado; devuelve si es un fallo recuperado (para celebrarlo). */
-  responder(resultado: Resultado): { recuperado: boolean };
+  responder(resultado: Resultado, opciones?: Pick<OpcionesRespuesta, 'escalon'>): { recuperado: boolean };
   siguiente(): void;
 }
 
@@ -222,8 +222,8 @@ function textoAviso(r: ResultadoTexto, que: 'país' | 'capital'): (Node | string
  */
 export const preguntaMapaMudo: Renderizador = (a) => {
   const { zona, mapa, pais, rng, teclado } = a;
+  // Solo la estrella, sin resaltar el país (SPEC 4.2).
   mapa.setInteractivo(false);
-  mapa.setEstado(pais.id, 'objetivo');
   mapa.mostrarCapital(pais.id, false);
 
   const campoPais = campoRespuesta('País', 'País');
@@ -271,7 +271,8 @@ export const preguntaMapaMudo: Renderizador = (a) => {
     campoPais.classList.add(vale(c.pais) ? 'correcta' : 'elegida-mal');
     campoCapital.classList.add(vale(c.capital) ? 'correcta' : 'elegida-mal');
     mapa.mostrarCapital(pais.id);
-    const { recuperado } = a.responder(c.resultado);
+    // Medio punto: "repasar" para la planificación, pero fallo para el escalón y la ronda.
+    const { recuperado } = a.responder(c.resultado, c.puntos === 0.5 ? { escalon: 'fallo' } : undefined);
     const nombre = el('strong', '', pais.nombre);
     const capital = el('strong', '', pais.capital);
 

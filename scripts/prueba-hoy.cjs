@@ -40,16 +40,18 @@ async function responder(p, tap, mal = false) {
     await p.locator(`.pais[data-id="${otro}"]`).first().dispatchEvent('click');
     return [id, 'alreves'];
   }
-  const id = await p.locator('path.pais.objetivo').first().getAttribute('data-id').catch(() => null);
-  if (!id) return null;
-  const pais = P[id];
   if (await p.locator('.mapa-mudo-form').count()) {
+    const id = await p.locator('.capa-capital g').first().getAttribute('data-id');
+    const pais = P[id];
     const c = p.locator('.mapa-mudo-form .campo-texto');
     await c.nth(0).fill(mal ? 'nada' : pais.nombre);
     await c.nth(1).fill(mal ? 'nada' : pais.capital);
     await p.locator('.mapa-mudo-form .boton-principal')[tap]();
     return [id, 'mapamudo'];
   }
+  const id = await p.locator('path.pais.objetivo').first().getAttribute('data-id').catch(() => null);
+  if (!id) return null;
+  const pais = P[id];
   if (await p.locator('.opcion').count()) {
     const textos = await p.locator('.opcion-texto').allInnerTexts();
     const i = mal ? textos.findIndex((t) => t !== pais.capital) : textos.indexOf(pais.capital);

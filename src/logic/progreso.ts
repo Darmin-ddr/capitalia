@@ -135,7 +135,7 @@ export function aGuardada(c: Card): TarjetaGuardada {
 }
 
 export interface OpcionesRegistro {
-  /** Modo examen: los fallos no tocan la planificación FSRS (SPEC 7). */
+  /** Respuesta del examen: cuenta para FSRS como cualquier otra (SPEC 4.4), pero se marca en el historial. */
   examen?: boolean;
 }
 
@@ -153,12 +153,9 @@ export function registrarRespuesta(
   opciones: OpcionesRegistro = {},
 ): void {
   const nota = deducirNota({ modo, resultado, tiempoMs });
-  const tocarFsrs = !(opciones.examen && resultado === 'fallo');
-  if (tocarFsrs) {
-    const previa = estado.tarjetas[paisId];
-    const tarjeta = previa ? aTarjeta(previa) : createEmptyCard(ahora);
-    estado.tarjetas[paisId] = aGuardada(planificador.next(tarjeta, ahora, nota).card);
-  }
+  const previa = estado.tarjetas[paisId];
+  const tarjeta = previa ? aTarjeta(previa) : createEmptyCard(ahora);
+  estado.tarjetas[paisId] = aGuardada(planificador.next(tarjeta, ahora, nota).card);
   estado.historial.push({
     t: ahora.toISOString(),
     pais: paisId,

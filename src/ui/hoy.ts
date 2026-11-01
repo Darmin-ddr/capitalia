@@ -144,11 +144,11 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       rng: s.rng,
       teclado,
       truco: s.motor.truco(id),
-      responder(resultado: Resultado) {
+      responder(resultado: Resultado, opciones) {
         if (respondida) return { recuperado: false };
         respondida = true;
-        const r = actual.responder(resultado);
-        s.motor.registrar(id, modo, resultado, Math.max(0, performance.now() - inicio));
+        const r = actual.responder(opciones?.escalon ?? resultado);
+        s.motor.registrar(id, modo, resultado, Math.max(0, performance.now() - inicio), { escalon: opciones?.escalon });
         if (resultado === 'acierto') temporizador = window.setTimeout(siguiente, PAUSA_TRAS_ACIERTO_MS + (r.recuperado ? 500 : 0));
         return { recuperado: r.recuperado };
       },

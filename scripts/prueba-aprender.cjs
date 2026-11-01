@@ -61,7 +61,9 @@ const out = process.argv[2] || '.';
     while (!(await p.locator('.resumen-titulo').count()) && pasos++ < 40) {
       const sig = p.locator('.feedback .boton-principal');
       if (await sig.count()) { await sig[tap](); await p.waitForTimeout(100); continue; }
-      const objetivo = await p.locator('path.pais.objetivo').first().getAttribute('data-id').catch(() => null);
+      const objetivo = (await p.locator('.mapa-mudo-form').count())
+        ? await p.locator('.capa-capital g').first().getAttribute('data-id')
+        : await p.locator('path.pais.objetivo').first().getAttribute('data-id').catch(() => null);
       if (!objetivo) { await p.waitForTimeout(200); continue; }
       vistos[objetivo] = (vistos[objetivo] || 0) + 1;
       const pais = P[objetivo];
@@ -70,6 +72,7 @@ const out = process.argv[2] || '.';
           capturaMudo = true;
           comprobar((await p.locator('.etiqueta-capital').count()) === 0, `${nombre}: mapa mudo sin nombre de capital`);
           comprobar((await p.locator('.estrella').count()) === 1, `${nombre}: mapa mudo con la estrella`);
+          comprobar((await p.locator('path.pais.objetivo').count()) === 0, `${nombre}: mapa mudo sin resaltar el país`);
           await p.screenshot({ path: `${out}/${nombre}-aprender-mapamudo.png` });
         }
         const campos = p.locator('.mapa-mudo-form .campo-texto');

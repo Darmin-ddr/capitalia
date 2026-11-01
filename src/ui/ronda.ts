@@ -77,11 +77,11 @@ export function iniciarRonda(ctx: Contexto, op: OpcionesRonda): ModoPractica {
       rng,
       teclado,
       truco: motor.truco(id),
-      responder(resultado: Resultado) {
+      responder(resultado: Resultado, opciones) {
         if (respondida) return { recuperado: false };
         respondida = true;
-        const r = cola.responder(resultado);
-        motor.registrar(id, modo, resultado, performance.now() - inicio, { examen: op.examen });
+        const r = cola.responder(opciones?.escalon ?? resultado);
+        motor.registrar(id, modo, resultado, performance.now() - inicio, { examen: op.examen, escalon: opciones?.escalon });
         if (resultado === 'acierto') {
           temporizador = window.setTimeout(siguiente, PAUSA_TRAS_ACIERTO_MS + (r.recuperado ? 500 : 0));
         }

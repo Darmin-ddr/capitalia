@@ -116,7 +116,9 @@ export function iniciarApp(): void {
       // Un país priorizado (fallado en un examen) deja de serlo al acertarlo fuera del examen.
       if (resultado === 'acierto' && !opciones?.examen) estado.prioridad = estado.prioridad.filter((x) => x !== paisId);
       // El examen mide; no hace subir de escalón (SPEC 4.4).
-      const cambio = opciones?.examen ? { subio: false, aprendido: false } : registrarEscalon(estado, paisId, modoId, resultado);
+      const cambio = opciones?.examen
+        ? { subio: false, aprendido: false }
+        : registrarEscalon(estado, paisId, modoId, opciones?.escalon ?? resultado);
       guardar();
       actualizarNiveles();
       comprobarHitos(antes);

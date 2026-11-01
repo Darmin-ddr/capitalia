@@ -63,13 +63,13 @@ describe('registrarRespuesta y dominio', () => {
     expect(modoSegunDominio(e.tarjetas.A)).toBe('elegir');
   });
 
-  it('modo examen: los fallos no tocan FSRS, los aciertos sí', () => {
+  it('examen: cuenta para FSRS (también los fallos, SPEC 4.4) y queda marcado en el historial', () => {
     const e = estadoVacio();
-    registrarRespuesta(e, 'A', 'elegir', 'fallo', 1000, D('2026-11-01T10:00:00Z'), { examen: true });
-    expect(e.tarjetas.A).toBeUndefined();
-    expect(e.historial[0].examen).toBe(true);
-    registrarRespuesta(e, 'A', 'elegir', 'acierto', 1000, D('2026-11-01T10:01:00Z'), { examen: true });
+    registrarRespuesta(e, 'A', 'mapamudo', 'fallo', 1000, D('2026-11-01T10:00:00Z'), { examen: true });
     expect(e.tarjetas.A.reps).toBe(1);
+    expect(e.historial[0].examen).toBe(true);
+    registrarRespuesta(e, 'A', 'mapamudo', 'acierto', 1000, D('2026-11-01T10:01:00Z'), { examen: true });
+    expect(e.tarjetas.A.reps).toBe(2);
   });
 
   it('el historial no crece sin límite', () => {
