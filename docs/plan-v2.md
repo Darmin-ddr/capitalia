@@ -3,9 +3,9 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
 ## Ahora mismo
-- **Fase en curso:** F2 (Aprender).
-- **Hecho:** F1 completa (lógica con tests: `src/logic/texto.ts` validarPais, `progreso.ts` escalones y migración, `hoy.ts`, `examen.ts`). 146 tests en verde.
-- **Siguiente paso concreto:** pestaña Aprender por región (ver F2), usando `escalonDe`, `registrarEscalon` y `corregirMapaMudo`.
+- **Fase en curso:** F3 (Hoy).
+- **Hecho:** F1 (lógica con tests) y F2 (pestaña Aprender en `src/ui/aprender.ts`, pregunta de mapa mudo `preguntaMapaMudo` en `preguntas.ts`, prueba `scripts/prueba-aprender.cjs` en verde). Practicar ya no existe; Repaso sigue siendo la v1 hasta F3.
+- **Siguiente paso concreto:** sustituir Repaso por Hoy (`crearSesionHoy`, `nuevosDeHoy`, `modoHoy` de `src/logic/hoy.ts`) con sesión multirregión.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -46,7 +46,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - Modo de cada pregunta en Hoy según el estado del país (incluye Al revés y Mapa mudo para variedad).
 - Examen: selección de preguntas por ámbito y corrección con medio punto; registro en FSRS.
 
-### [ ] F2. Aprender
+### [x] F2. Aprender
 - Pestaña por región; cada país en su escalón; Colocar por tandas para los países en ese escalón.
 - Pregunta de mapa mudo (estrella resaltada, país y capital).
 
@@ -70,4 +70,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E4. Composición de Hoy:** 3 repasos de calentamiento; luego los nuevos repartidos entre el resto; cada nuevo sale dos veces, separado por 3 preguntas. Orden de los repasos: países priorizados (examen, fallados) y luego los más atrasados. Los nuevos salen primero de la región actual.
 - **E5. Nuevos autorregulados:** con menos de 10 respuestas recientes, la media (7-8); 90 % de aciertos o más, el máximo (10); 80 %, unos 8; 70 %, 6; menos, 5. Con más de 40 repasos pendientes, 5. Se descuentan los países empezados hoy, para que dos sesiones el mismo día no doblen los nuevos.
 - **E6. Tipo de pregunta de los aprendidos en Hoy:** al azar entre Mapa mudo, Escribir y Al revés; más Mapa mudo (50 %) cuando el país ya es estable.
-- **E7. Corrección de Mapa mudo:** una errata o un aviso (Holanda) valen el punto en la nota, pero el país se repasa (cuenta como "repasar" para la planificación y no sube de escalón).
+- **E7. Corrección de Mapa mudo:** una errata o un aviso (Holanda) valen el punto en la nota, pero el país se repasa (cuenta como "repasar" para la planificación y no sube de escalón). Medio punto vale 0,5 en la nota, pero para la planificación y el escalón cuenta como fallo: no se sabía uno de los dos (se vio en la prueba de F2: con "repasar", un país podía quedar aprendido sin saberse la capital).
+- **E8. Pregunta de mapa mudo fuera del examen:** el país se resalta como objetivo y se ve la estrella sin nombre; hay que escribir país y capital. Enter en el campo del país pasa al de la capital. Al corregir se muestra el nombre de la capital en el mapa.
+- **E9. Tanda de Aprender:** una pregunta por cada país pendiente de la región, en el modo de su escalón; los de Colocar van juntos en el pool de capitales (si hay al menos dos; uno solo va como Al revés). Así los dos aciertos de un escalón llegan siempre en tandas distintas. Al terminar, resumen con quién sube y la escalera actualizada. Si la región está toda aprendida, se ofrece practicarla con mapa mudo.
+- **E10. Practicar desaparece ya en F2:** la pestaña Aprender ocupa su sitio (las pestañas definitivas se ordenan en F5).

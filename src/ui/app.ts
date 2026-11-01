@@ -4,6 +4,7 @@ import { Almacen, almacenDelNavegador } from '../logic/almacen';
 import {
   modoSegunDominio,
   nivelesDe,
+  registrarEscalon,
   registrarRespuesta,
   regionDominada,
   regionesDesbloqueadas,
@@ -15,7 +16,7 @@ import { lanzarConfeti } from './confeti';
 import { el } from './dom';
 import type { Motor } from './comun';
 import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
-import { iniciarPracticar } from './practicar';
+import { iniciarAprender } from './aprender';
 import { iniciarRepaso } from './repaso';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
@@ -26,7 +27,7 @@ import { crearPanelAdultos, textoDias } from './panel';
 import { diasHastaExamen, regionesConExamen, seleccionarExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
 
-type Pestana = 'explorar' | 'repaso' | 'practicar';
+type Pestana = 'explorar' | 'repaso' | 'aprender';
 
 /**
  * Estado y orquestación de la app: progreso guardado, región actual, mapa,
@@ -100,9 +101,12 @@ export function iniciarApp(): void {
     registrar(paisId, modoId, resultado, tiempoMs, opciones) {
       const antes = desbloqueadas(region.continente);
       registrarRespuesta(estado, paisId, modoId, resultado, tiempoMs, new Date(), opciones);
+      // El examen mide; no hace subir de escalón (SPEC 4.4).
+      const cambio = opciones?.examen ? { subio: false, aprendido: false } : registrarEscalon(estado, paisId, modoId, resultado);
       guardar();
       actualizarNiveles();
       comprobarHitos(antes);
+      return cambio;
     },
     modoPara: (id) => modoSegunDominio(estado.tarjetas[id]),
     truco: (id) => trucos.propio(id) ?? trucos.predefinido(id),
@@ -165,7 +169,7 @@ export function iniciarApp(): void {
       motor,
     };
     if (nueva === 'explorar') modo = iniciarExplorar(panel, mapa, paisesRegion, trucos);
-    else if (nueva === 'practicar') modo = iniciarPracticar(panel, mapa, paisesRegion, activos, Math.random, ctx.alExplorar, motor);
+    else if (nueva === 'aprender') modo = iniciarAprender(panel, ctx, () => estado);
     else {
       const lista = estado.ajustes.listaExamen;
       const examenRegion = paisesRegion.filter(enExamen);

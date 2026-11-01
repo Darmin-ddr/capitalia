@@ -26,8 +26,8 @@ describe('examen', () => {
   it('corrección: punto entero, medio punto y cero', () => {
     const c = (pais: string, capital: string) => corregirMapaMudo(pais, capital, p('FRA'), paises);
     expect(c('Francia', 'París')).toMatchObject({ puntos: 1, resultado: 'acierto' });
-    expect(c('francia', 'Madrid')).toMatchObject({ puntos: 0.5, resultado: 'repasar' });
-    expect(c('España', 'París')).toMatchObject({ puntos: 0.5, resultado: 'repasar' });
+    expect(c('francia', 'Madrid')).toMatchObject({ puntos: 0.5, resultado: 'fallo' });
+    expect(c('España', 'París')).toMatchObject({ puntos: 0.5, resultado: 'fallo' });
     expect(c('', '')).toMatchObject({ puntos: 0, resultado: 'fallo' });
   });
 

@@ -2,18 +2,27 @@ import { RondaColocar } from '../logic/colocar';
 import { conArticulo, preposicionDe } from '../logic/mensajes';
 import { boton, el } from './dom';
 import { pintarAcierto, pintarFallo, pintarResumen, progreso, type Contexto, type ModoPractica } from './comun';
+import type { ResumenRonda } from '../logic/sesion';
+
+export interface OpcionesColocar {
+  /** Capitales a colocar (por defecto, todas las de la región). Se puede tocar cualquier país de la región. */
+  ids?: readonly string[];
+  /** Qué hacer al terminar (por defecto, el resumen con "Otra ronda"). */
+  alTerminar?: (resumen: ResumenRonda) => void;
+}
 
 /**
  * Modo 3: tandas de capitales para colocar. "Toca la capital, luego toca el
  * país." Todos los países de la región se pueden tocar siempre.
  */
-export function iniciarColocar(ctx: Contexto): ModoPractica {
+export function iniciarColocar(ctx: Contexto, op: OpcionesColocar = {}): ModoPractica {
   const { contenedor, mapa, region, rng, motor } = ctx;
   /** Momento de la última acción, para medir el tiempo de cada colocación. */
   let desde = performance.now();
   mapa.setInteractivo(true);
 
-  let ronda = new RondaColocar(region.map((p) => p.id), rng);
+  const ids = () => op.ids ?? region.map((p) => p.id);
+  let ronda = new RondaColocar(ids(), rng);
   let seleccionada: string | null = null;
   /** Países colocados en la tanda actual (en verde). */
   const colocados = new Set<string>();
@@ -105,7 +114,8 @@ export function iniciarColocar(ctx: Contexto): ModoPractica {
       window.setTimeout(() => {
         if (!contenedor.contains(feedback)) return;
         limpiarTodo();
-        pintarResumen(contenedor, ronda.resumen(), otraRonda, ctx.alExplorar);
+        if (op.alTerminar) op.alTerminar(ronda.resumen());
+        else pintarResumen(contenedor, ronda.resumen(), otraRonda, ctx.alExplorar);
       }, r.acierto ? 1200 : 2600);
       pool.replaceChildren();
       return;
@@ -128,7 +138,7 @@ export function iniciarColocar(ctx: Contexto): ModoPractica {
   }
 
   function otraRonda(): void {
-    ronda = new RondaColocar(region.map((p) => p.id), rng);
+    ronda = new RondaColocar(ids(), rng);
     colocadasEnRonda = 0;
     seleccionada = null;
     limpiarTodo();

@@ -2,7 +2,8 @@ import type { Pais } from '../logic/types';
 import type { Rng } from '../logic/rng';
 import type { Resultado } from '../logic/sesion';
 import { crearPreguntaOpciones } from '../logic/opciones';
-import { validarTexto } from '../logic/texto';
+import { validarTexto, type ResultadoTexto } from '../logic/texto';
+import { corregirMapaMudo } from '../logic/examen';
 import { conArticulo, preposicionDe } from '../logic/mensajes';
 import type { Mapa } from '../map/mapa';
 import { boton, el } from './dom';
@@ -191,4 +192,107 @@ export const preguntaAlReves: Renderizador = (a) => {
       teclado.enterPara(a.siguiente);
     },
   };
+};
+
+/** Campo de texto para respuestas escritas (sin autocorrector ni mayúsculas automáticas). */
+export function campoRespuesta(etiqueta: string, placeholder: string): HTMLInputElement {
+  const campo = el('input', 'campo-texto');
+  campo.type = 'text';
+  campo.autocomplete = 'off';
+  campo.spellcheck = false;
+  campo.setAttribute('autocorrect', 'off');
+  campo.setAttribute('autocapitalize', 'off');
+  campo.setAttribute('aria-label', etiqueta);
+  campo.placeholder = placeholder;
+  return campo;
+}
+
+const vale = (r: ResultadoTexto) => r.tipo === 'correcto' || r.tipo === 'errata' || r.tipo === 'antiguo';
+
+/** Texto del aviso de un campo aceptado con errata o con un nombre que no es el del listado. */
+function textoAviso(r: ResultadoTexto, que: 'país' | 'capital'): (Node | string)[] {
+  if (r.tipo === 'errata') return [que === 'país' ? 'El país se escribe ' : 'La capital se escribe ', el('strong', '', r.formaCorrecta), '. '];
+  if (r.tipo === 'antiguo') return [que === 'país' ? 'El nombre del país es ' : 'Ahora se llama ', el('strong', '', r.formaCorrecta), '. '];
+  return [];
+}
+
+/**
+ * Mapa mudo (SPEC 4.2): se ve la estrella de una capital, sin nombre, y hay
+ * que escribir el país y la capital. Solo uno de los dos vale medio punto.
+ */
+export const preguntaMapaMudo: Renderizador = (a) => {
+  const { zona, mapa, pais, rng, teclado } = a;
+  mapa.setInteractivo(false);
+  mapa.setEstado(pais.id, 'objetivo');
+  mapa.mostrarCapital(pais.id, false);
+
+  const campoPais = campoRespuesta('País', 'País');
+  const campoCapital = campoRespuesta('Capital', 'Capital');
+  campoPais.enterKeyHint = 'next';
+  campoCapital.enterKeyHint = 'done';
+  const comprobar = el('button', 'boton-principal', 'Comprobar');
+  comprobar.type = 'submit';
+  const noLoSe = boton('No lo sé', 'boton-secundario', () => responder(true));
+  const botonesForm = el('div', 'acciones', comprobar, noLoSe);
+  const formulario = el(
+    'form',
+    'respuesta-form mapa-mudo-form',
+    el('label', 'campo-etiquetado', el('span', 'etiqueta-campo', 'País'), campoPais),
+    el('label', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Capital'), campoCapital),
+    botonesForm,
+  );
+  formulario.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Enter en el país con la capital vacía: pasar a la capital.
+    if (document.activeElement === campoPais && !campoCapital.value.trim()) {
+      campoCapital.focus();
+      return;
+    }
+    responder(false);
+  });
+  const feedback = el('div', 'feedback');
+  zona.append(
+    el('p', 'enunciado', '¿Qué país es y cuál es su capital?'),
+    el('p', 'ayuda', 'Fíjate en la estrella del mapa.'),
+    formulario,
+    feedback,
+  );
+  campoPais.focus({ preventScroll: true });
+  teclado.usar(null);
+
+  function responder(noLoSabe: boolean): void {
+    if (!noLoSabe && !campoPais.value.trim() && !campoCapital.value.trim()) {
+      campoPais.focus();
+      return;
+    }
+    const c = corregirMapaMudo(noLoSabe ? '' : campoPais.value, noLoSabe ? '' : campoCapital.value, pais, a.candidatos);
+    for (const x of [campoPais, campoCapital, comprobar, noLoSe]) x.disabled = true;
+    botonesForm.hidden = true;
+    campoPais.classList.add(vale(c.pais) ? 'correcta' : 'elegida-mal');
+    campoCapital.classList.add(vale(c.capital) ? 'correcta' : 'elegida-mal');
+    mapa.mostrarCapital(pais.id);
+    const { recuperado } = a.responder(c.resultado);
+    const nombre = el('strong', '', pais.nombre);
+    const capital = el('strong', '', pais.capital);
+
+    if (c.resultado === 'acierto') {
+      mapa.setEstado(pais.id, 'acierto');
+      pintarAcierto(feedback, recuperado, rng, a.siguiente);
+    } else if (c.puntos === 1) {
+      // Todo bien, con alguna errata o con un nombre que no es el del listado.
+      mapa.setEstado(pais.id, 'acierto');
+      pintarAviso(feedback, ['¡Bien! ', ...textoAviso(c.pais, 'país'), ...textoAviso(c.capital, 'capital')], a.siguiente).focus({ preventScroll: true });
+    } else if (c.puntos === 0.5) {
+      mapa.setEstado(pais.id, 'fallo');
+      const titulo = vale(c.pais)
+        ? ['Medio punto: el país, bien. La capital ', preposicionDe(pais.nombre), pais.nombre, ' es ', capital, '.']
+        : ['Medio punto: la capital, bien. Es la capital ', preposicionDe(pais.nombre), nombre, '.'];
+      pintarFallo(feedback, titulo, a.truco, a.siguiente)?.focus({ preventScroll: true });
+    } else {
+      mapa.setEstado(pais.id, 'fallo');
+      pintarFallo(feedback, ['Es ', nombre, ', con capital ', capital, '.'], a.truco, a.siguiente)?.focus({ preventScroll: true });
+    }
+    teclado.enterPara(a.siguiente);
+  }
+  return {};
 };

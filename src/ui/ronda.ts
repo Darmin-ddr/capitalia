@@ -1,13 +1,14 @@
 import type { ModoId } from '../logic/config';
-import { ColaRonda, type Resultado } from '../logic/sesion';
+import { ColaRonda, type Resultado, type ResumenRonda } from '../logic/sesion';
 import { el } from './dom';
 import { PAUSA_TRAS_ACIERTO_MS, Teclado, pintarResumen, progreso, type Contexto, type ModoPractica } from './comun';
-import { preguntaAlReves, preguntaElegir, preguntaEscribir, type ControlPregunta, type Renderizador } from './preguntas';
+import { preguntaAlReves, preguntaElegir, preguntaEscribir, preguntaMapaMudo, type ControlPregunta, type Renderizador } from './preguntas';
 
 const RENDERIZADORES: Partial<Record<ModoId, Renderizador>> = {
   elegir: preguntaElegir,
   escribir: preguntaEscribir,
   alreves: preguntaAlReves,
+  mapamudo: preguntaMapaMudo,
 };
 
 export interface OpcionesRonda {
@@ -20,6 +21,8 @@ export interface OpcionesRonda {
   respetarOrden?: boolean;
   /** Ronda de examen: los fallos no alteran la planificación FSRS (SPEC 7). */
   examen?: boolean;
+  /** Qué hacer al terminar (por defecto, el resumen con "Otra ronda"). */
+  alTerminar?: (resumen: ResumenRonda) => void;
 }
 
 /**
@@ -53,7 +56,8 @@ export function iniciarRonda(ctx: Contexto, op: OpcionesRonda): ModoPractica {
     if (!id) {
       teclado.usar(null);
       mapa.setInteractivo(false);
-      pintarResumen(contenedor, cola.resumen(), otraRonda, ctx.alExplorar, op.textosResumen);
+      if (op.alTerminar) op.alTerminar(cola.resumen());
+      else pintarResumen(contenedor, cola.resumen(), otraRonda, ctx.alExplorar, op.textosResumen);
       return;
     }
     const pais = ctx.candidatos.find((p) => p.id === id) ?? region.find((p) => p.id === id)!;

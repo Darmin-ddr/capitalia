@@ -1301,3 +1301,70 @@ button {
   min-height: 56px;
   font-size: 1.05rem;
 }
+
+/* --- Aprender: escalones de la región (SPEC 4.3) --- */
+.escalera {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.escalon {
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+}
+
+.escalon.vacio {
+  opacity: 0.6;
+}
+
+.escalon-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.escalon-cuenta {
+  min-width: 1.8em;
+  text-align: center;
+  border-radius: 999px;
+  background: var(--fondo);
+  font-variant-numeric: tabular-nums;
+}
+
+.escalon-aprendido .escalon-cuenta {
+  background: var(--acierto-fondo);
+  color: var(--acierto);
+}
+
+.escalon-detalle {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.escalon-paises {
+  font-size: 0.9rem;
+}
+
+.resumen-escalones {
+  margin: 6px 0 0;
+}
+
+/* --- Mapa mudo: país y capital --- */
+.campo-etiquetado {
+  display: grid;
+  gap: 4px;
+}
+
+.etiqueta-campo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+}

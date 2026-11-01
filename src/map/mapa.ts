@@ -118,6 +118,7 @@ export class Mapa {
   private estados = new Map<string, EstadoPais>();
   private niveles = new Map<string, Nivel>();
   private capitalVisible: string | null = null;
+  private capitalConNombre = true;
   private ancho = 0;
   private alto = 0;
   private readonly observador: ResizeObserver;
@@ -190,9 +191,10 @@ export class Mapa {
     for (const id of this.elementos.keys()) this.aplicarClases(id, false);
   }
 
-  /** Muestra la estrella y el nombre de la capital de un país (o los oculta con null). */
-  mostrarCapital(paisId: string | null): void {
+  /** Muestra la estrella y el nombre de la capital de un país (o los oculta con null). Sin nombre: mapa mudo. */
+  mostrarCapital(paisId: string | null, conNombre = true): void {
     this.capitalVisible = paisId;
+    this.capitalConNombre = conNombre;
     this.dibujarCapital();
   }
 
@@ -515,7 +517,8 @@ export class Mapa {
     texto.setAttribute('y', '5');
     texto.setAttribute('text-anchor', aLaIzquierda ? 'end' : 'start');
 
-    grupo.append(estrella, texto);
+    grupo.append(estrella);
+    if (this.capitalConNombre) grupo.append(texto);
     this.capaCapital.append(grupo);
   }
 }

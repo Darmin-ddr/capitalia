@@ -27,7 +27,10 @@ export interface CorreccionMapaMudo {
   puntos: number;
   pais: ResultadoTexto;
   capital: ResultadoTexto;
-  /** Para la planificación: completo y sin avisos → acierto; medio o con avisos → repasar; nada → fallo. */
+  /**
+   * Para la planificación y los escalones: completo y sin avisos → acierto;
+   * completo con errata o aviso → repasar; medio punto o nada → fallo (no se sabía uno de los dos).
+   */
   resultado: Resultado;
 }
 
@@ -39,7 +42,7 @@ export function corregirMapaMudo(textoPais: string, textoCapital: string, objeti
   const aciertos = Number(valido(pais)) + Number(valido(capital));
   const puntos = aciertos / 2;
   const limpio = pais.tipo === 'correcto' && capital.tipo === 'correcto';
-  const resultado: Resultado = aciertos === 0 ? 'fallo' : aciertos === 2 && limpio ? 'acierto' : 'repasar';
+  const resultado: Resultado = aciertos < 2 ? 'fallo' : limpio ? 'acierto' : 'repasar';
   return { puntos, pais, capital, resultado };
 }
 

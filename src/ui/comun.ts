@@ -2,6 +2,7 @@ import type { Pais } from '../logic/types';
 import type { Rng } from '../logic/rng';
 import type { Resultado, ResumenRonda } from '../logic/sesion';
 import type { ModoId } from '../logic/config';
+import type { CambioEscalon } from '../logic/progreso';
 import { MENSAJE_RECUPERADO, OTRA_OPORTUNIDAD, mensajeAcierto, mensajeResumen } from '../logic/mensajes';
 import type { Mapa } from '../map/mapa';
 import { boton, el, rellenar } from './dom';
@@ -26,8 +27,11 @@ export interface Contexto {
 
 /** Servicios de la app que usan los modos: guardar progreso y consultar trucos y dominio. */
 export interface Motor {
-  /** Registra una respuesta en el progreso (FSRS + historial) y lo guarda. */
-  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: { examen?: boolean }): void;
+  /**
+   * Registra una respuesta en el progreso (FSRS, historial y escalón de
+   * aprendizaje) y lo guarda. Devuelve si el país ha subido de escalón.
+   */
+  registrar(paisId: string, modo: ModoId, resultado: Resultado, tiempoMs: number, opciones?: { examen?: boolean }): CambioEscalon;
   /** Modo que le toca a un país según su dominio. */
   modoPara(paisId: string): ModoId;
   /** Truco a mostrar (el del alumno si lo inventó; null si no hay). */
