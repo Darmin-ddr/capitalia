@@ -6,7 +6,8 @@ import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import mundo from '../data/mapa-50m.json';
 import type { Pais } from '../logic/types';
 import type { Nivel } from '../logic/progreso';
-import { desplazar, VISTA_INICIAL, zoomEn, type Vista } from '../logic/vista';
+import { desplazar, esInicial, VISTA_INICIAL, zoomEn, type Vista } from '../logic/vista';
+import { formaParaEncuadre } from '../logic/encuadre';
 
 type PropsMundo = { name: string };
 type TopoMundo = Topology<{ countries: GeometryCollection<PropsMundo> }>;
@@ -203,27 +204,31 @@ export class Mapa {
     this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     this.vista = VISTA_INICIAL;
 
-    // Encuadre: las formas de la región, salvo los países enormes (Rusia) y los
-    // invitados de otro continente, que cuentan solo por su capital.
+    // Encuadre: las formas de la región sin sus territorios pequeños y lejanos
+    // (ultramar). Los países enormes (Rusia) y los invitados de otro continente
+    // cuentan solo por su capital.
     const encuadre: Feature[] = [];
     for (const f of this.formas) {
       if (!f.pais || !this.idsRegion.has(f.pais.id)) continue;
-      const [[a0], [a1]] = geoBounds(f.feature);
+      const forma = formaParaEncuadre(f.feature, f.pais.capitalCoords);
+      const [[a0], [a1]] = forma ? geoBounds(forma) : [[0], [999]];
       const anchura = a1 >= a0 ? a1 - a0 : a1 + 360 - a0;
-      if (anchura > 60 || this.op.fueraDeEncuadre?.has(f.pais.id)) {
+      if (!forma || anchura > 60 || this.op.fueraDeEncuadre?.has(f.pais.id)) {
         encuadre.push({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: f.pais.capitalCoords } });
-      } else encuadre.push(f.feature);
+      } else encuadre.push(forma);
     }
     const region: FeatureCollection = { type: 'FeatureCollection', features: encuadre };
     const [[x0, y0], [x1, y1]] = geoBounds(region);
     const centroLon = x1 >= x0 ? (x0 + x1) / 2 : (x0 + x1 + 360) / 2;
-    const margen = Math.max(12, Math.min(width, height) * 0.06);
+    const margen = Math.max(16, Math.min(width, height) * 0.08);
     // Hueco arriba si algo se superpone al mapa (el selector de región en móvil).
     const reserva = parseFloat(getComputedStyle(this.op.contenedor).getPropertyValue('--reserva-superior')) || 0;
+    // Hueco a la derecha para los botones de zoom, que van sobre el mapa.
+    const reservaDerecha = 54;
     this.proyeccion = geoAzimuthalEqualArea()
       .rotate([-centroLon, -(y0 + y1) / 2])
       .clipAngle(60)
-      .fitExtent([[margen, margen + reserva], [width - margen, height - margen]], region);
+      .fitExtent([[margen, margen + reserva], [width - margen - reservaDerecha, height - margen]], region);
     const ruta = geoPath(this.proyeccion);
 
     this.capaPaises.replaceChildren();
@@ -233,8 +238,11 @@ export class Mapa {
 
     const mar = document.createElementNS(SVG, 'rect');
     mar.setAttribute('class', 'mar');
-    mar.setAttribute('width', String(width));
-    mar.setAttribute('height', String(height));
+    // El mar cubre de sobra lo que se ve al alejar o desplazar el mapa.
+    mar.setAttribute('x', String(-2 * width));
+    mar.setAttribute('y', String(-2 * height));
+    mar.setAttribute('width', String(5 * width));
+    mar.setAttribute('height', String(5 * height));
     this.capaPaises.append(mar);
 
     const encima: SVGElement[] = [];
@@ -242,7 +250,8 @@ export class Mapa {
       const d = ruta(forma.feature);
       if (!d) continue;
       const [[bx0, by0], [bx1, by1]] = ruta.bounds(forma.feature);
-      if (bx1 < 0 || by1 < 0 || bx0 > width || by0 > height) continue;
+      // Se dibuja también lo que queda fuera de la vista inicial, para poder alejar y moverse.
+      if (bx1 < -1.5 * width || by1 < -1.5 * height || bx0 > 2.5 * width || by0 > 2.5 * height) continue;
 
       const el = document.createElementNS(SVG, 'path');
       el.setAttribute('d', d);
@@ -315,7 +324,7 @@ export class Mapa {
       c.setAttribute('r', String(base / k));
     }
     this.dibujarCapital();
-    this.controles.classList.toggle('con-zoom', k > 1.001);
+    this.controles.classList.toggle('con-zoom', !esInicial(this.vista));
   }
 
   private puntoLocal(e: { clientX: number; clientY: number }): { x: number; y: number } {

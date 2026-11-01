@@ -51,7 +51,7 @@ const ERRATA = { ALB:'Tirnaa',BIH:'Sarajebo',BGR:'Sofai',HRV:'Zagerb',SVN:'Liubi
     while (!(await p.locator('.resumen').count()) && pasos++ < 40) {
       const sig = p.locator('.feedback .boton-principal');
       if (await sig.count()) { await sig[tap](); await p.waitForTimeout(80); continue; }
-      const id = await p.locator('.pais.objetivo').getAttribute('data-id');
+      const id = await p.locator('path.pais.objetivo').getAttribute('data-id');
       vistos[id] = (vistos[id] || 0) + 1;
       let texto;
       if (vistos[id] === 1 && id === 'MNE') texto = 'titogrado';

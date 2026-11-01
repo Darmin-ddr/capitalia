@@ -19,6 +19,9 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **"Acerca de"** (desde ⋯): versión 1.0.0, fecha, autoría y créditos (Natural Earth, GeoNames con su atribución CC BY, ts-fsrs, Nunito, d3-geo).
 - **Primer arranque con bienvenida** ("¿quién la está abriendo?") y **guía para madres y padres** (4 pasos, también en ⋯), que acaba en "Configurar ahora" o "Pasar al alumno".
 - **Examen por continentes:** casillas "Europa entera" y "Asia entera" sobre las de región y país, con estado "a medias". Rusia y Turquía cuentan en los dos continentes.
+- **Encuadre de los mapas corregido:** los territorios de ultramar (Guayana Francesa, Caribe neerlandés, Svalbard, Azores, Madeira, Canarias) ya no cuentan para encuadrar, así que Francia y el resto salen enteros. Hueco a la derecha para los botones de zoom.
+- **Zoom más libre:** se puede alejar hasta 0,6× la vista de la región y moverse con holgura (35 % del mapa) más allá de los bordes; se dibuja también el entorno.
+- **Colores:** Islas Británicas y nórdicos pasa a dorado y Sudeste asiático insular a lavanda (el gris azulado se confundía con el mar).
 - **Icono nuevo:** mosaico de regiones en los pasteles de la app con una chincheta azul y la estrella de capital (más reconocible que la estrella sola en la pantalla de inicio). Generado con `scripts/generar-icono-svg.py` y `scripts/generar-iconos.cjs`.
 - Probado en Chromium (iPad y móvil): la guía se abre sola solo la primera vez, el taller guarda el truco, se reabre desde ⋯; objetivos táctiles de 44 px también en la guía y en "Acerca de" (`scripts/prueba-guia.cjs`, `scripts/prueba-accesibilidad.cjs`).
 

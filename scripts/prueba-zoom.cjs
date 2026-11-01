@@ -25,8 +25,19 @@ const escala = (t) => Number((t || '').match(/scale\(([\d.]+)\)/)?.[1] ?? 1);
   await p.mouse.move(cx, cy); await p.mouse.wheel(0, -400);
   console.log('rueda hacia arriba, escala', escala(await lienzo.getAttribute('transform')).toFixed(2));
   // Un clic normal sigue eligiendo país, también con zoom.
-  await p.locator('path.pais.jugable[data-id="ESP"]').click({ force: true });
-  console.log('clic con zoom elige España:', await p.locator('.ficha-capital').innerText());
+  // Clic real en un país de la región que esté visible bajo el puntero.
+  const punto = await p.evaluate(() => {
+    const svg = document.querySelector('.mapa-svg').getBoundingClientRect();
+    // Rejilla de puntos sobre el mapa (sin la zona de los botones): el primero que cae en un país de la región.
+    for (let fy = 0.1; fy < 0.95; fy += 0.05) for (let fx = 0.05; fx < 0.85; fx += 0.05) {
+      const x = svg.left + svg.width * fx, y = svg.top + svg.height * fy;
+      const el = document.elementFromPoint(x, y);
+      if (el && el.matches('path.pais.jugable')) return { x, y, id: el.dataset.id };
+    }
+    return null;
+  });
+  await p.mouse.click(punto.x, punto.y);
+  console.log('clic con zoom elige', punto.id, '->', await p.locator('.ficha-capital').innerText());
   await p.screenshot({ path: `${out}/zoom-pc.png` });
   // Móvil: pellizco simulado con dos punteros.
   const m = await (await b.newContext(devices['iPhone 13'])).newPage();

@@ -1,14 +1,14 @@
 [
   { "id": "europa-sur", "nombre": "Europa del sur", "continente": "europa", "orden": 1, "color": "#f2cf92" },
   { "id": "europa-occidental", "nombre": "Europa occidental", "continente": "europa", "orden": 2, "color": "#c8b6e2" },
-  { "id": "europa-norte", "nombre": "Islas Británicas y nórdicos", "continente": "europa", "orden": 3, "color": "#b9d5d6" },
+  { "id": "europa-norte", "nombre": "Islas Británicas y nórdicos", "continente": "europa", "orden": 3, "color": "#ece28f" },
   { "id": "europa-central", "nombre": "Europa central y bálticos", "continente": "europa", "orden": 4, "color": "#f0b8cc" },
   { "id": "balcanes", "nombre": "Balcanes", "continente": "europa", "orden": 5, "color": "#cdd69a" },
   { "id": "europa-este", "nombre": "Europa del este", "continente": "europa", "orden": 6, "color": "#dcc2a4" },
   { "id": "asia-oriental", "nombre": "Asia oriental", "continente": "asia", "orden": 1, "color": "#f0b8cc" },
   { "id": "asia-sur", "nombre": "Asia del sur", "continente": "asia", "orden": 2, "color": "#f2cf92" },
   { "id": "sudeste-continental", "nombre": "Sudeste asiático continental", "continente": "asia", "orden": 3, "color": "#cdd69a" },
-  { "id": "sudeste-insular", "nombre": "Sudeste asiático insular", "continente": "asia", "orden": 4, "color": "#b9d5d6" },
+  { "id": "sudeste-insular", "nombre": "Sudeste asiático insular", "continente": "asia", "orden": 4, "color": "#c8b6e2" },
   { "id": "oriente-proximo", "nombre": "Cáucaso y Oriente Próximo", "continente": "asia", "orden": 5, "color": "#c8b6e2" },
   { "id": "golfo", "nombre": "Golfo Pérsico y Arabia", "continente": "asia", "orden": 6, "color": "#dcc2a4" },
   { "id": "asia-central", "nombre": "Asia central", "continente": "asia", "orden": 7, "color": "#c4cfae" }
