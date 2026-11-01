@@ -18,6 +18,7 @@ import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
 import { iniciarPracticar } from './practicar';
 import { iniciarRepaso } from './repaso';
 import { prepararSelectorRegiones } from './regiones';
+import { prepararMas } from './mas';
 import { nivelDominio } from '../logic/progreso';
 
 type Pestana = 'explorar' | 'repaso' | 'practicar';
@@ -28,7 +29,7 @@ type Pestana = 'explorar' | 'repaso' | 'practicar';
  */
 export function iniciarApp(): void {
   const almacen = new Almacen(almacenDelNavegador());
-  const estado = almacen.cargar();
+  let estado = almacen.cargar();
   const panel = document.getElementById('panel')!;
   const contenedorMapa = document.getElementById('mapa')!;
   const avisos = document.getElementById('avisos')!;
@@ -199,6 +200,15 @@ export function iniciarApp(): void {
     nivel: (id) => nivelDominio(estado.tarjetas[id]),
     actual: () => region,
     elegir: irARegion,
+  });
+  prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
+    estado: () => estado,
+    reemplazar(nuevo) {
+      estado = nuevo;
+      guardar();
+      // Lo más sencillo y seguro: volver a arrancar con el progreso importado.
+      window.location.reload();
+    },
   });
   montarMapa();
   cambiarPestana('repaso');

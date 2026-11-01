@@ -58,7 +58,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 - Trucos: pocos, para familias de capitales que se confunden (Bratislava/Bucarest/Budapest, las "-stán"...).
 - Criterios: los tests de datos (capital dentro de su país, nombres iguales al listado) pasan para Europa y Asia; todas las regiones se pueden jugar en todos los modos.
 
-### [ ] O3. PWA y exportar/importar (hito 6)
+### [x] O3. PWA y exportar/importar (hito 6)
 
 - `vite-plugin-pwa`: manifest, iconos (sencillos, generados por mí) y service worker. La app se instala y funciona sin conexión.
 - Exportar e importar el progreso como fichero y como código de texto; QR si es sencillo.

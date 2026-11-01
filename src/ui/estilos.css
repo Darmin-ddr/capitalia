@@ -879,6 +879,8 @@ button {
 .dialogo-regiones {
   width: min(92vw, 480px);
   max-height: 85dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0;
   border: 1px solid var(--borde);
   border-radius: var(--radio);
@@ -958,4 +960,37 @@ button {
 .region-detalle {
   font-size: 0.85rem;
   color: var(--texto-suave);
+}
+
+/* ---------- Más (copia de seguridad) ---------- */
+
+.boton-mas {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.campo-codigo {
+  margin-top: 12px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+.mensaje-copia {
+  min-height: 1.4em;
+  margin: 10px 0 0;
+  font-weight: 700;
+}
+
+.acciones-cerrar {
+  margin-top: 18px;
 }

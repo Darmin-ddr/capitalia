@@ -4,10 +4,10 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 ## Ahora mismo
 
-- **Objetivo en curso:** O3 (PWA y exportar/importar).
-- **Hecho de él:** nada aún.
-- **Falta:** vite-plugin-pwa (manifest, iconos, service worker), exportar/importar (fichero y código), QR si es sencillo.
-- **Siguiente paso:** instalar vite-plugin-pwa y crear los iconos.
+- **Objetivo en curso:** O4 (panel de adultos y modo examen).
+- **Hecho de él:** nada aún. El estado ya tiene `ajustes` (lista de examen, fecha, opcionales, trucos editados y desactivados, hash del PIN) y `registrarRespuesta` admite `examen: true`.
+- **Falta:** lógica de PIN y de selección del modo examen con tests; interfaz del panel y del modo examen.
+- **Siguiente paso:** lógica pura de O4.
 
 ## Estado
 
@@ -15,7 +15,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 |---|---|
 | O1. Progreso, FSRS y sesión | Hecho |
 | O2. Datos completos | Hecho |
-| O3. PWA y exportar/importar | Pendiente |
+| O3. PWA y exportar/importar | Hecho |
 | O4. Panel de adultos y modo examen | Pendiente |
 | O5. Pulido | Pendiente |
 | O6. Informe final | Pendiente |
@@ -40,6 +40,12 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Trucos nuevos** (todos sin revisar): Budapest, Astaná, Dusambé, Taskent, Tokio, Pekín, Reikiavik, Ámsterdam, Islamabad, Kuala Lumpur, Ulán Bator, Riad y "la capital se llama igual que el país" (Mónaco, San Marino, Luxemburgo, Kuwait, Singapur, Vaticano).
 - **Variantes** añadidas solo para transliteraciones evidentes (Beijing, Kyiv, Tbilisi, Dhaka, Phnom Penh...). Ver la lista en `scripts/generar-paises.py`.
 - Probado en Chromium (iPad y móvil): las 13 regiones se abren, todos sus países se pueden tocar y "Al revés" acierta 3 de 3 en cada una. 62 tests.
+
+### O3. PWA y exportar/importar
+- **Instalable y sin conexión:** `vite-plugin-pwa` genera el manifest y un service worker que guarda toda la app (unos 990 KB, mapa incluido). Las versiones nuevas se instalan solas en segundo plano y se usan al volver a abrir.
+- **Iconos:** estrella blanca sobre el azul de la app (`public/`, generados con `scripts/generar-iconos.cjs`).
+- **Botón ⋯ (Más)** en la cabecera: copia de seguridad con "Descargar copia" (fichero JSON con todo, historial incluido), "Copiar código" (texto sin historial, para pasar el progreso a otro dispositivo) e importación de código o fichero, con confirmación antes de sustituir el progreso.
+- Probado en Chromium (móvil): la página queda controlada por el service worker, recarga sin red, y exportar código, borrar el progreso e importar lo recupera. 67 tests.
 
 ## Requiere tu atención
 
@@ -85,6 +91,16 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 ### D10. Tolerancia del test "capital dentro de su país" (O2)
 - Lisboa y Mónaco quedan fuera del contorno simplificado de Natural Earth 50m (costa). El test acepta capitales a menos de 10 km del contorno; no he tocado las coordenadas de GeoNames.
 
+### D11. Copia de seguridad sin QR (O3)
+- **Opciones:** QR, código de texto, fichero.
+- **Elección:** fichero y código de texto; **sin QR**. Con el progreso de los 94 países el código ronda los 25.000 caracteres y un QR admite como mucho unos 3.000; habría que recortar mucho los datos o partirlo en varios QR. No compensa en la v1.
+- **Reversibilidad:** se puede añadir más adelante (por ejemplo, un QR solo con el nivel de cada país, sin el detalle FSRS).
+
+### D12. Importar sustituye, no mezcla (O3)
+- **Elección:** importar sustituye el progreso del dispositivo por el de la copia (con aviso previo). Si se importa un código (que no trae historial), se conserva el historial local.
+- **Motivo:** mezclar dos progresos FSRS no tiene una respuesta obvia y es fuente de errores.
+- **Reversibilidad:** total.
+
 ### D6. Pestañas (O1)
 - **Elección:** tres pestañas: **Repaso** (sesión automática; se abre por defecto), **Practicar** (modo a elegir) y **Explorar**.
 - **Motivo:** el uso diario debería ser "abrir y repasar" sin decidir nada; elegir modo queda para quien quiera.
@@ -104,4 +120,6 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 *(lo que no se ha podido comprobar desde aquí: iPad, iPhone, Safari, instalación, teclado en pantalla...)*
 
 - **Microestados con el dedo:** en Europa del sur, tocar Vaticano, San Marino, Mónaco, Andorra y Malta (círculos). En Oriente Próximo, comprobar que se puede tocar Israel sin dar al círculo de Palestina, que está muy cerca.
+- **Instalar en pantalla de inicio** en iPad y iPhone (Safari: Compartir → Añadir a pantalla de inicio) y en Android (Chrome: menú → Instalar aplicación). Abrirla en modo avión después de haberla usado con conexión.
+- **Copia de seguridad en iPad/iPhone:** "Descargar copia" (dónde se guarda el fichero en Safari), "Copiar código" y pegarlo en otro dispositivo, e "Importar fichero" desde Archivos.
 - **Selector de región:** abrirlo y cerrarlo en iPad y iPhone (usa `<dialog>`, que Safari soporta desde la versión 15.4).
