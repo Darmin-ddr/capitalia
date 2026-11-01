@@ -44,8 +44,9 @@ export function crearGuia(datos: DatosGuia): () => void {
           el(
             'ul',
             'lista-guia',
-            el('li', '', fuerte('Repaso'), ': lo que toca hoy. Es lo único imprescindible.'),
-            el('li', '', fuerte('Practicar'), ': para entrenar a tu aire, eligiendo el tipo de pregunta.'),
+            el('li', '', fuerte('Hoy'), ': lo que toca hoy, repasos y unos pocos países nuevos. Es lo único imprescindible.'),
+            el('li', '', fuerte('Aprender'), ': para adelantar una región a tu ritmo, país a país.'),
+            el('li', '', fuerte('Examen'), ': un mapa mudo como el de clase, para comprobar cómo lo llevas.'),
             el('li', '', fuerte('Explorar'), ': para mirar el mapa con calma e inventar tus trucos.'),
           ),
         );
@@ -83,7 +84,7 @@ export function crearGuia(datos: DatosGuia): () => void {
             'Cada vez que respondes, la app calcula cuándo estás a punto de olvidar esa capital y te la vuelve a preguntar justo entonces. ',
             'Lo que te sabes bien sale cada vez menos; lo que te cuesta, más a menudo.',
           ),
-          p('Por eso en ', fuerte('Repaso'), ' no tienes que decidir nada: entra, responde lo que te salga y listo. Unos diez minutos al día bastan.'),
+          p('Por eso en ', fuerte('Hoy'), ' no tienes que decidir nada: entra, responde lo que te salga y ya está. Unos diez minutos al día bastan. Cada día entran unos pocos países nuevos, mezclados con los repasos.'),
           p(
             'El mapa es tu marcador: cada país se va coloreando a medida que lo dominas. Cuando dominas una región entera, lo celebramos, y se van abriendo regiones nuevas.',
           ),
@@ -114,18 +115,18 @@ export function crearGuia(datos: DatosGuia): () => void {
       titulo: 'Cuanto más difícil, mejor (sin pasarse)',
       pintar(z) {
         z.append(
-          p('Hay cuatro tipos de pregunta, de más fácil a más difícil:'),
+          p('Cada país sube por cuatro escalones, de más fácil a más difícil:'),
           el(
             'ol',
             'lista-guia',
             el('li', '', fuerte('Elegir'), ': reconocer la capital entre cuatro.'),
-            el('li', '', fuerte('Colocar'), ': poner varias capitales en su país del mapa.'),
-            el('li', '', fuerte('Al revés'), ': ver la capital y encontrar el país.'),
+            el('li', '', fuerte('Colocar'), ': llevar cada capital a su país del mapa.'),
             el('li', '', fuerte('Escribir'), ': recordarla sin ninguna ayuda.'),
+            el('li', '', fuerte('Mapa mudo'), ': ver solo la estrella y escribir el país y la capital, como en el examen.'),
           ),
           p(
-            'Las preguntas que cuestan un poco son las que más enseñan. En Repaso, la app sube de nivel cada país cuando ya te lo sabes: primero eliges, luego lo buscas en el mapa y al final lo escribes. ',
-            'En Escribir no hace falta poner tildes, y si se te escapa una letra te lo damos por bueno (pero volverá a salir).',
+            'Las preguntas que cuestan un poco son las que más enseñan. Un país sube de escalón cuando lo aciertas dos veces con otras preguntas por medio; al pasar el último, ya es tuyo y queda para repasar de vez en cuando. ',
+            'Al escribir no hace falta poner tildes, y si se te escapa una letra te lo damos por bueno (pero volverá a salir).',
           ),
         );
       },
@@ -193,10 +194,11 @@ export function crearGuia(datos: DatosGuia): () => void {
           el(
             'ul',
             'lista-guia',
-            el('li', '', fuerte('Cada día'), ': un Repaso de unos diez minutos. Mejor un poco cada día que mucho de golpe.'),
+            el('li', '', fuerte('Cada día'), ': Hoy, unos diez minutos. Mejor un poco cada día que mucho de golpe.'),
+            el('li', '', fuerte('Si te apetece más'), ': adelanta una región en Aprender.'),
             el('li', '', fuerte('Antes de empezar una región'), ': date una vuelta por Explorar y fíjate en dónde está cada país y en sus vecinos.'),
             el('li', '', fuerte('Si un país se te resiste'), ': inventa tu propio truco para él.'),
-            el('li', '', fuerte('Antes de un examen'), ': usa "Preparar examen" en Repaso (aparece cuando hay un examen configurado). Empieza unos días antes, no la víspera.'),
+            el('li', '', fuerte('Antes de un examen'), ': haz algún Examen de prueba unos días antes, no la víspera. Lo que falles, mándalo a Hoy para repasarlo antes.'),
             el('li', '', fuerte('Para no perder tu progreso'), ': haz de vez en cuando una copia de seguridad desde el botón ⋯.'),
           ),
           p('Y lo más importante: no hace falta acertarlo todo. Lo que cuenta es volver mañana.'),
@@ -216,7 +218,9 @@ export function crearGuia(datos: DatosGuia): () => void {
     anterior.disabled = indice === 0;
     const ultimo = indice === pasos.length - 1;
     const siguiente = ultimo
-      ? boton('Empezar a repasar', 'boton-principal', () => {
+      ? boton('Empezar', 'boton-principal', () => {
+          // Guardar ya que la guía se ha visto (el evento "close" llega un instante después).
+          datos.alCerrar();
           dialogo.close();
           datos.alEmpezar();
         })

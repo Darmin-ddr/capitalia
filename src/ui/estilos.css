@@ -1523,3 +1523,10 @@ button {
     font-size: 0.86rem;
   }
 }
+
+.campo-select {
+  width: auto;
+  min-width: 5em;
+  min-height: 44px;
+  margin-left: 6px;
+}

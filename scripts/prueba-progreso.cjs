@@ -1,6 +1,7 @@
 // Prueba de O1: repaso, guardado del progreso y colores del mapa.
 // Uso: node scripts/prueba-progreso.cjs <carpeta-capturas>  (con el preview en el puerto 4173)
 const { chromium, devices } = require('playwright');
+const empezarHoy = async (p) => { const e = p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }); if (await e.count()) { await e.click(); await p.waitForTimeout(200); } };
 // Empezar en los Balcanes: una lista de examen con sus países desbloquea la región.
 const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
   ultimaRegion: 'balcanes', guiaVista: true, ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
@@ -17,9 +18,10 @@ const out = process.argv[2];
   p.on('pageerror', (e) => errores.push(e.message));
   await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
+  await empezarHoy(p);
   // Responder siempre la primera opción: unas veces acierta y otras falla, y así se ve la cola en acción.
   let pasos = 0;
-  while (!(await p.locator('.resumen').count()) && pasos++ < 60) {
+  while (!(await p.locator('.resumen').count()) && pasos++ < 150) {
     const sig = p.locator('.feedback .boton-principal');
     if (await sig.count()) { await sig.tap(); await p.waitForTimeout(60); continue; }
     const opciones = p.locator('.opcion-texto');

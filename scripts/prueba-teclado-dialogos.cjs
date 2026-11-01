@@ -2,6 +2,7 @@
 // la pregunta de detrás; Enter en la guía pasa al siguiente paso.
 // Uso: node scripts/prueba-teclado-dialogos.cjs   (con el preview en el puerto 4173)
 const { chromium } = require('playwright');
+const empezarHoy = async (p) => { const e = p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }); if (await e.count()) { await e.click(); await p.waitForTimeout(200); } };
 (async () => {
   const b = await chromium.launch();
   const p = await (await b.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
@@ -25,7 +26,16 @@ const { chromium } = require('playwright');
   await p.keyboard.press('2');
   await p.waitForTimeout(200);
   console.log('tecla 2 en la guía: respuestas detrás =', await respuestas());
-  // Cerrar la guía: las teclas vuelven a funcionar en la pregunta.
+  // Cerrar la guía y empezar Hoy; con la guía abierta encima de una pregunta, las teclas no responden.
+  await p.keyboard.press('Escape');
+  await p.waitForTimeout(200);
+  await empezarHoy(p);
+  await p.locator('#boton-mas').click();
+  await p.getByRole('button', { name: 'Cómo aprender con Capitalia' }).click();
+  await p.locator('dialog[open] p').first().click();
+  for (const k of ['1', '2', '3', '4']) await p.keyboard.press(k);
+  await p.waitForTimeout(200);
+  console.log('guía abierta sobre una pregunta, teclas 1-4: respuestas detrás =', await respuestas());
   await p.keyboard.press('Escape');
   await p.waitForTimeout(200);
   await p.keyboard.press('1');

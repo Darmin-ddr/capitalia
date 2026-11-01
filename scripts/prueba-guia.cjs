@@ -36,7 +36,7 @@ const movil = process.argv[3] === 'movil';
     if (i < 7) await p.getByRole('button', { name: 'Siguiente' }).click();
   }
   console.log('pasos:', titulos.join(' | '));
-  await p.getByRole('button', { name: 'Empezar a repasar' }).click();
+  await p.locator('dialog[open]').getByRole('button', { name: 'Empezar', exact: true }).click();
   const estado = await p.evaluate(() => JSON.parse(localStorage.getItem('progreso-capitales')));
   console.log('guía vista guardada:', estado.guiaVista, '| trucos propios:', JSON.stringify(estado.trucosPropios));
   await p.reload(); await p.waitForSelector('.pais'); await p.waitForTimeout(300);
@@ -66,7 +66,7 @@ const movil = process.argv[3] === 'movil';
   await q.getByPlaceholder('Nuevo PIN (4 a 6 cifras)').fill('2468');
   await q.getByPlaceholder('Repite el PIN').fill('2468');
   await q.getByRole('button', { name: 'Crear PIN' }).click();
-  await q.getByRole('button', { name: 'Examen', exact: true }).click();
+  await q.locator('dialog[open]').getByRole('button', { name: 'Examen', exact: true }).click();
   const cont = q.locator('.panel-cuerpo > p.ayuda').nth(1);
   const casilla = (texto) => q.locator('.casilla-continente', { hasText: texto }).locator('input');
   const estadoC = async (texto) => q.evaluate((t) => { const i = [...document.querySelectorAll('.casilla-continente')].find((l) => l.textContent.includes(t)).querySelector('input'); return i.checked ? 'todos' : i.indeterminate ? 'parcial' : 'ninguno'; }, texto);

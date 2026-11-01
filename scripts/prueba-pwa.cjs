@@ -1,6 +1,7 @@
 // Prueba de O3: funciona sin conexión (service worker) y la copia de seguridad por código.
 // Uso: node scripts/prueba-pwa.cjs <carpeta-capturas>   (con el preview en el puerto 4173)
 const { chromium, devices } = require('playwright');
+const empezarHoy = async (p) => { const e = p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }); if (await e.count()) { await e.click(); await p.waitForTimeout(200); } };
 const out = process.argv[2];
 (async () => {
   const b = await chromium.launch();
@@ -14,6 +15,7 @@ const out = process.argv[2];
   await p.evaluate(async () => { await navigator.serviceWorker.ready; });
   await p.reload(); await p.waitForSelector('.pais');
   console.log('controlada por SW:', await p.evaluate(() => !!navigator.serviceWorker.controller));
+  await empezarHoy(p);
   // Responder 3 preguntas para tener progreso.
   for (let i = 0; i < 3; i++) {
     await p.locator('.opcion').first().tap();

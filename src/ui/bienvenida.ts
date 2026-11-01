@@ -56,7 +56,8 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
     {
       titulo: 'Cómo funciona',
       cuerpo: () => [
-        p('La app pregunta cada día lo que conviene repasar (repetición espaciada): lo que el alumno sabe sale cada vez menos, lo que le cuesta, más a menudo. Con ', fuerte('unos diez minutos al día'), ' es suficiente.'),
+        p('En la pestaña ', fuerte('Hoy'), ' la app pregunta cada día lo que conviene repasar (repetición espaciada) y mete unos pocos países nuevos: lo que el alumno sabe sale cada vez menos, lo que le cuesta, más a menudo. Con ', fuerte('unos diez minutos al día'), ' es suficiente.'),
+        p('Además, en ', fuerte('Aprender'), ' puede adelantar una región a su ritmo, y en ', fuerte('Examen'), ' hacer un examen de prueba con un mapa mudo como el de clase, con nota.'),
         p('El progreso se guarda solo en este dispositivo. No hay cuentas, anuncios ni datos que salgan de aquí.'),
         p('El alumno tiene su propia guía, con técnicas de estudio y trucos de memoria. Se le abrirá la primera vez que use la app.'),
       ],
@@ -67,9 +68,9 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
         p('Está en el botón ', fuerte('⋯'), ' (arriba a la derecha) → ', fuerte('Panel para adultos'), ', protegido con un PIN que crearás al entrar por primera vez. Desde ahí puedes:'),
         lista(
           [fuerte('Resumen'), ': cómo va cada región, qué países se le atascan y cuántos días ha practicado.'],
-          [fuerte('Examen'), ': marcar los países que entran (hay casillas para Europa o Asia enteras, y para cada región) y la fecha. El alumno verá entonces "Preparar examen".'],
+          [fuerte('Examen'), ': marcar los países que entran (hay casillas para Europa o Asia enteras, y para cada región) y la fecha. Hoy les dará prioridad y el Examen de prueba podrá hacerse solo con ellos.'],
           [fuerte('Trucos'), ': revisar, cambiar o desactivar los trucos de memoria que trae la app.'],
-          [fuerte('Ajustes'), ': desbloquear todas las regiones si el curso va en otro orden, cambiar el PIN o reiniciar el progreso.'],
+          [fuerte('Ajustes'), ': cuántos países nuevos al día como mucho, desbloquear todas las regiones si el curso va en otro orden, cambiar el PIN o reiniciar el progreso.'],
         ),
       ],
     },

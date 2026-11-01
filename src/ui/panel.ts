@@ -1,3 +1,4 @@
+import { CONFIG } from '../logic/config';
 import {
   actividadReciente,
   comprobarPin,
@@ -282,7 +283,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       estado.ajustes.fechaExamen = fecha.value || null;
       datos.guardar();
       cambiosQueRecargan = true;
-      aviso.textContent = 'Guardado. El alumno verá "Preparar examen" en Repaso.';
+      aviso.textContent = 'Guardado. Hoy dará prioridad a estos países, y podrá hacer el Examen con esta lista.';
     });
     const quitar = boton('Quitar examen', 'boton-secundario', () => {
       estado.ajustes.listaExamen = null;
@@ -297,7 +298,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       el(
         'p',
         'ayuda',
-        'Marca los países que entran en el examen (puedes marcar un continente o una región enteros) y su fecha. En Repaso aparecerá "Preparar examen", que pregunta primero lo más flojo. Los fallos en modo examen no alteran la planificación normal.',
+        'Marca los países que entran en el examen (puedes marcar un continente o una región enteros) y su fecha. Hoy les dará prioridad y en la pestaña Examen se podrá elegir "Lista del examen" para hacer un examen de prueba solo con ellos.',
       ),
       el('label', 'etiqueta-campo', 'Fecha del examen', fecha),
       contador,
@@ -391,6 +392,20 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       cambiosQueRecargan = true;
     });
 
+    // Máximo de nuevos al día en Hoy: se autorregula entre 5 y este valor (SPEC 7).
+    const maxNuevos = el('select', 'campo-texto campo-select');
+    maxNuevos.setAttribute('aria-label', 'Máximo de países nuevos al día');
+    for (let n = CONFIG.nuevosMinimo; n <= CONFIG.nuevosMaximo; n++) {
+      const o = el('option', '', String(n));
+      o.value = String(n);
+      maxNuevos.append(o);
+    }
+    maxNuevos.value = String(Math.min(CONFIG.nuevosMaximo, Math.max(CONFIG.nuevosMinimo, estado.ajustes.maxNuevos ?? CONFIG.nuevosMaximo)));
+    maxNuevos.addEventListener('change', () => {
+      estado.ajustes.maxNuevos = Number(maxNuevos.value);
+      datos.guardar();
+    });
+
     const mensaje = el('p', 'mensaje-copia');
     mensaje.setAttribute('role', 'status');
     const pin1 = el('input', 'campo-texto campo-pin');
@@ -413,6 +428,8 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       const limpio = estadoVacio();
       estado.tarjetas = limpio.tarjetas;
       estado.historial = limpio.historial;
+      estado.aprendizaje = limpio.aprendizaje;
+      estado.prioridad = limpio.prioridad;
       estado.regionesCelebradas = limpio.regionesCelebradas;
       estado.ultimaRegion = null;
       datos.guardar();
@@ -421,6 +438,9 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     });
 
     cuerpo.append(
+      el('h3', 'dialogo-subtitulo', 'Países nuevos al día'),
+      el('label', 'casilla', 'Como mucho ', maxNuevos),
+      el('p', 'ayuda', 'Hoy mete entre 5 y este número de países nuevos cada día, según cómo vayan los aciertos recientes. Con muchos repasos pendientes, 5.'),
       el('h3', 'dialogo-subtitulo', 'Regiones'),
       el('label', 'casilla', todas, ' Desbloquear todas las regiones'),
       el('p', 'ayuda', 'Normalmente se abren de una en una según el progreso. Útil si el examen o el curso van por otro orden.'),
