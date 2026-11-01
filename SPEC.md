@@ -43,8 +43,8 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 El examen real de clase es un **mapa mudo con puntos en las capitales**: hay que saber qué país es y cuál es su capital. Todo se orienta a ese objetivo, separando **aprender** (fase de aprendizaje) de **repasar** (fase de repaso).
 
 ### 4.1 Pestañas
-- **Hoy** (uso diario, un solo botón): repaso de lo aprendido mezclando regiones y tipos de pregunta, con **países nuevos intercalados** (como Anki). Hoy no es solo repaso: es la rutina completa. Si hay examen configurado y se acerca la fecha, da prioridad a sus países.
-- **Aprender** (extra, a ritmo propio): por región; lleva a cada país por los escalones de 4.3. Lo que el alumno haga aquí es un adelanto sobre Hoy.
+- **Hoy** (uso diario, un solo botón): repaso de lo aprendido mezclando regiones y tipos de pregunta, con **países nuevos intercalados** (como Anki). Hoy no es solo repaso: es la rutina completa. Si hay examen configurado y se acerca la fecha, da prioridad a sus países. Es la **portada** de la app: lo que toca hoy (preguntas y minutos), un botón para empezar y unas cifras de logro (países aprendidos en total y por continente, aprendidos esta semana y cómo va la lista de examen; nunca rachas), con el mapa del continente coloreado. **Sin selector de región**: entra todo lo abierto, también los continentes que se añadan en el futuro.
+- **Aprender** (extra, a ritmo propio): por región; lleva a cada país por los escalones de 4.3. Lo que el alumno haga aquí es un adelanto sobre Hoy. Además de las regiones, se puede elegir **"Europa entera"** o **"Asia entera"** cuando están abiertas todas las regiones de ese continente (tandas de 16 países como mucho, los de escalón más bajo primero). No hay "Europa y Asia" juntas: no caben bien en un mapa.
 - **Examen** (comprobar si estás listo): mapa mudo del continente; ver 4.4.
 - **Explorar**: tocar un país muestra su capital y su truco. Sin evaluación.
 
@@ -114,6 +114,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 - **Hoy:** corta (orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar. Empieza con unos repasos y reparte los países nuevos entre ellos, separados para que cada uno salga varias veces.
 - Los países que están en aprendizaje salen en Hoy una vez al día (si ya se han respondido hoy, esperan a mañana).
+- Los nuevos de Hoy siguen el **orden del curso**: las regiones de Europa en orden y luego las de Asia (y después lo que se añada). Los países de la lista de examen van antes.
 - **Nuevos por día, autorregulados entre 5 y 10** según el porcentaje de aciertos recientes; si hay muchos repasos pendientes (por ejemplo, tras días sin entrar), 5. El adulto puede ajustar el máximo.
 - **Examen configurado por el adulto** (fecha y países): Hoy da prioridad a esos países a medida que se acerca la fecha. El antiguo "Preparar examen" desaparece (lo absorben Hoy y Examen).
 
@@ -134,7 +135,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 ## 10. Estilo visual: "atlas amable"
 
 - Mapa escolar limpio. Lo divertido viene de las historias y del progreso, no de la decoración.
-- **El mapa es el marcador de progreso:** países en gris claro que se colorean (pastel por región) según se dominan.
+- **El mapa es el marcador de progreso:** países en gris claro que se colorean (pastel por región) según suben de escalón; color pleno cuando están aprendidos.
 - Feedback: verde menta (acierto), coral/ámbar (fallo). Nunca rojo intenso.
 - Tipografía redondeada y legible (p. ej. Nunito), tamaños generosos.
 - Capital marcada con estrella pequeña. Microestados (Vaticano, Mónaco, San Marino, Liechtenstein, Andorra, Malta, Singapur, Baréin, Maldivas...) con círculo ampliado y tocable; zoom/pan en el mapa.

@@ -24,13 +24,19 @@ import { crearGuia } from './guia';
 import { crearAcercaDe } from './acerca';
 import { crearBienvenida } from './bienvenida';
 import { crearPanelAdultos } from './panel';
-import { regionesConExamen } from '../logic/adultos';
-import { nivelDominio } from '../logic/progreso';
+import { diasHastaExamen, regionesConExamen } from '../logic/adultos';
+import { nivelMapa } from '../logic/progreso';
+import { continenteQueToca, continentesCurso, ordenCurso, resumenPortada } from '../logic/portada';
 
 type Pestana = 'hoy' | 'aprender' | 'examen' | 'explorar';
 
 /** Duración del rótulo con el nombre de la región cuando Hoy cambia el mapa de región. */
 const ROTULO_REGION_MS = 1100;
+
+const NOMBRE_CONTINENTE: Record<Continente, string> = { europa: 'Europa', asia: 'Asia' };
+/** Prefijo de las "regiones" que son un continente entero (Aprender y Explorar, y la portada de Hoy). */
+const PREFIJO_CONTINENTE = 'continente-';
+const esContinente = (r: Region) => r.id.startsWith(PREFIJO_CONTINENTE);
 
 /**
  * Estado y orquestación de la app: progreso guardado, región actual, mapa,
@@ -45,7 +51,10 @@ export function iniciarApp(): void {
   const botonesPestana = document.querySelectorAll<HTMLButtonElement>('.modo');
 
   let activos: Pais[] = [];
+  /** Región del mapa en este momento (Hoy la mueve; el examen pone el suyo). */
   let region: Region = regiones[0];
+  /** Región que ha elegido el alumno en el selector (Aprender y Explorar vuelven a ella). */
+  let regionElegida: Region = regiones[0];
   let mapa: Mapa | null = null;
   let modo: Modo | null = null;
   let pestana: Pestana = 'hoy';
@@ -54,8 +63,20 @@ export function iniciarApp(): void {
   let mapaDeExamen = false;
   const botonRegion = document.getElementById('region-actual') as HTMLButtonElement;
 
-  const regionDe = (id: string) => regiones.find((r) => r.id === id);
-  const paisesDeRegion = (regionId: string) => filtrarRegion(activos, regionId);
+  /** "Europa entera" y "Asia entera": se usan como una región más (SPEC 4.1). */
+  const regionesContinente: Region[] = continentesCurso(regiones).map((c) => ({
+    id: PREFIJO_CONTINENTE + c,
+    nombre: `${NOMBRE_CONTINENTE[c]} entera`,
+    continente: c,
+    orden: 0,
+    color: '#cfd8e3',
+  }));
+  const regionDe = (id: string) => regiones.find((r) => r.id === id) ?? regionesContinente.find((r) => r.id === id);
+  const regionContinente = (c: Continente) => regionesContinente.find((r) => r.continente === c)!;
+  const paisesDeRegion = (regionId: string) => {
+    const r = regionDe(regionId);
+    return r && esContinente(r) ? activos.filter((p) => p.continentes.includes(r.continente)) : filtrarRegion(activos, regionId);
+  };
   const regionesDe = (c: Continente) => regiones.filter((r) => r.continente === c).sort((a, b) => a.orden - b.orden);
   /** Desbloqueadas por progreso, más las que tienen países del examen (para poder prepararlo). */
   const desbloqueadas = (c: Continente) => {
@@ -64,17 +85,20 @@ export function iniciarApp(): void {
     for (const id of regionesConExamen(estado.ajustes.listaExamen, activos)) if (regionDe(id)?.continente === c) abiertas.add(id);
     return abiertas;
   };
+  /** El continente entero se abre cuando lo están todas sus regiones. */
+  const continenteAbierto = (c: Continente) => {
+    const abiertas = desbloqueadas(c);
+    return regionesDe(c).every((r) => abiertas.has(r.id));
+  };
+  const regionAbierta = (r: Region) => (esContinente(r) ? continenteAbierto(r.continente) : desbloqueadas(r.continente).has(r.id));
   const enExamen = (p: Pais) => estado.ajustes.listaExamen?.includes(p.id) ?? false;
-  /** Países de las regiones abiertas de los dos continentes (de ahí sale Hoy). */
+  /** Países de las regiones abiertas de todos los continentes (de ahí sale Hoy, también lo que se añada en el futuro). */
   const disponibles = () => {
-    const abiertas = new Set([...desbloqueadas('europa'), ...desbloqueadas('asia')]);
+    const abiertas = new Set(continentesCurso(regiones).flatMap((c) => [...desbloqueadas(c)]));
     return activos.filter((p) => abiertas.has(p.region));
   };
-  /** Regiones en el orden en que Hoy saca países nuevos: la actual primero, luego las de su continente. */
-  const ordenRegiones = () => {
-    const otro: Continente = region.continente === 'europa' ? 'asia' : 'europa';
-    return [region.id, ...regionesDe(region.continente).map((r) => r.id), ...regionesDe(otro).map((r) => r.id)];
-  };
+  /** Orden en que Hoy saca países nuevos: el del curso (Europa y luego Asia, cada una por regiones). */
+  const ordenRegiones = () => ordenCurso(regiones).map((r) => r.id);
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
   const paisesContinente = () => activos.filter((p) => p.continentes.includes(region.continente));
 
@@ -160,7 +184,6 @@ export function iniciarApp(): void {
   function montarMapa(): void {
     mapa?.destruir();
     mapaDeExamen = false;
-    botonRegion.hidden = false;
     const paisesRegion = paisesDeRegion(region.id);
     mapa = new Mapa({
       contenedor: contenedorMapa,
@@ -169,6 +192,7 @@ export function iniciarApp(): void {
       region: paisesRegion,
       contexto: paisesContinente(),
       fueraDeEncuadre: new Set(paisesRegion.filter((p) => p.regionesExtra?.includes(region.id)).map((p) => p.id)),
+      circulosSoloMicroestados: esContinente(region),
       colorDe: (id) => colorEnContinente(id),
       onSeleccion: (id) => modo?.alSeleccionarPais(id),
     });
@@ -180,7 +204,17 @@ export function iniciarApp(): void {
   function cambiarPestana(nueva: Pestana): void {
     modo?.salir();
     pestana = nueva;
-    if (mapaDeExamen && nueva !== 'examen') montarMapa();
+    // Hoy y el examen no usan el selector: eligen ellos el mapa.
+    botonRegion.hidden = nueva === 'hoy' || nueva === 'examen';
+    if (nueva === 'hoy') {
+      // Portada: el continente que toca, coloreado según lo aprendido.
+      region = regionContinente(continenteQueToca(estado, activos, regiones));
+      montarMapa();
+    } else if (nueva !== 'examen' && (mapaDeExamen || region.id !== regionElegida.id)) {
+      // Aprender y Explorar vuelven a la región elegida, aunque Hoy haya movido el mapa.
+      region = regionElegida;
+      montarMapa();
+    }
     for (const b of botonesPestana) b.setAttribute('aria-pressed', String(b.dataset.modo === nueva));
     if (!mapa) return;
     const paisesRegion = paisesDeRegion(region.id);
@@ -213,6 +247,7 @@ export function iniciarApp(): void {
           paises: todos,
           activos: new Set(activos.map((p) => p.id)),
           region: paises,
+          circulosSoloMicroestados: true,
           onSeleccion: () => undefined,
         });
         mapaDeExamen = true;
@@ -246,9 +281,19 @@ export function iniciarApp(): void {
         });
       },
       adelantado: () => repasoAdelantado(estado, disponibles()),
+      resumen: () => resumenPortada(estado, activos, continentesCurso(regiones), new Date()),
+      diasExamen: () => (estado.ajustes.listaExamen?.length ? diasHastaExamen(estado.ajustes.fechaExamen, new Date()) : null),
+      continentes: continentesCurso(regiones),
+      nombreContinente: (c: Continente) => NOMBRE_CONTINENTE[c],
+      continenteMapa: () => region.continente,
+      verContinente(c: Continente) {
+        region = regionContinente(c);
+        montarMapa();
+      },
       modoPara: (id: string) => modoHoy(estado, id, Math.random),
       mapaPara(pais: Pais) {
-        const enEsta = paisesDeRegion(region.id).some((p) => p.id === pais.id);
+        // En Hoy las preguntas van siempre en el mapa de su región (no en el del continente entero de la portada).
+        const enEsta = !esContinente(region) && paisesDeRegion(region.id).some((p) => p.id === pais.id);
         let transicionMs = 0;
         if (!enEsta && regionDe(pais.region)) {
           region = regionDe(pais.region)!;
@@ -281,6 +326,7 @@ export function iniciarApp(): void {
     modo?.salir();
     modo = null;
     region = r;
+    regionElegida = r;
     estado.ultimaRegion = id;
     guardar();
     montarMapa();
@@ -294,7 +340,7 @@ export function iniciarApp(): void {
   // --- Arranque ---
   recalcularActivos();
   const guardada = estado.ultimaRegion ? regionDe(estado.ultimaRegion) : undefined;
-  if (guardada && desbloqueadas(guardada.continente).has(guardada.id)) region = guardada;
+  if (guardada && regionAbierta(guardada)) region = regionElegida = guardada;
   if (!almacen.disponible) mostrarAvisoAlmacen();
   // Pedir almacenamiento persistente (Safari puede borrar datos de webs poco visitadas).
   void navigator.storage?.persist?.().catch(() => undefined);
@@ -302,9 +348,10 @@ export function iniciarApp(): void {
   for (const b of botonesPestana) b.addEventListener('click', () => cambiarPestana(b.dataset.modo as Pestana));
   actualizarSelector = prepararSelectorRegiones(botonRegion, {
     regiones,
+    entero: (c) => ({ region: regionContinente(c), abierto: continenteAbierto(c) }),
     paisesDe: paisesDeRegion,
     desbloqueadas,
-    nivel: (id) => nivelDominio(estado.tarjetas[id]),
+    nivel: (id) => nivelMapa(estado, id),
     actual: () => region,
     elegir: irARegion,
     conExamen: (id) => paisesDeRegion(id).filter(enExamen).length,

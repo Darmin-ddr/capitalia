@@ -33,6 +33,7 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 - `scripts/prueba-hoy.cjs <carpeta>`: primer día (nuevos dos veces, nunca seguidos) y sesión de tres regiones con rótulo.
 - `scripts/prueba-examen.cjs <carpeta>`: examen de Europa (nota con medio punto, sin colores, priorizar en Hoy), "Las dos" por continentes y pestañas a 360 px.
 - `scripts/prueba-tema.cjs <carpeta>`: tema Automático/Claro/Oscuro y capturas en oscuro.
+- `scripts/prueba-portada.cjs <carpeta>`: portada de Hoy (cifras, sin selector, mapa del continente), "Europa entera" (bloqueada, tandas de 16) y vuelta a la región elegida.
 - `scripts/prueba-progreso.cjs <carpeta>`: Hoy, guardado y truco propio.
 - `scripts/prueba-regiones.cjs <carpeta> [movil]`: las 13 regiones con progreso simulado y una tanda de Colocar en cada una.
 - `scripts/prueba-pwa.cjs <carpeta>`: sin conexión y copia por código.
@@ -55,7 +56,8 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 
 ## Arquitectura de la interfaz (v2)
 - `src/ui/app.ts`: estado (progreso), región actual, mapa, pestañas (Hoy, Aprender, Examen, Explorar), `Motor` (registrar respuesta en FSRS y en el escalón, trucos), avisos. Monta el mapa de la región, el de otra región cuando Hoy salta (con rótulo) y el mapa mudo del examen (sin colores ni selector de región).
-- Lógica v2: `src/logic/hoy.ts` (sesión de Hoy agrupada por regiones, nuevos autorregulados, `ColaHoy`), `progreso.ts` (escalones y migración desde la v1), `examen.ts` (ámbitos, corrección de mapa mudo con medio punto, nota), `texto.ts` (validación de capital y de país).
+- Regiones "continente entero": ids `continente-europa` y `continente-asia`, creadas en `app.ts` (no están en `regions.json`). `region` es la del mapa en cada momento y `regionElegida` la del selector.
+- Lógica v2: `src/logic/portada.ts` (cifras de la portada, orden del curso), `src/logic/hoy.ts` (sesión de Hoy agrupada por regiones, nuevos autorregulados, `ColaHoy`), `progreso.ts` (escalones y migración desde la v1), `examen.ts` (ámbitos, corrección de mapa mudo con medio punto, nota), `texto.ts` (validación de capital y de país).
 - `src/ui/hoy.ts`: bucle propio de preguntas (el mapa puede cambiar de región entre preguntas). `src/ui/aprender.ts`: escalera y tandas. `src/ui/examen.ts`: configuración, preguntas y nota.
 - `src/ui/ronda.ts`: rondas de preguntas sueltas con mapa fijo (Aprender); `src/ui/preguntas.ts`: una función por tipo (elegir, escribir, al revés, mapa mudo).
 - `src/ui/colocar.ts`: Colocar, aparte (va por tandas).

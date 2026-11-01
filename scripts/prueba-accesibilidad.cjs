@@ -113,8 +113,8 @@ async function medir(p, pantalla, fallos) {
   pasos.push(['Enter pasa a', await foco()]);
   await p.keyboard.type('yy'); await p.keyboard.press('Enter'); await p.waitForTimeout(200);
   pasos.push(['Enter sigue', (await p.locator('.progreso').innerText().catch(() => 'NO')).slice(0, 40)]);
-  // 5) Diálogos: Escape cierra el selector de región (fuera del examen, que lo oculta).
-  await p.locator('.modo[data-modo="hoy"]').click();
+  // 5) Diálogos: Escape cierra el selector de región (está en Aprender y Explorar).
+  await p.locator('.modo[data-modo="aprender"]').click();
   await p.locator('#region-actual').click();
   pasos.push(['foco al abrir regiones', await foco()]);
   await p.keyboard.press('Escape');

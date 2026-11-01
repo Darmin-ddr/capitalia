@@ -58,9 +58,9 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
     comprobar(est.prioridad.length === 4, `${nombre}: 4 priorizados para Hoy`);
     comprobar(est.historial.filter((h) => h.examen).length === 10 && Object.keys(est.tarjetas).length === 10, `${nombre}: las 10 respuestas cuentan para los repasos`);
     comprobar(Object.keys(est.aprendizaje).length === 0, `${nombre}: el examen no mueve escalones`);
-    await p.locator('.modo[data-modo="hoy"]')[tap]();
+    await p.locator('.modo[data-modo="aprender"]')[tap]();
     await p.waitForTimeout(300);
-    comprobar(await p.locator('#region-actual').isVisible(), `${nombre}: al salir vuelve el selector de región`);
+    comprobar(await p.locator('#region-actual').isVisible(), `${nombre}: al salir (a Aprender) vuelve el selector de región`);
     comprobar((await p.locator('.estrella-fondo').count()) === 0, `${nombre}: y el mapa de la región`);
     // Las pestañas caben en una fila.
     const cabe = await p.evaluate(() => {

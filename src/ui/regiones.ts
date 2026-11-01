@@ -4,6 +4,8 @@ import { boton, el } from './dom';
 
 export interface DatosSelector {
   regiones: readonly Region[];
+  /** "Europa entera" o "Asia entera" y si se puede elegir (todas sus regiones abiertas). */
+  entero(c: Continente): { region: Region; abierto: boolean };
   paisesDe(regionId: string): readonly Pais[];
   desbloqueadas(c: Continente): ReadonlySet<string>;
   nivel(paisId: string): Nivel;
@@ -41,20 +43,25 @@ export function prepararSelectorRegiones(disparador: HTMLButtonElement, datos: D
       const abiertas = datos.desbloqueadas(c);
       const lista = el('ul', 'lista-regiones');
       const ordenadas = datos.regiones.filter((r) => r.continente === c).sort((a, b) => a.orden - b.orden);
-      ordenadas.forEach((r, i) => {
+      const entero = datos.entero(c);
+      // El continente entero va primero; se abre cuando están abiertas todas sus regiones.
+      [entero.region, ...ordenadas].forEach((r, j) => {
+        const i = j - 1;
+        const esEntero = j === 0;
         const paises = datos.paisesDe(r.id);
-        const dominados = paises.filter((p) => datos.nivel(p.id) === 3).length;
-        const empezados = paises.filter((p) => datos.nivel(p.id) >= 2).length;
-        const abierta = abiertas.has(r.id);
+        const aprendidos = paises.filter((p) => datos.nivel(p.id) === 3).length;
+        const abierta = esEntero ? entero.abierto : abiertas.has(r.id);
         const actual = datos.actual().id === r.id;
-        const b = el('button', `region-item${actual ? ' actual' : ''}`);
+        const b = el('button', `region-item${actual ? ' actual' : ''}${esEntero ? ' region-entera' : ''}`);
         b.type = 'button';
         b.disabled = !abierta;
         b.style.setProperty('--color-pais', r.color);
         const detalle = abierta
-          ? `${empezados} de ${paises.length} en repaso · ${dominados} dominados`
-          : `Se abre al tener en repaso todos los países de ${ordenadas[i - 1]?.nombre ?? 'la anterior'}`;
-        const examen = datos.conExamen(r.id);
+          ? `${aprendidos} de ${paises.length} aprendidos`
+          : esEntero
+            ? `Se abre cuando estén abiertas todas las regiones de ${NOMBRE_CONTINENTE[c]}`
+            : `Se abre cuando todos los países de ${ordenadas[i - 1]?.nombre ?? 'la anterior'} lleguen al escalón Escribir`;
+        const examen = esEntero ? 0 : datos.conExamen(r.id);
         b.append(
           el('span', 'region-muestra'),
           el('span', 'region-textos', el('span', 'region-titulo', r.nombre, actual ? ' (ahora)' : ''), el('span', 'region-detalle', detalle)),

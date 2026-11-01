@@ -60,6 +60,8 @@ export interface EstadoAprendizaje {
   /** Aciertos en el escalón actual (se reinicia con un fallo). */
   aciertos: number;
   aprendido: boolean;
+  /** Cuándo quedó aprendido (ISO). Los convertidos desde la v1 no la tienen. */
+  aprendidoEl?: string;
 }
 
 export interface EstadoProgreso {
@@ -195,8 +197,20 @@ export function modoSegunDominio(t: TarjetaGuardada | undefined): ModoId {
   return 'escribir';
 }
 
+/**
+ * Nivel con el que se colorea un país en el mapa (el mapa es el marcador, SPEC 10),
+ * según los escalones: 0 sin empezar, 1 en Elegir o Colocar, 2 en Escribir o
+ * Mapa mudo, 3 aprendido.
+ */
+export function nivelMapa(estado: EstadoProgreso, paisId: string): Nivel {
+  const a = estado.aprendizaje[paisId];
+  if (!a) return 0;
+  if (a.aprendido) return 3;
+  return a.escalon >= 2 ? 2 : 1;
+}
+
 export function nivelesDe(estado: EstadoProgreso, paises: readonly Pais[]): Map<string, Nivel> {
-  return new Map(paises.map((p) => [p.id, nivelDominio(estado.tarjetas[p.id])]));
+  return new Map(paises.map((p) => [p.id, nivelMapa(estado, p.id)]));
 }
 
 /* ---------------- Escalones de aprendizaje (SPEC 4.3) ---------------- */
@@ -238,6 +252,7 @@ export function registrarEscalon(
   modo: ModoId,
   resultado: Resultado,
   config = CONFIG,
+  ahora = new Date(),
 ): CambioEscalon {
   const sin = { subio: false, aprendido: false };
   const a = estado.aprendizaje[paisId] ?? { escalon: 0, aciertos: 0, aprendido: false };
@@ -253,6 +268,7 @@ export function registrarEscalon(
   a.aciertos = 0;
   if (a.escalon >= ESCALONES.length - 1) {
     a.aprendido = true;
+    a.aprendidoEl = ahora.toISOString();
     return { subio: true, aprendido: true };
   }
   a.escalon++;

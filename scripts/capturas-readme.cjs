@@ -41,10 +41,8 @@ void datos;
     return p;
   };
 
-  // 1. Escritorio: una pregunta de Hoy con el mapa coloreado.
+  // 1. Escritorio: la portada de Hoy con el mapa de Europa coloreado.
   const pc = await preparar({ viewport: { width: 1280, height: 760 } });
-  await pc.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }).click();
-  await pc.waitForTimeout(1500);
   await pc.screenshot({ path: `${destino}/hoy-escritorio.png` });
 
   // 1b. Escritorio: examen de prueba (mapa mudo de Europa).

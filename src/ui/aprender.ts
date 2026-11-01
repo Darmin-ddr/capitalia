@@ -2,6 +2,7 @@ import type { ModoId } from '../logic/config';
 import { mensajeResumen } from '../logic/mensajes';
 import { ESCALONES, escalonDe, type EstadoProgreso, type Escalon } from '../logic/progreso';
 import type { ResumenRonda } from '../logic/sesion';
+import { barajar } from '../logic/rng';
 import { boton, el, rellenar } from './dom';
 import type { Contexto, ModoPractica, Motor } from './comun';
 import type { Modo } from './explorar';
@@ -21,6 +22,11 @@ const QUE_SE_HACE: Record<Escalon, string> = {
   escribir: 'escribir la capital de memoria',
   mapamudo: 'decir país y capital con solo la estrella',
 };
+
+/** Países por tanda como mucho (con "Europa entera" o "Asia entera" serían más de 40). */
+const TAM_TANDA = 16;
+/** En la escalera, cuántos nombres se listan por escalón antes de resumir "y N más". */
+const NOMBRES_MAX = 12;
 
 /** Modo de la pregunta suelta de cada escalón (Colocar, cuando va suelto, es Al revés). */
 function modoDeEscalon(e: Escalon): ModoId {
@@ -83,11 +89,17 @@ export function iniciarAprender(panel: HTMLElement, ctx: Omit<Contexto, 'contene
         `escalon ${f.clase}${f.ids.length ? '' : ' vacio'}`,
         el('span', 'escalon-titulo', f.titulo, el('span', 'escalon-cuenta', String(f.ids.length))),
         el('span', 'escalon-detalle', f.detalle),
-        f.ids.length ? el('span', 'escalon-paises', f.ids.map(nombre).sort((a, b) => a.localeCompare(b, 'es')).join(', ')) : null,
+        f.ids.length ? el('span', 'escalon-paises', listaNombres(f.ids)) : null,
       );
       lista.append(li);
     }
     return lista;
+  }
+
+  function listaNombres(ids: string[]): string {
+    const nombres = ids.map(nombre).sort((a, b) => a.localeCompare(b, 'es'));
+    if (nombres.length <= NOMBRES_MAX) return nombres.join(', ');
+    return `${nombres.slice(0, NOMBRES_MAX).join(', ')} y ${nombres.length - NOMBRES_MAX} más`;
   }
 
   function pendientes(): string[] {
@@ -108,7 +120,7 @@ export function iniciarAprender(panel: HTMLElement, ctx: Omit<Contexto, 'contene
         'p',
         'ayuda',
         hay
-          ? 'Cada país sube de escalón con dos aciertos en tandas distintas. Al superar el último, queda aprendido y pasa a Hoy.'
+          ? `Cada país sube de escalón con dos aciertos en tandas distintas. Al superar el último, queda aprendido y pasa a Hoy.${pendientes().length > TAM_TANDA ? ` Cada tanda lleva ${TAM_TANDA} países.` : ''}`
           : 'Ya has aprendido todos los países de esta región: los repasarás en Hoy. Si quieres, puedes practicarlos ahora con el mapa mudo.',
       ),
       escalera(),
@@ -127,7 +139,11 @@ export function iniciarAprender(panel: HTMLElement, ctx: Omit<Contexto, 'contene
     aprendidos.clear();
     resumen = { total: 0, aLaPrimera: 0, fallos: 0 };
     const e = estado();
-    const ids = pendientes();
+    // Como mucho TAM_TANDA, empezando por los de escalón más bajo.
+    const nivel = (id: string) => ESCALONES.indexOf(escalonDe(e, id)!);
+    const ids = pendientes()
+      .sort((a, b) => nivel(a) - nivel(b))
+      .slice(0, TAM_TANDA);
     const modos = new Map(ids.map((id) => [id, escalonDe(e, id)!]));
     const enColocar = ids.filter((id) => modos.get(id) === 'colocar');
     // Colocar necesita al menos dos capitales para tener sentido; con una sola, va suelta (Al revés).
@@ -164,7 +180,7 @@ export function iniciarAprender(panel: HTMLElement, ctx: Omit<Contexto, 'contene
     aprendidos.clear();
     resumen = { total: 0, aLaPrimera: 0, fallos: 0 };
     actual = iniciarRonda(contexto, {
-      ids: () => ctx.region.map((p) => p.id),
+      ids: () => barajar(ctx.region.map((p) => p.id), ctx.rng).slice(0, TAM_TANDA),
       modoPara: () => 'mapamudo',
       alTerminar(r) {
         acumular(r);

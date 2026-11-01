@@ -3,7 +3,8 @@ import { ColaHoy, type ItemHoy } from '../logic/hoy';
 import { mensajeResumen } from '../logic/mensajes';
 import type { Rng } from '../logic/rng';
 import type { Resultado } from '../logic/sesion';
-import type { Pais } from '../logic/types';
+import type { Continente, Pais } from '../logic/types';
+import type { ResumenPortada } from '../logic/portada';
 import type { Mapa } from '../map/mapa';
 import { boton, el, rellenar } from './dom';
 import { PAUSA_TRAS_ACIERTO_MS, Teclado, progreso, type Motor } from './comun';
@@ -32,11 +33,29 @@ export interface ServiciosHoy {
   mapaPara: (pais: Pais) => { mapa: Mapa; region: readonly Pais[]; transicionMs: number };
   /** Mapa actual (para limpiarlo al salir). */
   mapaActual: () => Mapa | null;
+  /** Cifras de la portada. */
+  resumen: () => ResumenPortada;
+  /** Días hasta el examen del panel (null si no hay lista de examen o fecha). */
+  diasExamen: () => number | null;
+  /** Continentes del curso, su nombre, cuál muestra el mapa y cómo cambiarlo (portada). */
+  continentes: readonly Continente[];
+  nombreContinente: (c: Continente) => string;
+  continenteMapa: () => Continente;
+  verContinente: (c: Continente) => void;
   irAAprender: () => void;
   alExplorar: () => void;
 }
 
 const TIPOS: Record<ItemHoy['tipo'], string> = { repaso: 'repasos', aprendiendo: 'en aprendizaje', nuevo: 'nuevos' };
+/** Segundos por pregunta para estimar la duración de la sesión. */
+const SEGUNDOS_PREGUNTA = 25;
+
+function textoDiasExamen(dias: number): string {
+  if (dias > 1) return `faltan ${dias} días`;
+  if (dias === 1) return 'es mañana';
+  if (dias === 0) return 'es hoy';
+  return 'ya pasó';
+}
 
 /**
  * Pestaña "Hoy" (SPEC 4.1 y 7): la rutina diaria. Repasos de lo aprendido,
@@ -65,6 +84,48 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     return s.candidatos.find((p) => p.id === id)?.nombre ?? id;
   }
 
+  /** Portada: cifras de lo aprendido (logros, sin rachas) y el continente que se ve en el mapa. */
+  function bloqueProgreso(): HTMLElement {
+    const r = s.resumen();
+    const barras = el('div', 'barras-continente');
+    for (const c of r.porContinente) {
+      const porcentaje = c.total ? Math.round((c.aprendidos / c.total) * 100) : 0;
+      const relleno = el('span', 'barra-relleno');
+      relleno.style.width = `${porcentaje}%`;
+      const barra = el('span', 'barra-progreso', relleno);
+      barra.setAttribute('role', 'img');
+      barra.setAttribute('aria-label', `${s.nombreContinente(c.continente)}: ${c.aprendidos} de ${c.total} aprendidos`);
+      barras.append(
+        el('div', 'fila-continente', el('span', 'fila-nombre', s.nombreContinente(c.continente)), barra, el('span', 'fila-cifra', `${c.aprendidos}/${c.total}`)),
+      );
+    }
+    const dias = s.diasExamen();
+    const selector = el('div', 'selector-practica selector-mapa-portada');
+    selector.setAttribute('role', 'group');
+    selector.setAttribute('aria-label', 'Continente en el mapa');
+    const botones = s.continentes.map((c) => {
+      const b = boton(s.nombreContinente(c), 'selector-opcion', () => {
+        s.verContinente(c);
+        for (const x of botones) x.setAttribute('aria-pressed', String(x === b));
+      });
+      b.setAttribute('aria-pressed', String(s.continenteMapa() === c));
+      return b;
+    });
+    selector.append(...botones);
+    return el(
+      'section',
+      'portada-progreso',
+      el('h3', 'dialogo-subtitulo', 'Tu progreso'),
+      el('p', 'cifra-portada', el('strong', '', String(r.aprendidos)), ` de ${r.total} países aprendidos`),
+      barras,
+      r.aprendidosSemana > 0 ? el('p', 'ayuda', `Esta semana: ${r.aprendidosSemana} ${r.aprendidosSemana === 1 ? 'país aprendido' : 'países aprendidos'}.`) : null,
+      r.examen
+        ? el('p', 'ayuda', `Examen${dias !== null ? ` (${textoDiasExamen(dias)})` : ''}: ${r.examen.aprendidos} de ${r.examen.total} países aprendidos.`)
+        : null,
+      el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Ver en el mapa'), selector),
+    );
+  }
+
   function pintarInicio(): void {
     const items = s.sesion();
     teclado.usar(null);
@@ -82,11 +143,15 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       .filter((t) => cuenta.get(t)?.size)
       .map((t) => el('li', '', el('strong', '', String(cuenta.get(t)!.size)), ` ${TIPOS[t]}`));
     const empezar = boton('Empezar', 'boton-principal', () => empezarSesion(items, false));
-    contenedor.replaceChildren(
+    const minutos = Math.max(1, Math.round((items.length * SEGUNDOS_PREGUNTA) / 60));
+    rellenar(
+      contenedor,
       el('h2', 'titulo-panel', 'Hoy'),
-      el('p', 'ayuda', `${items.length} preguntas. Los países nuevos salen dos veces, para fijarlos.`),
+      el('p', 'resumen', `Hoy toca: ${items.length} preguntas, unos ${minutos} minutos.`),
       el('ul', 'hoy-cuentas', ...partes),
+      cuenta.get('nuevo')?.size ? el('p', 'ayuda', 'Los países nuevos salen dos veces, para fijarlos.') : null,
       el('div', 'acciones', empezar),
+      bloqueProgreso(),
     );
     empezar.focus({ preventScroll: true });
   }
@@ -108,6 +173,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
           : 'Mañana habrá más. Si te apetece seguir, avanza en la pestaña Aprender.',
       ),
       el('div', 'acciones', principal, hayAdelantado ? boton('Ir a Aprender', 'boton-secundario', s.irAAprender) : null),
+      bloqueProgreso(),
     );
     principal.focus({ preventScroll: true });
   }
@@ -167,6 +233,8 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     s.mapaActual()?.setInteractivo(false);
     const resumen = cola?.resumen() ?? { total: 0, aLaPrimera: 0, fallos: 0 };
     cola = null;
+    // Al terminar, vuelta al continente entero: se ve lo que se ha coloreado.
+    s.verContinente(s.continenteMapa());
     const hayAdelantado = s.adelantado().length > 0;
     const seguir = hayAdelantado
       ? boton('Adelantar repasos', 'boton-principal', () => empezarSesion(s.adelantado(), true))
@@ -179,6 +247,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
         ? el('p', 'resumen-escalones', el('strong', '', 'Nuevos de hoy: '), [...nuevosVistos].map(nombre).join(', '), '.')
         : null,
       el('div', 'acciones', seguir, hayAdelantado ? boton('Ir a Aprender', 'boton-secundario', s.irAAprender) : boton('Explorar el mapa', 'boton-secundario', s.alExplorar)),
+      bloqueProgreso(),
     );
     seguir.focus({ preventScroll: true });
   }

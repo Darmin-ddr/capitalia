@@ -3,9 +3,9 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
 ## Ahora mismo
-- **Estado:** F1 a F5 terminadas en la rama `rediseno-hoy-aprender-examen`. **Sin fusionar** con la rama publicada: espera la aprobación del responsable.
+- **Estado:** F1 a F6 terminadas en la rama `rediseno-hoy-aprender-examen`. **Sin fusionar** con la rama publicada: espera la aprobación del responsable.
 - **Siguiente paso:** que el responsable la pruebe (en local con `npm run build` y `npx vite preview`) y, si le parece bien, fusionar con `claude/hito-1-plan-7opthj` para publicarla.
-- **Pendientes que no bloquean:** el color del mapa sigue el dominio FSRS (no los escalones); el resumen del panel tampoco muestra escalones. Pruebas con el alumno en iPad y iPhone reales.
+- **Pendientes que no bloquean:** el resumen del panel de adultos sigue mostrando el dominio FSRS, no los escalones. Pruebas con el alumno en iPad y iPhone reales.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -63,6 +63,11 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - Guías, README, SPEC, notas técnicas; panel de adultos (máximo de nuevos por día).
 - Pruebas en navegador completas. La fusión con la rama publicada queda para cuando el responsable la apruebe.
 
+### [x] F6. Portada de Hoy y continentes enteros (pedido tras probar la v2)
+- Hoy como portada: lo que toca, cifras de logro (sin rachas) y mapa del continente; sin selector de región; entra todo lo abierto.
+- Nuevos por orden del curso (Europa y luego Asia).
+- "Europa entera" y "Asia entera" en el selector de Aprender y Explorar, cuando están abiertas todas sus regiones; tandas de 16; sin "Todo".
+
 ## Decisiones de implementación
 - **E1. Subida de escalón:** dos aciertos en el modo del escalón (Colocar admite Al revés, que es su versión suelta). Un fallo reinicia el contador sin bajar; una errata ni suma ni resta (`progreso.ts`, `registrarEscalon`).
 - **E2. Región superada** (abre la siguiente): todos sus países en el escalón Escribir o más. Antes era "todos en repaso FSRS"; se acepta también eso para no bloquear a quien venga de la v1.
@@ -88,4 +93,11 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E22. Se retiran `prueba-modos.cjs` y `capturas-oscuro.cjs`** (probaban Practicar); los sustituyen `prueba-aprender`, `prueba-hoy` y `prueba-tema`.
 - **E23. Examen: acercar el mapa a los países pequeños.** Si el país de la estrella mide menos de 70 px en el mapa del continente, el mapa se acerca (hasta 3x) centrado en la capital; con uno grande, vuelve a la vista entera. Siempre se dibuja el continente entero con todas sus estrellas, también con la lista del panel (antes solo se dibujaban los países de la lista y no había referencias).
 - **E24. "Adelantar repasos":** el botón de Hoy se llama así y solo se menciona en el texto cuando hay repasos que adelantar (si no, solo se sugiere Aprender).
+- **E25. Decisiones del responsable para F6:** orden del curso (opción a), Europa y Asia enteras al abrir todas sus regiones, tandas de 16, sin "Todo".
+- **E26. Colores del mapa por escalones** (`nivelMapa`): gris sin empezar, tono suave en Elegir o Colocar, más intenso en Escribir o Mapa mudo, pleno al quedar aprendido. Antes seguían el dominio FSRS y no cuadraban con la portada.
+- **E27. "Esta semana: N aprendidos"** cuenta los países que han quedado aprendidos en los últimos 7 días (`aprendidoEl`, que se guarda desde ahora). Los convertidos desde la v1 no tienen fecha: cuentan en el total, no en la semana. Si es 0, no se muestra (nada que suene a reproche).
+- **E28. Mapa de la portada:** el continente que toca según el orden del curso (el primero con países sin aprender), con un selector Europa/Asia para mirar el otro. Al terminar la sesión, vuelve al mapa del continente para ver lo coloreado.
+- **E29. Región elegida aparte:** Hoy y el examen mueven el mapa; Aprender y Explorar vuelven siempre a la región que eligió el alumno (que es la que se recuerda al recargar).
+- **E30. Mapas de continente entero:** solo los microestados de verdad (menos de unos 3.000 km²) llevan círculo; si no, en el móvil casi todos los países salían como círculos. Se aplica a la portada, a "Europa/Asia entera" y al examen.
+- **E31. Duración estimada en la portada:** unos 25 segundos por pregunta.
 

@@ -1530,3 +1530,54 @@ button {
   min-height: 44px;
   margin-left: 6px;
 }
+
+/* --- Portada de Hoy --- */
+.portada-progreso {
+  margin-top: 18px;
+  padding-top: 4px;
+  border-top: 1px solid var(--borde);
+}
+
+.cifra-portada {
+  margin: 4px 0 8px;
+}
+
+.cifra-portada strong {
+  font-size: 1.8rem;
+}
+
+.barras-continente {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.fila-continente {
+  display: grid;
+  grid-template-columns: 4.5em 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.barra-progreso {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  display: block;
+  height: 100%;
+  background: var(--acierto-mapa);
+}
+
+.fila-cifra {
+  font-variant-numeric: tabular-nums;
+  color: var(--texto-suave);
+}
+
+.region-item.region-entera .region-titulo {
+  font-weight: 800;
+}

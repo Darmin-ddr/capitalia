@@ -1,4 +1,4 @@
-import { geoAzimuthalEqualArea, geoBounds, geoPath, type GeoProjection } from 'd3-geo';
+import { geoArea, geoAzimuthalEqualArea, geoBounds, geoPath, type GeoProjection } from 'd3-geo';
 import { feature, merge } from 'topojson-client';
 import type { GeometryCollection, GeometryObject, Topology } from 'topojson-specification';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
@@ -23,6 +23,13 @@ const SVG = 'http://www.w3.org/2000/svg';
  */
 const TAM_MINIMO = 16;
 const AREA_MINIMA = 250;
+/**
+ * En los mapas de un continente entero, solo los microestados llevan círculo (si no, en
+ * el móvil casi todos los países serían círculos): superficie real de menos de unos
+ * 3.000 km² (Vaticano, Mónaco, San Marino, Liechtenstein, Andorra, Malta, Luxemburgo,
+ * Singapur, Baréin, Maldivas...). En estereorradianes: 3.000 / 510 millones de km² × 4π.
+ */
+const AREA_MICROESTADO = (3000 / 510e6) * 4 * Math.PI;
 /** Radio del área tocable de los círculos (diámetro >= 44 px, SPEC 10). */
 const RADIO_TOQUE = 22;
 const RADIO_VISIBLE = 8;
@@ -101,6 +108,8 @@ export interface OpcionesMapa {
   fueraDeEncuadre?: ReadonlySet<string>;
   /** Otros países con progreso visible (resto del continente), no tocables. */
   contexto?: readonly Pais[];
+  /** Mapa de un continente entero: círculos solo para los microestados (ver AREA_MICROESTADO). */
+  circulosSoloMicroestados?: boolean;
   /** Color pastel de cada país (el de su región). */
   colorDe?: (paisId: string) => string;
   onSeleccion?: (paisId: string) => void;
@@ -279,7 +288,10 @@ export class Mapa {
       else this.capaPaises.append(el);
 
       // Países diminutos (microestados): círculo tocable en su capital.
-      if (Math.max(bx1 - bx0, by1 - by0) < TAM_MINIMO || ruta.area(forma.feature) < AREA_MINIMA) {
+      const diminuto = this.op.circulosSoloMicroestados
+        ? geoArea(forma.feature) < AREA_MICROESTADO
+        : Math.max(bx1 - bx0, by1 - by0) < TAM_MINIMO || ruta.area(forma.feature) < AREA_MINIMA;
+      if (diminuto) {
         const punto = this.proyeccion(forma.pais!.capitalCoords);
         if (punto) this.capaCirculos.append(this.circulo(id!, punto, enRegion));
       }
@@ -290,7 +302,8 @@ export class Mapa {
       this.aplicarClases(id, false);
       if (this.idsRegion.has(id)) this.prepararTocable(id);
     }
-    this.aplicarVista();
+    if (this.enfocado) this.aplicarEnfoque();
+    else this.aplicarVista();
   }
 
   /* ---------- Zoom y desplazamiento ---------- */
@@ -508,6 +521,15 @@ export class Mapa {
    * en el mapa del continente); con null, o si el país se ve bien, vuelve a la vista de la región.
    */
   enfocar(paisId: string | null): void {
+    this.enfocado = paisId;
+    this.aplicarEnfoque();
+  }
+
+  /** País enfocado (se vuelve a enfocar si el mapa se redibuja, p. ej. al cambiar de tamaño el panel). */
+  private enfocado: string | null = null;
+
+  private aplicarEnfoque(): void {
+    const paisId = this.enfocado;
     const pais = paisId ? this.op.region.find((p) => p.id === paisId) : null;
     const forma = paisId ? (this.elementos.get(paisId) ?? []).find((e) => e.tagName === 'path') : undefined;
     const punto = pais && this.proyeccion(pais.capitalCoords);

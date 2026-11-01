@@ -6,7 +6,7 @@
 
 Funciona en el navegador del móvil, la tableta o el ordenador. Gratis, sin cuentas y sin anuncios.
 
-![Capitalia en el ordenador: el mapa de Europa occidental coloreado según lo aprendido y una pregunta de Hoy](docs/capturas/hoy-escritorio.png)
+![Capitalia en el ordenador: la portada de Hoy, con lo que toca, los países aprendidos y el mapa de Europa coloreado según el progreso](docs/capturas/hoy-escritorio.png)
 
 ## Qué es
 
@@ -16,8 +16,8 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 
 ## Cómo te ayuda a aprender
 
-- **Hoy: diez minutos al día.** La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada), y cada día mete unos pocos países nuevos entre los repasos. Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo.
-- **Aprender, a tu ritmo.** Cada país sube cuatro escalones, de más fácil a más difícil: elegir la capital entre cuatro, colocar capitales en su país, escribirla sin ayuda y, por último, el mapa mudo: ver solo la estrella y escribir país y capital. Sube de escalón al acertarlo dos veces con otras preguntas por medio.
+- **Hoy: diez minutos al día.** Al abrir la app ves lo que toca, cuántos países llevas aprendidos y el mapa coloreado con tu progreso. La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada), y cada día mete unos pocos países nuevos entre los repasos. Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo.
+- **Aprender, a tu ritmo.** Cada país sube cuatro escalones, de más fácil a más difícil: elegir la capital entre cuatro, colocar capitales en su país, escribirla sin ayuda y, por último, el mapa mudo: ver solo la estrella y escribir país y capital. Sube de escalón al acertarlo dos veces con otras preguntas por medio. Cuando tienes abiertas todas las regiones de un continente, puedes practicarlo entero.
 - **Examen de prueba.** Un mapa mudo del continente entero con las estrellas de las capitales, como el examen de clase, con nota sobre 10 (medio punto si aciertas solo el país o solo la capital). Lo que falles puedes mandarlo a Hoy para repasarlo antes.
 - **El mapa es tu marcador.** Cada país se colorea a medida que lo dominas, y las regiones se van abriendo de una en una.
 - **Trucos de memoria.** Algunos países traen uno, y puedes inventar los tuyos (la app incluye una guía para fabricarlos).

@@ -28,6 +28,8 @@ const enRegion = (p, r) => !p.opcional && (p.region === r || (p.regionesExtra ||
   await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   const sufijo = process.argv[3] === 'movil' ? '-movil' : '';
+  // El selector de región está en Explorar y Aprender (Hoy no lo usa).
+  await p.locator('.modo[data-modo="explorar"]').click();
   for (const r of regiones) {
     await p.locator('#region-actual').click();
     await p.locator('.region-item', { hasText: r.nombre }).click();
