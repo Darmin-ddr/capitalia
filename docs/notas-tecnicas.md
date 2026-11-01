@@ -12,12 +12,14 @@
   Ojo: para tocar países usar `locator.dispatchEvent('click')`, no `tap()`: el centro del
   rectángulo de Croacia cae en Bosnia.
 - No usar `pkill -f "vite preview"` en la misma orden que otras cosas: mata la propia shell (código 144).
+- **Playwright no es dependencia del proyecto.** En la nube venía preinstalado. En Windows se instala aparte (`npm i playwright` y `npx playwright install chromium` en una carpeta fuera del repo) y se ejecutan los scripts con `NODE_PATH` apuntando a su `node_modules`.
+- En Windows el repositorio tiene saltos de línea CRLF: al editar ficheros con scripts, normalizar o usar el editor para no ensuciar el diff.
 
 ## Datos
 - Coordenadas: GeoNames vía el fichero `cities.pbf` del paquete npm `all-the-cities` (no se puede ejecutar
   su código; se decodifica con `python3 -I scripts/geonames-capitales.py <ruta>/cities.pbf`, editando
   los códigos de país de la lista `want`). Descargar con `npm pack all-the-cities` en una carpeta aparte.
-- Wikipedia y github.io están bloqueados desde este entorno.
+- En el entorno en la nube, Wikipedia y github.io estaban bloqueados (por eso se usó GeoNames).
 - world-atlas: ids ISO numéricos como texto ("008"). Sin id: Kosovo, N. Cyprus, Somaliland, Indian Ocean Ter., Siachen Glacier.
 
 ## FSRS
@@ -34,8 +36,18 @@
 - `scripts/capturas-oscuro.cjs <carpeta>`: capturas en modo oscuro.
 - `scripts/prueba-zoom.cjs <carpeta>`: zoom, arrastre, rueda y pellizco simulado.
 - `scripts/prueba-accesibilidad.cjs`: objetivos táctiles de 44 px en todas las pantallas y recorrido con teclado.
+- `scripts/prueba-guia.cjs <carpeta> [movil]`: bienvenida, guía del alumno (pregunta y taller), guía de adultos, casillas de continente del examen y Acerca de.
+- `scripts/prueba-teclado-dialogos.cjs`: con un diálogo abierto, las teclas no responden la pregunta de detrás.
+- `scripts/capturas-readme.cjs`: regenera las capturas del README en `docs/capturas/`.
+
+## Otros scripts
+- `scripts/generar-icono-svg.py` + `scripts/generar-iconos.cjs`: icono (mosaico de regiones con chincheta).
+- `scripts/generar-paises.py`: genera `countries.json` desde la tabla de países y el TSV de GeoNames.
+- `scripts/recortar-mapa.cjs`: mapa recortado (ver abajo).
 
 ## Mapa recortado
+- Encuadre por región: `src/logic/encuadre.ts` quita los trozos pequeños y lejanos de cada país (ultramar) para encuadrar; se dibujan igual.
+- Zoom: `src/logic/vista.ts` (0,6x a 8x, holgura del 35 % para desplazarse).
 - La app usa `src/data/mapa-50m.json`, generado con `node scripts/recortar-mapa.cjs` a partir de world-atlas (dependencia de desarrollo). Si se añaden países fuera del recuadro, ampliar el recuadro del script y regenerar.
 
 ## Arquitectura de la interfaz (O1-O4)
@@ -43,4 +55,6 @@
 - `src/ui/ronda.ts`: controlador común de rondas de preguntas sueltas; `src/ui/preguntas.ts`: una función por modo (elegir, escribir, al revés).
 - `src/ui/colocar.ts`: modo 3, aparte (va por tandas).
 - `src/ui/repaso.ts` (sesión y examen), `practicar.ts`, `explorar.ts`, `regiones.ts` (selector), `mas.ts` (copia), `panel.ts` (adultos).
+- `src/ui/bienvenida.ts` (primer arranque y guía de adultos), `guia.ts` (guía del alumno), `acerca.ts` (versión y créditos; la autoría está en `AUTORIA`).
+- Los atajos de teclado de las preguntas (`Teclado` en `comun.ts`) se ignoran mientras haya un `<dialog>` abierto.
 - Cambios de ajustes que afectan a los datos (Kosovo, examen, importar) recargan la página.

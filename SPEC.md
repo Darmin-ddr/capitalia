@@ -146,6 +146,8 @@ Progreso (local): estado FSRS por tarjeta, nivel/modo por país, historial de re
 
 ## 13. Hitos
 
+**Estado:** los siete hitos están cubiertos en la v1.0 (ver `docs/informe-noche.md`). Pendiente: pruebas con el usuario real en iPad y iPhone, y revisión de trucos y regiones.
+
 1. **Prototipo de una región** (p. ej. Europa nórdica o Balcanes): mapa, modos 1 y 2, feedback. Probar en iPad.
 2. Resto de modos (3, 4, 5) y validación tolerante de texto.
 3. FSRS + cola de sesión + progreso persistente.
