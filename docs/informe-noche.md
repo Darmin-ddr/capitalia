@@ -193,7 +193,7 @@ Lo que no he podido comprobar desde aquí (solo tengo Chromium simulando tamaño
 17. Lo mismo que en iPad en versión corta: mapa arriba y panel abajo, selector de región sobre la esquina del mapa, Escribir con el teclado en pantalla, y el panel de adultos (en Android, que las casillas y el selector de fecha funcionen).
 
 ### En PC (Chrome)
-18. **Teclado:** también la rueda del ratón para el zoom. teclas 1 a 4 en Elegir, Enter para Siguiente, Tab para recorrer los países del mapa y Enter para elegirlos.
+18. **Teclado y ratón:** teclas 1 a 4 en Elegir, Enter para Siguiente, Tab para recorrer los países del mapa y Enter para elegirlos; rueda del ratón para el zoom.
 
 ### Contenido
 19. **Leer todos los trucos** (Panel → Trucos, región por región) y desactivar o reescribir los que no convenzan.
