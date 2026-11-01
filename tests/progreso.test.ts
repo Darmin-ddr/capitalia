@@ -108,6 +108,12 @@ describe('regiones', () => {
     expect([...regionesDesbloqueadas(e, regiones, paisesDe)]).toEqual(['r1', 'r2']);
   });
 
+  it('una región con algún país empezado (por Hoy) también se abre', () => {
+    const e = estadoVacio();
+    e.aprendizaje.D = { escalon: 0, aciertos: 1, aprendido: false };
+    expect([...regionesDesbloqueadas(e, regiones, paisesDe)].sort()).toEqual(['r1', 'r3']);
+  });
+
   it('región dominada cuando todos sus países lo están', () => {
     const e = estadoVacio();
     aprender(e, 'A', 3);

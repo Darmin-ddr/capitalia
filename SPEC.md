@@ -18,7 +18,7 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 
 ### 3.1 Estructura del contenido
 - Europa y Asia **separadas**, cada una dividida en **regiones** de 6 a 10 países (p. ej. Europa nórdica, Balcanes, Asia central, Sudeste Asiático). La división concreta se define en los datos.
-- Las regiones se desbloquean progresivamente; siempre se puede volver a las anteriores.
+- Las regiones se desbloquean progresivamente (en el selector de Aprender y Explorar): una región se abre cuando todos los países de la anterior llegan al escalón Escribir, o cuando Hoy ya ha empezado alguno de sus países. Siempre se puede volver a las anteriores.
 - **Lista base: los listados de clase** (material del colegio, 3º de ESO): `docs/listas/Europa.md` y `docs/listas/Asia.md`. Son la **fuente de verdad**: todo país que aparece en ellos está incluido y activo por defecto, con el nombre de país y de capital tal como figura en el listado. Fuera de los listados solo existen los opcionales desactivados de 3.2 (Kosovo).
 - **Filtro "solo examen"**: el adulto marca qué países entran en un examen concreto (cuando se conozca la lista del libro o del profesor).
 
@@ -114,7 +114,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 - **Hoy:** corta (orientativo: unos 10 minutos o unas 20 preguntas), con opción de seguir al terminar. Empieza con unos repasos y reparte los países nuevos entre ellos, separados para que cada uno salga varias veces.
 - Los países que están en aprendizaje salen en Hoy una vez al día (si ya se han respondido hoy, esperan a mañana).
-- Los nuevos de Hoy siguen el **orden del curso**: las regiones de Europa en orden y luego las de Asia (y después lo que se añada). Los países de la lista de examen van antes.
+- Los nuevos de Hoy siguen el **orden del curso**: las regiones de Europa en orden y luego las de Asia (y después lo que se añada), **aunque la región siguiente aún esté cerrada en el selector**; empezar un país abre su región. Sin más freno que la autorregulación de nuevos. Los países de la lista de examen van antes.
 - **Nuevos por día, autorregulados entre 5 y 10** según el porcentaje de aciertos recientes; si hay muchos repasos pendientes (por ejemplo, tras días sin entrar), 5. El adulto puede ajustar el máximo.
 - **Examen configurado por el adulto** (fecha y países): Hoy da prioridad a esos países a medida que se acerca la fecha. El antiguo "Preparar examen" desaparece (lo absorben Hoy y Examen).
 

@@ -175,6 +175,51 @@ async function responder(p, tap, mal = false) {
     await ctx.close();
   }
 
+  // ---------- 3. Segundo día: Europa del sur empezada, Europa occidental aún cerrada ----------
+  // Hoy sigue el orden del curso aunque la región esté cerrada, y al empezarla se abre.
+  {
+    const ayer = new Date(Date.now() - 864e5).toISOString();
+    const aprendizaje = {};
+    const historial = [];
+    for (const p of paises.filter((x) => x.region === 'europa-sur')) {
+      aprendizaje[p.id] = { escalon: 1, aciertos: 0, aprendido: false };
+      historial.push({ t: ayer, pais: p.id, modo: 'elegir', res: 'acierto', ms: 3000, nota: 3 });
+    }
+    const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, base({ aprendizaje, historial, ultimaRegion: 'europa-sur' }));
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => errores.push('segundo día: ' + e.message));
+    await p.goto('http://localhost:4173/');
+    await p.waitForSelector('.hoy-cuentas');
+    await p.locator('.modo[data-modo="aprender"]').click();
+    await p.locator('#region-actual').click();
+    const cerrada = await p.locator('.region-item').filter({ has: p.locator('.region-titulo', { hasText: /^Europa occidental/ }) }).isDisabled();
+    await p.keyboard.press('Escape');
+    await p.locator('.modo[data-modo="hoy"]').click();
+    await p.locator('.contenido-modo .acciones .boton-principal', { hasText: 'Empezar' }).click();
+    const nuevos = new Set();
+    let avisoRegion = '';
+    let pasos = 0;
+    while (!(await p.locator('.resumen-titulo').count()) && pasos++ < 80) {
+      const aviso = await p.locator('.aviso').allInnerTexts();
+      if (aviso.some((t) => t.includes('Nueva región'))) avisoRegion = aviso.find((t) => t.includes('Nueva región'));
+      const etiqueta = await p.locator('.progreso').first().innerText().catch(() => '');
+      const r = await responder(p, 'click');
+      if (Array.isArray(r)) {
+        if (etiqueta.includes('nuevo')) nuevos.add(r[0]);
+        await p.waitForTimeout(1500);
+      } else if (!r) await p.waitForTimeout(200);
+    }
+    const regionesNuevos = new Set([...nuevos].map((id) => P[id].region));
+    comprobar(cerrada, 'segundo día: Europa occidental empieza cerrada en el selector');
+    comprobar(nuevos.size > 0 && regionesNuevos.size === 1 && regionesNuevos.has('europa-occidental'), `segundo día: los nuevos son de Europa occidental, no de Asia (${[...nuevos]})`);
+    comprobar(avisoRegion.includes('Europa occidental'), `segundo día: aviso al abrirse → "${avisoRegion}"`);
+    await p.locator('.modo[data-modo="aprender"]').click();
+    await p.locator('#region-actual').click();
+    comprobar(!(await p.locator('.region-item').filter({ has: p.locator('.region-titulo', { hasText: /^Europa occidental/ }) }).isDisabled()), 'segundo día: Europa occidental ya se puede elegir en Aprender');
+    await ctx.close();
+  }
+
   console.log('errores de página:', errores.length ? errores : 'ninguno');
   console.log(fallosPrueba ? `${fallosPrueba} comprobaciones fallidas` : 'todas las comprobaciones bien');
   await b.close();

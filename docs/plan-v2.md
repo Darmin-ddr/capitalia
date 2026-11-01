@@ -100,4 +100,5 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E29. Región elegida aparte:** Hoy y el examen mueven el mapa; Aprender y Explorar vuelven siempre a la región que eligió el alumno (que es la que se recuerda al recargar).
 - **E30. Mapas de continente entero:** solo los microestados de verdad (menos de unos 3.000 km²) llevan círculo; si no, en el móvil casi todos los países salían como círculos. Se aplica a la portada, a "Europa/Asia entera" y al examen.
 - **E31. Duración estimada en la portada:** unos 25 segundos por pregunta.
+- **E32. Hoy no mira si una región está cerrada** (lo detectó una revisión: al segundo día, con Europa occidental aún cerrada, Hoy sacaba nuevos de Asia oriental y rompía el orden del curso). Ahora Hoy saca los nuevos por orden del curso entre todos los países, y una región se abre en el selector también cuando tiene algún país empezado (con su aviso "Nueva región disponible"). Decidido con el responsable: sin freno extra, basta con la autorregulación de nuevos.
 

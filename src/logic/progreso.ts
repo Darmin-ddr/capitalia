@@ -311,8 +311,9 @@ export function regionDominada(estado: EstadoProgreso, paises: readonly Pais[]):
 
 /**
  * Regiones desbloqueadas de un continente: la primera siempre; cada una de
- * las siguientes, cuando la anterior está superada. Siempre se puede volver
- * a las anteriores.
+ * las siguientes, cuando la anterior está superada o cuando ya tiene algún
+ * país empezado (Hoy saca los nuevos por orden del curso sin mirar si la
+ * región está abierta, y eso también la abre). Siempre se puede volver a las anteriores.
  */
 export function regionesDesbloqueadas(
   estado: EstadoProgreso,
@@ -322,8 +323,8 @@ export function regionesDesbloqueadas(
   const ordenadas = [...regiones].sort((a, b) => a.orden - b.orden);
   const abiertas = new Set<string>();
   for (let i = 0; i < ordenadas.length; i++) {
-    if (i === 0 || regionSuperada(estado, paisesDe(ordenadas[i - 1].id))) abiertas.add(ordenadas[i].id);
-    else break;
+    const empezada = paisesDe(ordenadas[i].id).some((p) => empezado(estado, p.id));
+    if (i === 0 || empezada || regionSuperada(estado, paisesDe(ordenadas[i - 1].id))) abiertas.add(ordenadas[i].id);
   }
   return abiertas;
 }

@@ -92,11 +92,14 @@ export function iniciarApp(): void {
   };
   const regionAbierta = (r: Region) => (esContinente(r) ? continenteAbierto(r.continente) : desbloqueadas(r.continente).has(r.id));
   const enExamen = (p: Pais) => estado.ajustes.listaExamen?.includes(p.id) ?? false;
-  /** Países de las regiones abiertas de todos los continentes (de ahí sale Hoy, también lo que se añada en el futuro). */
-  const disponibles = () => {
-    const abiertas = new Set(continentesCurso(regiones).flatMap((c) => [...desbloqueadas(c)]));
-    return activos.filter((p) => abiertas.has(p.region));
-  };
+  /**
+   * Países de Hoy: todos, también los de regiones aún cerradas en el selector y los de
+   * continentes que se añadan en el futuro. Los nuevos salen por orden del curso, y
+   * empezar un país abre su región (`regionesDesbloqueadas`).
+   */
+  const disponibles = () => activos;
+  /** Todas las regiones abiertas, de todos los continentes. */
+  const todasAbiertas = () => new Set(continentesCurso(regiones).flatMap((c) => [...desbloqueadas(c)]));
   /** Orden en que Hoy saca países nuevos: el del curso (Europa y luego Asia, cada una por regiones). */
   const ordenRegiones = () => ordenCurso(regiones).map((r) => r.id);
   /** Países del continente de la región actual (el mapa los colorea por dominio). */
@@ -141,7 +144,7 @@ export function iniciarApp(): void {
 
   const motor: Motor = {
     registrar(paisId, modoId, resultado, tiempoMs, opciones) {
-      const antes = desbloqueadas(region.continente);
+      const antes = todasAbiertas();
       registrarRespuesta(estado, paisId, modoId, resultado, tiempoMs, new Date(), opciones);
       // Un país priorizado (fallado en un examen) deja de serlo al acertarlo fuera del examen.
       if (resultado === 'acierto' && !opciones?.examen) estado.prioridad = estado.prioridad.filter((x) => x !== paisId);
@@ -159,7 +162,7 @@ export function iniciarApp(): void {
 
   /** Celebraciones grandes solo al dominar una región (SPEC 5.1) y aviso de región nueva. */
   function comprobarHitos(antes: Set<string>): void {
-    for (const r of regionesDe(region.continente)) {
+    for (const r of regiones) {
       if (!estado.regionesCelebradas.includes(r.id) && regionDominada(estado, paisesDeRegion(r.id))) {
         estado.regionesCelebradas.push(r.id);
         guardar();
@@ -167,7 +170,7 @@ export function iniciarApp(): void {
         avisar(`¡Has dominado ${r.nombre}!`);
       }
     }
-    for (const id of desbloqueadas(region.continente)) {
+    for (const id of todasAbiertas()) {
       if (!antes.has(id)) avisar(`Nueva región disponible: ${regionDe(id)?.nombre ?? id}`);
     }
   }
