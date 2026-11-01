@@ -4,7 +4,7 @@ import { feature } from 'topojson-client';
 import { geoContains, geoDistance } from 'd3-geo';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import type { Feature, Geometry } from 'geojson';
-import mundo from 'world-atlas/countries-50m.json';
+import mundo from '../src/data/mapa-50m.json';
 import { paises } from '../src/data';
 import { regiones } from '../src/data';
 import { paisesActivos } from '../src/logic/datos';

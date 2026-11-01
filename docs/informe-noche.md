@@ -4,18 +4,18 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 ## Resumen
 
-**La v1.0 está lista para probar:** se han cumplido los objetivos O1 a O4 del plan y parte de O5.
+**La v1.0 está lista para probar:** se han cumplido todos los objetivos del plan (O1 a O6).
 
 - **Web:** https://darmin-ddr.github.io/capitalia/ (se publica sola con cada cambio de la rama `claude/hito-1-plan-7opthj`).
 - **Qué hay:** los 94 países de tus listados en 13 regiones; pestaña **Repaso** con repetición espaciada (FSRS) que elige qué preguntar y en qué modo; **Practicar** con los cuatro modos a elegir; **Explorar** con "Inventa tu truco"; el mapa se colorea según lo que se domina; panel para adultos con PIN, examen, trucos y ajustes; instalable, funciona sin conexión y tiene copia de seguridad.
-- **Qué falta del SPEC:** zoom y desplazamiento del mapa; QR para la copia (descartado, ver D11); arrastrar en el modo Colocar (era opcional).
+- **Qué falta del SPEC:** QR para la copia (descartado, ver D11) y arrastrar en el modo Colocar (era opcional).
 - **Lo más importante que revisar:** los trucos (escritos por mí, sin revisar), la división en regiones (D8) y la lista de pruebas manuales del final, sobre todo en iPad.
 - **Para probar todas las regiones** sin tener que superarlas: Panel para adultos → Ajustes → "Desbloquear todas las regiones".
-- **Tests:** 75 tests automáticos de la lógica y los datos, y seis scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
+- **Tests:** 79 tests automáticos de la lógica y los datos, y siete scripts de prueba en navegador (`scripts/`), todos en verde al terminar.
 
 ## Ahora mismo
 
-- **Objetivo en curso:** ninguno: plan terminado (O1-O4 hechos, O5 parcial, O6 hecho).
+- **Objetivo en curso:** ninguno: plan terminado (O1 a O6 hechos).
 - **Siguiente paso:** que el responsable pruebe en iPad y revise trucos y regiones; después, correcciones.
 
 ## Estado
@@ -26,7 +26,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 | O2. Datos completos | Hecho |
 | O3. PWA y exportar/importar | Hecho |
 | O4. Panel de adultos y modo examen | Hecho |
-| O5. Pulido | Hecho (parcial) |
+| O5. Pulido | Hecho |
 | O6. Informe final | Hecho |
 
 ## Lo hecho
@@ -65,10 +65,12 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Modo examen:** en Repaso aparece "Preparar examen" cuando hay examen: pregunta los países del examen de la región actual, de más flojo a más sólido, cada uno en el modo de su nivel. Los fallos no tocan la planificación FSRS; los aciertos sí.
 - Probado en Chromium (iPad y móvil) el flujo completo: crear PIN, resumen, examen, editar truco, activar Kosovo, preparar examen con un fallo (tarjeta sin cambios), PIN incorrecto. 75 tests.
 
-### O5. Pulido (parcial)
+### O5. Pulido
 - Revisión en modo oscuro de Repaso, Colocar, selector de regiones y panel (PC y móvil). Corregido: círculos de microestados poco visibles en oscuro (ahora con borde marcado), plurales del panel ("1 fallo de 1 intento") y una errata.
 - Revisión de todos los textos de la interfaz.
-- **No hecho:** zoom y desplazamiento del mapa (el SPEC lo pide). Con el encuadre por región y los círculos de los microestados no me ha parecido imprescindible; queda pendiente. **No hecho:** recortar el mapa del mundo (pesa unos 260 KB comprimido); exigiría rehacer la topología con otra herramienta y no compensa ahora.
+- **Zoom y desplazamiento del mapa** (SPEC 10): pellizcar y arrastrar con el dedo, rueda del ratón en PC y botones +, − y "ver toda la región" (este solo aparece con zoom). Bordes, círculos de microestados, estrella y nombre de la capital mantienen su tamaño en pantalla al acercar. Tras arrastrar, soltar el dedo no elige país. Cálculo en `src/logic/vista.ts`, con tests. Ver D17.
+- **Mapa más ligero:** `scripts/recortar-mapa.cjs` quita del mapa del mundo los países lejos de Europa y Asia (y los trazos que solo usaban ellos): de 739 KB a 479 KB. El fichero principal de la app baja de unos 800 KB a 614 KB (200 KB comprimido). Un test comprueba que no falta ningún país de los listados.
+- Probado en Chromium: botones, rueda, arrastre sin elegir país, clic con zoom, pellizco simulado en móvil; y repetidas todas las pruebas de regiones, modos, panel y PWA con el mapa recortado.
 
 ## Requiere tu atención
 
@@ -159,9 +161,13 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Motivo:** el desbloqueo progresivo es del SPEC, pero si el curso o el examen van en otro orden (o para probar la app), hace falta poder saltárselo.
 - **Reversibilidad:** total.
 
+### D17. Zoom del mapa (O5)
+- **Elección:** zoom propio (sin librería) de 1x a 8x, que no deja ver huecos fuera del mapa. El mapa se encarga de todos los gestos (`touch-action: none`), así que dentro del mapa no se desplaza la página ni se hace el zoom del navegador. El zoom vuelve a la vista completa al cambiar el tamaño del mapa (por ejemplo, al girar el iPad o al salir el teclado).
+- **Reversibilidad:** total.
+
 ## Pruebas manuales pendientes
 
-Lo que no he podido comprobar desde aquí (solo tengo Chromium simulando tamaños de pantalla y toques). Por orden de importancia:
+Lo que no he podido comprobar desde aquí (solo tengo Chromium simulando tamaños de pantalla y toques). Por orden de importancia (20 puntos):
 
 ### En iPad (Safari)
 1. **Abrir la web** y comprobar que el mapa se ve y responde. En horizontal, mapa a la izquierda y panel a la derecha; en vertical, uno encima del otro.
@@ -171,23 +177,24 @@ Lo que no he podido comprobar desde aquí (solo tengo Chromium simulando tamaño
 5. **Practicar → Escribir:** que el teclado no tape el campo ni el mapa entero; probar una errata (p. ej. "Liubiana") y una respuesta con tildes y sin ellas.
 6. **Practicar → Al revés:** tocar el país de la capital que se muestra.
 7. **Selector de región** (botón con el nombre de la región): abrir, cambiar de región, cerrar tocando fuera.
-8. **Panel para adultos** (botón ⋯): crear PIN (¿sale teclado numérico?), ver Resumen, poner un examen con fecha (selector de fecha de Safari), editar un truco, activar "Desbloquear todas las regiones".
-9. **Preparar examen** en Repaso, en una región con 📝.
-10. **Modo oscuro:** cambiar el iPad a oscuro y repasar las pantallas.
+8. **Zoom del mapa:** pellizcar para acercar, arrastrar con un dedo para moverse y comprobar que al soltar no se elige un país sin querer. Botones +, − y ⤢. Probar también a tocar un país con zoom.
+9. **Panel para adultos** (botón ⋯): crear PIN (¿sale teclado numérico?), ver Resumen, poner un examen con fecha (selector de fecha de Safari), editar un truco, activar "Desbloquear todas las regiones".
+10. **Preparar examen** en Repaso, en una región con 📝.
+11. **Modo oscuro:** cambiar el iPad a oscuro y repasar las pantallas.
 
 ### Instalación y datos (iPad o iPhone)
-11. **Añadir a pantalla de inicio** (Compartir → Añadir a pantalla de inicio). Abrir desde el icono: que se vea sin barras del navegador y con el icono de la estrella.
-12. **Sin conexión:** tras usarla con conexión, activar el modo avión y abrirla desde el icono.
-13. **Progreso guardado:** cerrar la app del todo, volver a abrir: el mapa sigue coloreado y la región es la última usada.
-14. **Copia de seguridad:** ⋯ → Descargar copia (¿dónde guarda Safari el fichero?); Copiar código y pegarlo en otro dispositivo (⋯ → pegar → Importar código); Importar fichero desde la app Archivos.
-15. **Actualizaciones:** cuando publique cambios, la app instalada debería cogerlos al cerrarla y volverla a abrir (a veces hace falta abrirla dos veces).
+12. **Añadir a pantalla de inicio** (Compartir → Añadir a pantalla de inicio). Abrir desde el icono: que se vea sin barras del navegador y con el icono de la estrella.
+13. **Sin conexión:** tras usarla con conexión, activar el modo avión y abrirla desde el icono.
+14. **Progreso guardado:** cerrar la app del todo, volver a abrir: el mapa sigue coloreado y la región es la última usada.
+15. **Copia de seguridad:** ⋯ → Descargar copia (¿dónde guarda Safari el fichero?); Copiar código y pegarlo en otro dispositivo (⋯ → pegar → Importar código); Importar fichero desde la app Archivos.
+16. **Actualizaciones:** cuando publique cambios, la app instalada debería cogerlos al cerrarla y volverla a abrir (a veces hace falta abrirla dos veces).
 
 ### En iPhone y Android
-16. Lo mismo que en iPad en versión corta: mapa arriba y panel abajo, selector de región sobre la esquina del mapa, Escribir con el teclado en pantalla, y el panel de adultos (en Android, que las casillas y el selector de fecha funcionen).
+17. Lo mismo que en iPad en versión corta: mapa arriba y panel abajo, selector de región sobre la esquina del mapa, Escribir con el teclado en pantalla, y el panel de adultos (en Android, que las casillas y el selector de fecha funcionen).
 
 ### En PC (Chrome)
-17. **Teclado:** teclas 1 a 4 en Elegir, Enter para Siguiente, Tab para recorrer los países del mapa y Enter para elegirlos.
+18. **Teclado:** también la rueda del ratón para el zoom. teclas 1 a 4 en Elegir, Enter para Siguiente, Tab para recorrer los países del mapa y Enter para elegirlos.
 
 ### Contenido
-18. **Leer todos los trucos** (Panel → Trucos, región por región) y desactivar o reescribir los que no convenzan.
-19. **Comprobar las regiones** con el libro o el profesor.
+19. **Leer todos los trucos** (Panel → Trucos, región por región) y desactivar o reescribir los que no convenzan.
+20. **Comprobar las regiones** con el libro o el profesor.

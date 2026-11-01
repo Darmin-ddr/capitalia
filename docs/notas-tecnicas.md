@@ -32,6 +32,10 @@
 - `scripts/prueba-pwa.cjs <carpeta>`: sin conexión y copia por código.
 - `scripts/prueba-panel.cjs <carpeta> [movil]`: panel de adultos y modo examen.
 - `scripts/capturas-oscuro.cjs <carpeta>`: capturas en modo oscuro.
+- `scripts/prueba-zoom.cjs <carpeta>`: zoom, arrastre, rueda y pellizco simulado.
+
+## Mapa recortado
+- La app usa `src/data/mapa-50m.json`, generado con `node scripts/recortar-mapa.cjs` a partir de world-atlas (dependencia de desarrollo). Si se añaden países fuera del recuadro, ampliar el recuadro del script y regenerar.
 
 ## Arquitectura de la interfaz (O1-O4)
 - `src/ui/app.ts`: estado (progreso), región actual, mapa, pestañas, `Motor` (registrar respuestas, modo por dominio, trucos), avisos.

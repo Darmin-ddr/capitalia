@@ -2,9 +2,11 @@ import { geoAzimuthalEqualArea, geoBounds, geoPath, type GeoProjection } from 'd
 import { feature, merge } from 'topojson-client';
 import type { GeometryCollection, GeometryObject, Topology } from 'topojson-specification';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
-import mundo from 'world-atlas/countries-50m.json';
+// Mapa de Natural Earth 50m (world-atlas) recortado a Europa, Asia y alrededores: scripts/recortar-mapa.cjs
+import mundo from '../data/mapa-50m.json';
 import type { Pais } from '../logic/types';
 import type { Nivel } from '../logic/progreso';
+import { desplazar, VISTA_INICIAL, zoomEn, type Vista } from '../logic/vista';
 
 type PropsMundo = { name: string };
 type TopoMundo = Topology<{ countries: GeometryCollection<PropsMundo> }>;
@@ -116,7 +118,17 @@ export class Mapa {
   private niveles = new Map<string, Nivel>();
   private capitalVisible: string | null = null;
   private ancho = 0;
+  private alto = 0;
   private readonly observador: ResizeObserver;
+  /** Grupo con todo lo que se acerca y se desplaza. */
+  private readonly lienzo: SVGGElement;
+  private readonly controles: HTMLDivElement;
+  private vista: Vista = VISTA_INICIAL;
+  /** Dedos (o ratón) sobre el mapa, para arrastrar y pellizcar. */
+  private readonly punteros = new Map<number, { x: number; y: number }>();
+  private distanciaPellizco = 0;
+  /** Píxeles arrastrados desde que se tocó: si es mucho, no cuenta como toque en un país. */
+  private arrastre = 0;
 
   constructor(private readonly op: OpcionesMapa) {
     this.formas = prepararFormas(op.paises, op.activos);
@@ -131,8 +143,12 @@ export class Mapa {
     this.capaCirculos = document.createElementNS(SVG, 'g');
     this.capaCapital = document.createElementNS(SVG, 'g');
     this.capaCapital.classList.add('capa-capital');
-    this.svg.append(this.capaPaises, this.capaCirculos, this.capaCapital);
-    op.contenedor.append(this.svg);
+    this.lienzo = document.createElementNS(SVG, 'g');
+    this.lienzo.append(this.capaPaises, this.capaCirculos, this.capaCapital);
+    this.svg.append(this.lienzo);
+    this.controles = this.crearControles();
+    op.contenedor.append(this.svg, this.controles);
+    this.prepararGestos();
 
     this.observador = new ResizeObserver(() => this.dibujar());
     this.observador.observe(op.contenedor);
@@ -143,6 +159,10 @@ export class Mapa {
   destruir(): void {
     this.observador.disconnect();
     this.svg.remove();
+    this.controles.remove();
+    window.removeEventListener('pointermove', this.alMover);
+    window.removeEventListener('pointerup', this.alSoltar);
+    window.removeEventListener('pointercancel', this.alSoltar);
   }
 
   /** Activa o desactiva los toques sobre países (en el modo Elegir no se toca el mapa). */
@@ -179,7 +199,9 @@ export class Mapa {
     const { width, height } = this.op.contenedor.getBoundingClientRect();
     if (width < 10 || height < 10) return;
     this.ancho = width;
+    this.alto = height;
     this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    this.vista = VISTA_INICIAL;
 
     // Encuadre: las formas de la región, salvo los países enormes (Rusia) y los
     // invitados de otro continente, que cuentan solo por su capital.
@@ -250,7 +272,129 @@ export class Mapa {
       this.aplicarClases(id, false);
       if (this.idsRegion.has(id)) this.prepararTocable(id);
     }
+    this.aplicarVista();
+  }
+
+  /* ---------- Zoom y desplazamiento ---------- */
+
+  private crearControles(): HTMLDivElement {
+    const caja = document.createElement('div');
+    caja.className = 'controles-mapa';
+    const crear = (texto: string, etiqueta: string, accion: () => void) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'control-mapa';
+      b.textContent = texto;
+      b.setAttribute('aria-label', etiqueta);
+      b.addEventListener('click', accion);
+      return b;
+    };
+    caja.append(
+      crear('+', 'Acercar', () => this.zoom(1.6)),
+      crear('−', 'Alejar', () => this.zoom(1 / 1.6)),
+      crear('⤢', 'Ver toda la región', () => this.cambiarVista(VISTA_INICIAL)),
+    );
+    return caja;
+  }
+
+  private zoom(factor: number, px = this.ancho / 2, py = this.alto / 2): void {
+    this.cambiarVista(zoomEn(this.vista, factor, px, py, this.ancho, this.alto));
+  }
+
+  private cambiarVista(v: Vista): void {
+    this.vista = v;
+    this.aplicarVista();
+  }
+
+  /** Aplica la vista y compensa el tamaño de círculos, estrella y texto para que no crezcan con el zoom. */
+  private aplicarVista(): void {
+    const { k, x, y } = this.vista;
+    this.lienzo.setAttribute('transform', `translate(${x} ${y}) scale(${k})`);
+    for (const c of this.capaCirculos.querySelectorAll<SVGCircleElement>('circle')) {
+      const base = Number(c.dataset.radio);
+      c.setAttribute('r', String(base / k));
+    }
     this.dibujarCapital();
+    this.controles.classList.toggle('con-zoom', k > 1.001);
+  }
+
+  private puntoLocal(e: { clientX: number; clientY: number }): { x: number; y: number } {
+    const r = this.svg.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  private prepararGestos(): void {
+    this.svg.addEventListener('pointerdown', (e) => {
+      this.punteros.set(e.pointerId, this.puntoLocal(e));
+      if (this.punteros.size === 1) this.arrastre = 0;
+      if (this.punteros.size === 2) this.distanciaPellizco = this.distanciaEntrePunteros();
+    });
+    window.addEventListener('pointermove', this.alMover);
+    window.addEventListener('pointerup', this.alSoltar);
+    window.addEventListener('pointercancel', this.alSoltar);
+    // Tras arrastrar o pellizcar, el "clic" final no debe elegir un país.
+    this.svg.addEventListener(
+      'click',
+      (e) => {
+        if (this.arrastre > 8) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      },
+      true,
+    );
+    this.svg.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        const p = this.puntoLocal(e);
+        this.zoom(Math.exp(-e.deltaY * 0.0025), p.x, p.y);
+      },
+      { passive: false },
+    );
+  }
+
+  private distanciaEntrePunteros(): number {
+    const [a, b] = [...this.punteros.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  private readonly alMover = (e: PointerEvent): void => {
+    const previo = this.punteros.get(e.pointerId);
+    if (!previo) return;
+    const actual = this.puntoLocal(e);
+    if (this.punteros.size === 1) {
+      const dx = actual.x - previo.x;
+      const dy = actual.y - previo.y;
+      this.arrastre += Math.abs(dx) + Math.abs(dy);
+      this.punteros.set(e.pointerId, actual);
+      if (this.vista.k > 1) this.cambiarVista(desplazar(this.vista, dx, dy, this.ancho, this.alto));
+      return;
+    }
+    if (this.punteros.size === 2) {
+      const centroAntes = this.centroPunteros();
+      this.punteros.set(e.pointerId, actual);
+      const centro = this.centroPunteros();
+      const distancia = this.distanciaEntrePunteros();
+      this.arrastre += 20; // un pellizco nunca es un toque
+      let v = this.vista;
+      if (this.distanciaPellizco > 0) v = zoomEn(v, distancia / this.distanciaPellizco, centro.x, centro.y, this.ancho, this.alto);
+      v = desplazar(v, centro.x - centroAntes.x, centro.y - centroAntes.y, this.ancho, this.alto);
+      this.distanciaPellizco = distancia;
+      this.cambiarVista(v);
+    }
+  };
+
+  private readonly alSoltar = (e: PointerEvent): void => {
+    this.punteros.delete(e.pointerId);
+    if (this.punteros.size < 2) this.distanciaPellizco = 0;
+    // El clic que sigue a soltar llega en esta misma tarea; después, se olvida el arrastre.
+    if (this.punteros.size === 0) window.setTimeout(() => (this.arrastre = 0), 0);
+  };
+
+  private centroPunteros(): { x: number; y: number } {
+    const [a, b] = [...this.punteros.values()];
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
   }
 
   private circulo(id: string, [x, y]: [number, number], enRegion: boolean): SVGGElement {
@@ -261,12 +405,14 @@ export class Mapa {
     toque.setAttribute('class', 'toque');
     toque.setAttribute('cx', String(x));
     toque.setAttribute('cy', String(y));
-    toque.setAttribute('r', String(enRegion ? RADIO_TOQUE : 0));
+    toque.dataset.radio = String(enRegion ? RADIO_TOQUE : 0);
+    toque.setAttribute('r', toque.dataset.radio);
     const visible = document.createElementNS(SVG, 'circle');
     visible.setAttribute('class', 'pais circulo');
     visible.setAttribute('cx', String(x));
     visible.setAttribute('cy', String(y));
-    visible.setAttribute('r', String(RADIO_VISIBLE));
+    visible.dataset.radio = String(RADIO_VISIBLE);
+    visible.setAttribute('r', visible.dataset.radio);
     g.append(toque, visible);
     this.registrar(id, visible);
     if (enRegion) this.registrarTocable(id, g);
@@ -342,21 +488,26 @@ export class Mapa {
     const punto = this.proyeccion(pais.capitalCoords);
     if (!punto) return;
     const [x, y] = punto;
+    // Estrella y texto a tamaño constante en pantalla, aunque el mapa esté acercado.
+    const grupo = document.createElementNS(SVG, 'g');
+    grupo.setAttribute('transform', `translate(${x} ${y}) scale(${1 / this.vista.k})`);
 
     const estrella = document.createElementNS(SVG, 'path');
     estrella.setAttribute('class', 'estrella');
-    estrella.setAttribute('d', rutaEstrella(x, y, 9, 4));
+    estrella.setAttribute('d', rutaEstrella(0, 0, 9, 4));
 
     const texto = document.createElementNS(SVG, 'text');
     texto.setAttribute('class', 'etiqueta-capital');
     texto.textContent = pais.capital;
-    // Etiqueta a la derecha, salvo que se salga del mapa.
-    const aLaIzquierda = x > this.ancho * 0.7;
-    texto.setAttribute('x', String(aLaIzquierda ? x - 13 : x + 13));
-    texto.setAttribute('y', String(y + 5));
+    // Etiqueta a la derecha, salvo que se salga de la pantalla.
+    const enPantalla = this.vista.k * x + this.vista.x;
+    const aLaIzquierda = enPantalla > this.ancho * 0.7;
+    texto.setAttribute('x', String(aLaIzquierda ? -13 : 13));
+    texto.setAttribute('y', '5');
     texto.setAttribute('text-anchor', aLaIzquierda ? 'end' : 'start');
 
-    this.capaCapital.append(estrella, texto);
+    grupo.append(estrella, texto);
+    this.capaCapital.append(grupo);
   }
 }
 
