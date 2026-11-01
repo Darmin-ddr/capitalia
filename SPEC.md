@@ -98,7 +98,7 @@ Cada país avanza por los modos según su dominio; el alumno también puede eleg
 
 - Protegido con **PIN** (guardado como hash). Es una cerradura de niños, no seguridad real: todo es local.
 - Muestra: dominio por región, países que más se atascan, actividad reciente.
-- Configura: lista de examen, países opcionales (Kosovo, Taiwán), edición de trucos, reinicio de progreso.
+- Configura: lista de examen (con casillas para marcar Europa o Asia enteras, o una región entera), países opcionales (Kosovo; Taiwán está en el listado y siempre activo), desbloqueo de todas las regiones, edición de trucos, reinicio de progreso.
 
 ## 9. Persistencia y dispositivos
 
