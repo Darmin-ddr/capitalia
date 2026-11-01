@@ -169,6 +169,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       'p',
       'leyenda',
       ...NIVELES.flatMap((n, i) => [el('span', `muestra nivel-tramo-${i}`), ` ${n}  `]),
+      el('span', 'leyenda-nota', 'Cada región usa su propio color; lo que cuenta es el tono: cuanto más intenso, más avanzado.'),
     );
 
     const atascados = paisesAtascados(estado, datos.regiones.flatMap((r) => datos.paisesDe(r.id)).filter(unicos()), ahora);
@@ -486,7 +487,7 @@ function explicacionResumen(): HTMLElement {
       'lista-simple',
       punto(
         'Aprendidos por región.',
-        'Cada país sube cuatro escalones: Elegir (reconocer la capital entre cuatro), Colocar (llevarla a su país en el mapa), Escribir (de memoria) y Mapa mudo (decir país y capital con solo la estrella, como en el examen). La barra muestra cuántos países hay en cada tramo; la cifra de la derecha, cuántos están ya aprendidos, es decir, han pasado los cuatro escalones. Los aprendidos no se olvidan del todo: Hoy los vuelve a preguntar de vez en cuando, cada vez más espaciados.',
+        'Cada país sube cuatro escalones: Elegir (reconocer la capital entre cuatro), Colocar (llevarla a su país en el mapa), Escribir (de memoria) y Mapa mudo (decir país y capital con solo la estrella, como en el examen). La barra muestra cuántos países hay en cada tramo, en el color de la región: cuanto más intenso el tono, más avanzado; la cifra de la derecha, cuántos están ya aprendidos, es decir, han pasado los cuatro escalones. Los aprendidos no se olvidan del todo: Hoy los vuelve a preguntar de vez en cuando, cada vez más espaciados.',
       ),
       punto(
         'Los que más se atascan.',

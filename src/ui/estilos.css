@@ -1667,3 +1667,8 @@ button {
 .ayuda-panel[open] summary::after {
   content: '▴';
 }
+
+.leyenda-nota {
+  display: block;
+  margin-top: 4px;
+}
