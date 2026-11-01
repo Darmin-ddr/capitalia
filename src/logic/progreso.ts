@@ -43,6 +43,23 @@ export interface Ajustes {
   pinHash: string | null;
   /** El adulto ha abierto todas las regiones (sin esperar al desbloqueo progresivo). */
   todasDesbloqueadas: boolean;
+  /** Máximo de países nuevos por día en Hoy (se autorregula hasta este valor). */
+  maxNuevos: number;
+}
+
+/**
+ * Escalones de aprendizaje (SPEC 4.3): Elegir → Colocar → Escribir → Mapa mudo.
+ * Superado el último, el país queda "aprendido" y pasa al repaso de Hoy.
+ */
+export const ESCALONES = ['elegir', 'colocar', 'escribir', 'mapamudo'] as const;
+export type Escalon = (typeof ESCALONES)[number];
+
+export interface EstadoAprendizaje {
+  /** Índice del escalón actual en ESCALONES. */
+  escalon: number;
+  /** Aciertos en el escalón actual (se reinicia con un fallo). */
+  aciertos: number;
+  aprendido: boolean;
 }
 
 export interface EstadoProgreso {
@@ -59,6 +76,10 @@ export interface EstadoProgreso {
   guiaVista: boolean;
   /** Se ha pasado la bienvenida del primer arranque ("¿quién eres?"). */
   bienvenidaVista: boolean;
+  /** Escalón de aprendizaje de cada país empezado (los que no aparecen, sin empezar). */
+  aprendizaje: Record<string, EstadoAprendizaje>;
+  /** Países a priorizar en Hoy (p. ej. los fallados en un examen). */
+  prioridad: string[];
   ajustes: Ajustes;
 }
 
@@ -72,6 +93,8 @@ export function estadoVacio(): EstadoProgreso {
     ultimaRegion: null,
     guiaVista: false,
     bienvenidaVista: false,
+    aprendizaje: {},
+    prioridad: [],
     ajustes: {
       opcionalesActivados: [],
       listaExamen: null,
@@ -80,6 +103,7 @@ export function estadoVacio(): EstadoProgreso {
       trucosEditados: {},
       pinHash: null,
       todasDesbloqueadas: false,
+      maxNuevos: CONFIG.nuevosMaximo,
     },
   };
 }
@@ -178,9 +202,93 @@ export function nivelesDe(estado: EstadoProgreso, paises: readonly Pais[]): Map<
   return new Map(paises.map((p) => [p.id, nivelDominio(estado.tarjetas[p.id])]));
 }
 
-/** Una región está superada (abre la siguiente) cuando todos sus países están al menos en repaso. */
+/* ---------------- Escalones de aprendizaje (SPEC 4.3) ---------------- */
+
+/** Escalón actual de un país, o null si está aprendido. Sin empezar = Elegir. */
+export function escalonDe(estado: EstadoProgreso, paisId: string): Escalon | null {
+  const a = estado.aprendizaje[paisId];
+  if (!a) return 'elegir';
+  return a.aprendido ? null : ESCALONES[a.escalon];
+}
+
+export function aprendido(estado: EstadoProgreso, paisId: string): boolean {
+  return estado.aprendizaje[paisId]?.aprendido ?? false;
+}
+
+export function empezado(estado: EstadoProgreso, paisId: string): boolean {
+  return paisId in estado.aprendizaje;
+}
+
+/** ¿Esta respuesta, en este modo, cuenta para el escalón actual? (Colocar admite también Al revés.) */
+export function cuentaParaEscalon(escalon: Escalon, modo: ModoId): boolean {
+  return modo === escalon || (escalon === 'colocar' && modo === 'alreves');
+}
+
+export interface CambioEscalon {
+  subio: boolean;
+  aprendido: boolean;
+}
+
+/**
+ * Registra una respuesta en el escalón del país: un acierto suma (con los
+ * aciertos necesarios, sube de escalón o queda aprendido); un fallo reinicia
+ * el contador sin bajar de escalón; un acierto con aviso (errata) no cuenta.
+ * Solo cuentan las respuestas en el modo del escalón. Modifica `estado`.
+ */
+export function registrarEscalon(
+  estado: EstadoProgreso,
+  paisId: string,
+  modo: ModoId,
+  resultado: Resultado,
+  config = CONFIG,
+): CambioEscalon {
+  const sin = { subio: false, aprendido: false };
+  const a = estado.aprendizaje[paisId] ?? { escalon: 0, aciertos: 0, aprendido: false };
+  if (a.aprendido || !cuentaParaEscalon(ESCALONES[a.escalon], modo)) return sin;
+  estado.aprendizaje[paisId] = a;
+  if (resultado === 'fallo') {
+    a.aciertos = 0;
+    return sin;
+  }
+  if (resultado !== 'acierto') return sin;
+  a.aciertos++;
+  if (a.aciertos < config.aciertosPorEscalon) return sin;
+  a.aciertos = 0;
+  if (a.escalon >= ESCALONES.length - 1) {
+    a.aprendido = true;
+    return { subio: true, aprendido: true };
+  }
+  a.escalon++;
+  return { subio: true, aprendido: false };
+}
+
+/**
+ * Convierte el progreso de la v1 (solo FSRS) a escalones: dominado → aprendido;
+ * en repaso → Escribir; aprendiendo → Colocar; sin empezar → nada.
+ */
+export function migrarAprendizaje(tarjetas: Record<string, TarjetaGuardada>): Record<string, EstadoAprendizaje> {
+  const resultado: Record<string, EstadoAprendizaje> = {};
+  for (const [id, t] of Object.entries(tarjetas)) {
+    const nivel = nivelDominio(t);
+    if (nivel === 3) resultado[id] = { escalon: ESCALONES.length - 1, aciertos: 0, aprendido: true };
+    else if (nivel === 2) resultado[id] = { escalon: 2, aciertos: 0, aprendido: false };
+    else if (nivel === 1) resultado[id] = { escalon: 1, aciertos: 0, aprendido: false };
+  }
+  return resultado;
+}
+
+/**
+ * Una región está superada (abre la siguiente) cuando todos sus países han
+ * llegado al escalón Escribir (o están aprendidos), o están en repaso según FSRS.
+ */
 export function regionSuperada(estado: EstadoProgreso, paises: readonly Pais[]): boolean {
-  return paises.length > 0 && paises.every((p) => nivelDominio(estado.tarjetas[p.id]) >= 2);
+  return (
+    paises.length > 0 &&
+    paises.every((p) => {
+      const a = estado.aprendizaje[p.id];
+      return (a && (a.aprendido || a.escalon >= 2)) || nivelDominio(estado.tarjetas[p.id]) >= 2;
+    })
+  );
 }
 
 /** Una región está dominada cuando todos sus países lo están. */

@@ -24,7 +24,7 @@ export interface ParametrosSesion {
  */
 export function crearSesion(p: ParametrosSesion): string[] {
   const tam = p.tam ?? CONFIG.preguntasSesion;
-  const maxNuevas = p.maxNuevas ?? CONFIG.maxNuevasSesion;
+  const maxNuevas = p.maxNuevas ?? CONFIG.nuevosMinimo;
   const t = p.estado.tarjetas;
   const ahora = p.ahora.getTime();
   const elegidos: string[] = [];

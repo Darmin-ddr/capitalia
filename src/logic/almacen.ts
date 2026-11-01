@@ -1,4 +1,4 @@
-import { estadoVacio, type EstadoProgreso } from './progreso';
+import { estadoVacio, migrarAprendizaje, type EstadoProgreso } from './progreso';
 
 /** Lo mínimo que necesitamos de localStorage (inyectable para tests). */
 export interface AlmacenTexto {
@@ -30,6 +30,9 @@ export function validarEstado(datos: unknown): EstadoProgreso | null {
     guiaVista: d.guiaVista === true,
     // Quien ya vio la guía del alumno no necesita la bienvenida.
     bienvenidaVista: d.bienvenidaVista === true || d.guiaVista === true,
+    // Progreso de la v1 (sin escalones): se convierte a partir de las tarjetas FSRS.
+    aprendizaje: d.aprendizaje && typeof d.aprendizaje === 'object' ? d.aprendizaje : migrarAprendizaje(d.tarjetas),
+    prioridad: Array.isArray(d.prioridad) ? d.prioridad : [],
     ajustes: { ...base.ajustes, ...(d.ajustes ?? {}) },
   };
 }
