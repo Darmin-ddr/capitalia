@@ -3,6 +3,9 @@ import '@fontsource/nunito/latin-700.css';
 import '@fontsource/nunito/latin-800.css';
 import './ui/estilos.css';
 import { iniciarApp } from './ui/app';
+import { aplicarTema, leerTema } from './ui/tema';
+
+aplicarTema(leerTema());
 
 iniciarApp();
 

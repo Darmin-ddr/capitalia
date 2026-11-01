@@ -1,6 +1,7 @@
 import { aplicarImportacion, exportarCodigo, exportarFichero, importar, nombreFichero } from '../logic/copia';
 import type { EstadoProgreso } from '../logic/progreso';
 import { boton, el } from './dom';
+import { guardarTema, leerTema, type Tema } from './tema';
 
 export interface DatosMas {
   estado(): EstadoProgreso;
@@ -87,11 +88,31 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     const ayuda = el('div', 'acciones');
     if (datos.abrirGuia) ayuda.append(boton('Cómo aprender con Capitalia', 'boton-principal', () => (dialogo.close(), datos.abrirGuia?.())));
     if (datos.abrirAcercaDe) ayuda.append(boton('Acerca de', 'boton-secundario', () => (dialogo.close(), datos.abrirAcercaDe?.())));
+    const temas: { valor: Tema; texto: string }[] = [
+      { valor: 'auto', texto: 'Automático' },
+      { valor: 'claro', texto: 'Claro' },
+      { valor: 'oscuro', texto: 'Oscuro' },
+    ];
+    const selectorTema = el('div', 'selector-practica selector-tema');
+    selectorTema.setAttribute('role', 'group');
+    selectorTema.setAttribute('aria-label', 'Tema');
+    const botonesTema = temas.map((t) => {
+      const b = boton(t.texto, 'selector-opcion', () => {
+        guardarTema(t.valor);
+        for (const x of botonesTema) x.setAttribute('aria-pressed', String(x === b));
+      });
+      b.setAttribute('aria-pressed', String(leerTema() === t.valor));
+      return b;
+    });
+    selectorTema.append(...botonesTema);
     const contenido = el(
       'div',
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Más'),
       ayuda,
+      el('h3', 'dialogo-subtitulo', 'Tema'),
+      selectorTema,
+      el('p', 'ayuda', 'Automático sigue el modo claro u oscuro del dispositivo.'),
       el('h3', 'dialogo-subtitulo', 'Copia de seguridad'),
       el(
         'p',
