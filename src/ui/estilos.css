@@ -1628,3 +1628,42 @@ button {
 .dialogo-contenido .acciones > button.boton-peligro {
   flex: 0 0 auto;
 }
+
+/* Panel: "¿Qué significan estos datos?" */
+.ayuda-panel {
+  margin: 4px 0 8px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 0 12px;
+  background: var(--fondo);
+}
+
+.ayuda-panel summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--acento);
+  cursor: pointer;
+}
+
+.ayuda-panel ul {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.ayuda-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.ayuda-panel summary::after {
+  content: '▾';
+  margin-left: auto;
+  padding-left: 8px;
+}
+
+.ayuda-panel[open] summary::after {
+  content: '▴';
+}

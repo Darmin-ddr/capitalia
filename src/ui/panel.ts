@@ -193,6 +193,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     const diasActivos = act.filter((d) => d.respuestas > 0).length;
 
     cuerpo.append(
+      explicacionResumen(),
       el('h3', 'dialogo-subtitulo', 'Aprendidos por región'),
       tabla,
       leyenda,
@@ -471,6 +472,36 @@ function unicos<T extends { id: string }>(): (x: T, i: number, a: T[]) => boolea
 
 function plural(n: number, uno: string, varios: string): string {
   return `${n} ${n === 1 ? uno : varios}`;
+}
+
+/** Desplegable que explica qué significa cada dato del resumen (para madres y padres). */
+function explicacionResumen(): HTMLElement {
+  const punto = (titulo: string, texto: string) => el('li', '', el('strong', '', titulo), ' ', texto);
+  return el(
+    'details',
+    'ayuda-panel',
+    el('summary', '', '¿Qué significan estos datos?'),
+    el(
+      'ul',
+      'lista-simple',
+      punto(
+        'Aprendidos por región.',
+        'Cada país sube cuatro escalones: Elegir (reconocer la capital entre cuatro), Colocar (llevarla a su país en el mapa), Escribir (de memoria) y Mapa mudo (decir país y capital con solo la estrella, como en el examen). La barra muestra cuántos países hay en cada tramo; la cifra de la derecha, cuántos están ya aprendidos, es decir, han pasado los cuatro escalones. Los aprendidos no se olvidan del todo: Hoy los vuelve a preguntar de vez en cuando, cada vez más espaciados.',
+      ),
+      punto(
+        'Los que más se atascan.',
+        'Los países con más fallos en los últimos 30 días. Es buen sitio para inventar juntos un truco de memoria (en Explorar, "Inventa tu truco").',
+      ),
+      punto(
+        'Actividad.',
+        'Respuestas de cada día en las dos últimas semanas. No hace falta practicar todos los días: mejor poco y a menudo que mucho de golpe. La app no castiga saltarse días.',
+      ),
+      punto(
+        'Cómo avanza.',
+        'Cada día, Hoy mezcla repasos con unos pocos países nuevos (entre 5 y 10, según cómo vayan los aciertos; el máximo se cambia en Ajustes). En Aprender se puede adelantar una región, y el Examen de prueba da una nota y permite mandar los fallos a Hoy.',
+      ),
+    ),
+  );
 }
 
 export function textoDias(dias: number): string {
