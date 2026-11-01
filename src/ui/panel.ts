@@ -90,7 +90,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     const pin = campo('PIN');
     const olvidado = boton('¿Lo has olvidado?', 'boton-enlace', () => {
       const ok = window.confirm(
-        'Se borrará el PIN y se volverán a los ajustes iniciales (sin lista de examen, trucos sin editar). El progreso del alumno se conserva. ¿Seguir?',
+        'Se borrará el PIN y se volverá a los ajustes iniciales (sin lista de examen, trucos sin editar). El progreso del alumno se conserva. ¿Seguir?',
       );
       if (!ok) return;
       estado.ajustes = estadoVacio().ajustes;
@@ -169,7 +169,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
 
     const atascados = paisesAtascados(estado, datos.regiones.flatMap((r) => datos.paisesDe(r.id)).filter(unicos()), ahora);
     const listaAtascados = atascados.length
-      ? el('ul', 'lista-simple', ...atascados.map((a) => el('li', '', el('strong', '', a.pais.nombre), ` (${a.pais.capital}): ${a.fallos} fallos de ${a.intentos} intentos`)))
+      ? el('ul', 'lista-simple', ...atascados.map((a) => el('li', '', el('strong', '', a.pais.nombre), ` (${a.pais.capital}): ${plural(a.fallos, 'fallo', 'fallos')} de ${plural(a.intentos, 'intento', 'intentos')}`)))
       : el('p', 'ayuda', 'Ningún fallo en los últimos 30 días.');
 
     const act = actividadReciente(estado, ahora, 14);
@@ -196,7 +196,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       listaAtascados,
       el('h3', 'dialogo-subtitulo', 'Actividad (14 días)'),
       graf,
-      el('p', 'ayuda', `${total} respuestas en ${diasActivos} días.`),
+      el('p', 'ayuda', `${plural(total, 'respuesta', 'respuestas')} en ${plural(diasActivos, 'día', 'días')}.`),
     );
   }
 
@@ -411,6 +411,10 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
 
 function unicos<T extends { id: string }>(): (x: T, i: number, a: T[]) => boolean {
   return (x, i, a) => a.findIndex((y) => y.id === x.id) === i;
+}
+
+function plural(n: number, uno: string, varios: string): string {
+  return `${n} ${n === 1 ? uno : varios}`;
 }
 
 export function textoDias(dias: number): string {

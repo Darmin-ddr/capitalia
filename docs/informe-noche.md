@@ -4,10 +4,10 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 
 ## Ahora mismo
 
-- **Objetivo en curso:** O5 (pulido).
-- **Hecho de él:** nada aún.
-- **Falta:** revisión visual (claro/oscuro, móvil/iPad/PC), accesibilidad básica, peso del mapa, textos.
-- **Siguiente paso:** capturas de todas las pantallas en modo oscuro y revisión.
+- **Objetivo en curso:** O6 (informe final).
+- **Hecho de él:** el informe se ha ido rellenando por objetivos.
+- **Falta:** resumen inicial, revisión final del informe y lista de pruebas manuales completa.
+- **Siguiente paso:** redactar el resumen y la lista de pruebas.
 
 ## Estado
 
@@ -17,7 +17,7 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 | O2. Datos completos | Hecho |
 | O3. PWA y exportar/importar | Hecho |
 | O4. Panel de adultos y modo examen | Hecho |
-| O5. Pulido | Pendiente |
+| O5. Pulido | Hecho (parcial) |
 | O6. Informe final | Pendiente |
 
 ## Lo hecho
@@ -55,6 +55,11 @@ Se va rellenando según avanza el trabajo (ver [`plan-v1.md`](plan-v1.md)).
 - **Ajustes:** países opcionales (Kosovo), cambiar PIN y reiniciar progreso (doble confirmación; conserva ajustes y trucos propios).
 - **Modo examen:** en Repaso aparece "Preparar examen" cuando hay examen: pregunta los países del examen de la región actual, de más flojo a más sólido, cada uno en el modo de su nivel. Los fallos no tocan la planificación FSRS; los aciertos sí.
 - Probado en Chromium (iPad y móvil) el flujo completo: crear PIN, resumen, examen, editar truco, activar Kosovo, preparar examen con un fallo (tarjeta sin cambios), PIN incorrecto. 75 tests.
+
+### O5. Pulido (parcial)
+- Revisión en modo oscuro de Repaso, Colocar, selector de regiones y panel (PC y móvil). Corregido: círculos de microestados poco visibles en oscuro (ahora con borde marcado), plurales del panel ("1 fallo de 1 intento") y una errata.
+- Revisión de todos los textos de la interfaz.
+- **No hecho:** zoom y desplazamiento del mapa (el SPEC lo pide). Con el encuadre por región y los círculos de los microestados no me ha parecido imprescindible; queda pendiente. **No hecho:** recortar el mapa del mundo (pesa unos 260 KB comprimido); exigiría rehacer la topología con otra herramienta y no compensa ahora.
 
 ## Requiere tu atención
 

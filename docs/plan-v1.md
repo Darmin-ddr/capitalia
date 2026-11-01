@@ -72,7 +72,7 @@ La conversación se resume sola cuando crece, y lo que solo esté "en la cabeza"
 - **Modo examen:** fecha y regiones o lista; repasa sobre todo lo flojo; no cambia la planificación FSRS normal, solo registra los aciertos.
 - Criterios: tests de la lógica de selección del modo examen y del PIN; flujo completo probado en Chromium.
 
-### [ ] O5. Pulido (hito 7, lo que dé tiempo)
+### [x] O5. Pulido (hito 7, lo que dé tiempo)
 
 - Revisión visual de todas las pantallas en claro y oscuro, móvil, iPad y PC.
 - Accesibilidad básica (contraste, teclado, objetivos de 44 px).

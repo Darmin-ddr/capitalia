@@ -360,6 +360,12 @@ button {
   pointer-events: none;
 }
 
+/* Los círculos de la región en juego, con borde marcado para que se vean en claro y en oscuro. */
+.microestado.jugable .pais.circulo {
+  stroke: var(--texto-suave);
+  stroke-width: 2;
+}
+
 .pais.seleccion {
   fill: var(--color-region);
 }
