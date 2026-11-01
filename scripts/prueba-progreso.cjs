@@ -1,10 +1,17 @@
 // Prueba de O1: repaso, guardado del progreso y colores del mapa.
 // Uso: node scripts/prueba-progreso.cjs <carpeta-capturas>  (con el preview en el puerto 4173)
 const { chromium, devices } = require('playwright');
+// Empezar en los Balcanes: una lista de examen con sus países desbloquea la región.
+const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
+  ultimaRegion: 'balcanes', ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
+  fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } });
+const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
+
 const out = process.argv[2];
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext(devices['iPad (gen 7) landscape']);
+  await empezarEnBalcanes(ctx);
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(e.message));

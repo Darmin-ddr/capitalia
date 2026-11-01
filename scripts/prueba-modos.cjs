@@ -1,4 +1,10 @@
 const { chromium, devices } = require('playwright');
+// Empezar en los Balcanes: una lista de examen con sus países desbloquea la región.
+const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
+  ultimaRegion: 'balcanes', ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
+  fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } });
+const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
+
 const out = process.argv[2];
 const CAP = { ALB:'Tirana',BIH:'Sarajevo',BGR:'Sofía',HRV:'Zagreb',SVN:'Liubliana',GRC:'Atenas',MKD:'Skopie',MNE:'Podgorica',SRB:'Belgrado' };
 const ID_DE = Object.fromEntries(Object.entries(CAP).map(([k, v]) => [v, k]));
@@ -7,7 +13,7 @@ const ERRATA = { ALB:'Tirnaa',BIH:'Sarajebo',BGR:'Sofai',HRV:'Zagerb',SVN:'Liubi
   const b = await chromium.launch();
   const errores = [];
   for (const [nombre, o] of [['movil', devices['iPhone 13']], ['ipad-h', devices['iPad (gen 7) landscape']], ['pc', { viewport: { width: 1366, height: 800 } }]]) {
-    const ctx = await b.newContext(o); const p = await ctx.newPage();
+    const ctx = await b.newContext(o); await empezarEnBalcanes(ctx); const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
     await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
