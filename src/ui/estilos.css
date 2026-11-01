@@ -401,6 +401,16 @@ button {
   paint-order: stroke;
 }
 
+.estrella-fondo {
+  opacity: 0.55;
+}
+
+/* Examen: la estrella de la pregunta, más grande y en el color de acento. */
+.estrella.activa {
+  fill: var(--acento);
+  stroke-width: 2.5;
+}
+
 .etiqueta-capital {
   font-weight: 800;
   font-size: 16px;
@@ -1420,5 +1430,55 @@ button {
   .rotulo-region {
     animation: none;
     transition: none;
+  }
+}
+
+/* --- Examen --- */
+.region-actual[hidden] {
+  display: none;
+}
+
+.nota-examen {
+  margin: 4px 0;
+  font-size: 1.4rem;
+}
+
+.nota-examen strong {
+  font-size: 2rem;
+}
+
+.lista-fallos {
+  margin: 6px 0 12px;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 4px;
+}
+
+.fallo-detalle {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* Cuatro pestañas y el botón ⋯ en una fila, también en móviles estrechos (360 px). */
+@media (max-width: 480px) {
+  .modos {
+    min-width: 0;
+  }
+  .modo {
+    flex: 1 1 auto;
+    padding: 0 8px;
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .barra {
+    gap: 6px;
+    padding: 6px 10px;
+  }
+  .modo {
+    padding: 0 6px;
+    font-size: 0.86rem;
   }
 }

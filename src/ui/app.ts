@@ -17,6 +17,7 @@ import type { Motor } from './comun';
 import { iniciarExplorar, type Modo, type ServicioTrucos } from './explorar';
 import { iniciarAprender } from './aprender';
 import { iniciarHoy } from './hoy';
+import { iniciarExamen } from './examen';
 import { prepararSelectorRegiones } from './regiones';
 import { prepararMas } from './mas';
 import { crearGuia } from './guia';
@@ -26,7 +27,7 @@ import { crearPanelAdultos } from './panel';
 import { regionesConExamen } from '../logic/adultos';
 import { nivelDominio } from '../logic/progreso';
 
-type Pestana = 'hoy' | 'aprender' | 'explorar';
+type Pestana = 'hoy' | 'aprender' | 'examen' | 'explorar';
 
 /** Duración del rótulo con el nombre de la región cuando Hoy cambia el mapa de región. */
 const ROTULO_REGION_MS = 1100;
@@ -49,6 +50,9 @@ export function iniciarApp(): void {
   let modo: Modo | null = null;
   let pestana: Pestana = 'hoy';
   let actualizarSelector: (() => void) | null = null;
+  /** El mapa montado es el mudo del examen (continente entero), no el de la región. */
+  let mapaDeExamen = false;
+  const botonRegion = document.getElementById('region-actual') as HTMLButtonElement;
 
   const regionDe = (id: string) => regiones.find((r) => r.id === id);
   const paisesDeRegion = (regionId: string) => filtrarRegion(activos, regionId);
@@ -93,6 +97,8 @@ export function iniciarApp(): void {
   }
 
   function actualizarNiveles(): void {
+    // El mapa mudo del examen no lleva colores de progreso (SPEC 4.4): delatarían las respuestas.
+    if (mapaDeExamen) return;
     mapa?.setNiveles(nivelesDe(estado, paisesContinente()));
   }
 
@@ -153,6 +159,8 @@ export function iniciarApp(): void {
 
   function montarMapa(): void {
     mapa?.destruir();
+    mapaDeExamen = false;
+    botonRegion.hidden = false;
     const paisesRegion = paisesDeRegion(region.id);
     mapa = new Mapa({
       contenedor: contenedorMapa,
@@ -172,6 +180,7 @@ export function iniciarApp(): void {
   function cambiarPestana(nueva: Pestana): void {
     modo?.salir();
     pestana = nueva;
+    if (mapaDeExamen && nueva !== 'examen') montarMapa();
     for (const b of botonesPestana) b.setAttribute('aria-pressed', String(b.dataset.modo === nueva));
     if (!mapa) return;
     const paisesRegion = paisesDeRegion(region.id);
@@ -185,7 +194,36 @@ export function iniciarApp(): void {
     };
     if (nueva === 'explorar') modo = iniciarExplorar(panel, mapa, paisesRegion, trucos);
     else if (nueva === 'aprender') modo = iniciarAprender(panel, ctx, () => estado);
+    else if (nueva === 'examen') modo = iniciarExamen(panel, serviciosExamen());
     else modo = iniciarHoy(panel, serviciosHoy());
+  }
+
+  function serviciosExamen() {
+    return {
+      motor,
+      candidatos: activos,
+      rng: Math.random,
+      listaExamen: () => estado.ajustes.listaExamen,
+      mapaContinente(continente: Continente, paises: readonly Pais[]) {
+        // Mapa mudo del continente: sin colores de región ni de progreso (SPEC 4.4).
+        const cambio = mapaDeExamen;
+        mapa?.destruir();
+        mapa = new Mapa({
+          contenedor: contenedorMapa,
+          paises: todos,
+          activos: new Set(activos.map((p) => p.id)),
+          region: paises,
+          onSeleccion: () => undefined,
+        });
+        mapaDeExamen = true;
+        botonRegion.hidden = true;
+        return { mapa, transicionMs: cambio ? mostrarRotuloRegion(continente === 'europa' ? 'Europa' : 'Asia') : 0 };
+      },
+      priorizar(ids: readonly string[]) {
+        estado.prioridad = [...new Set([...estado.prioridad, ...ids])];
+        guardar();
+      },
+    };
   }
 
   function serviciosHoy() {
@@ -262,7 +300,7 @@ export function iniciarApp(): void {
   void navigator.storage?.persist?.().catch(() => undefined);
 
   for (const b of botonesPestana) b.addEventListener('click', () => cambiarPestana(b.dataset.modo as Pestana));
-  actualizarSelector = prepararSelectorRegiones(document.getElementById('region-actual') as HTMLButtonElement, {
+  actualizarSelector = prepararSelectorRegiones(botonRegion, {
     regiones,
     paisesDe: paisesDeRegion,
     desbloqueadas,

@@ -119,6 +119,8 @@ export class Mapa {
   private niveles = new Map<string, Nivel>();
   private capitalVisible: string | null = null;
   private capitalConNombre = true;
+  /** Capitales con estrella de fondo (examen: todas las del mapa). */
+  private estrellasFondo: readonly string[] = [];
   private ancho = 0;
   private alto = 0;
   private readonly observador: ResizeObserver;
@@ -492,10 +494,28 @@ export class Mapa {
     }
   }
 
+  /** Estrellas pequeñas en estas capitales (el mapa mudo del examen); la de mostrarCapital se resalta. */
+  mostrarEstrellas(ids: readonly string[]): void {
+    this.estrellasFondo = ids;
+    this.dibujarCapital();
+  }
+
   private dibujarCapital(): void {
     this.capaCapital.replaceChildren();
+    if (!this.ancho) return;
+    for (const id of this.estrellasFondo) {
+      if (id === this.capitalVisible) continue;
+      const p = this.op.region.find((x) => x.id === id);
+      const punto = p && this.proyeccion(p.capitalCoords);
+      if (!punto) continue;
+      const e = document.createElementNS(SVG, 'path');
+      e.setAttribute('class', 'estrella estrella-fondo');
+      e.setAttribute('d', rutaEstrella(0, 0, 5.5, 2.4));
+      e.setAttribute('transform', `translate(${punto[0]} ${punto[1]}) scale(${1 / this.vista.k})`);
+      this.capaCapital.append(e);
+    }
     const pais = this.capitalVisible ? this.op.region.find((p) => p.id === this.capitalVisible) : null;
-    if (!pais || !this.ancho) return;
+    if (!pais) return;
     const punto = this.proyeccion(pais.capitalCoords);
     if (!punto) return;
     const [x, y] = punto;
@@ -505,8 +525,9 @@ export class Mapa {
     grupo.setAttribute('transform', `translate(${x} ${y}) scale(${1 / this.vista.k})`);
 
     const estrella = document.createElementNS(SVG, 'path');
-    estrella.setAttribute('class', 'estrella');
-    estrella.setAttribute('d', rutaEstrella(0, 0, 9, 4));
+    const resaltada = this.estrellasFondo.length > 0;
+    estrella.setAttribute('class', resaltada ? 'estrella activa' : 'estrella');
+    estrella.setAttribute('d', resaltada ? rutaEstrella(0, 0, 12, 5) : rutaEstrella(0, 0, 9, 4));
 
     const texto = document.createElementNS(SVG, 'text');
     texto.setAttribute('class', 'etiqueta-capital');

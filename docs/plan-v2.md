@@ -3,9 +3,9 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `rediseno-hoy-aprender-examen` (no publica en Pages; se fusiona con la rama publicada al terminar y probar).
 
 ## Ahora mismo
-- **Fase en curso:** F4 (Examen).
-- **Hecho:** F1 (lógica), F2 (Aprender, `src/ui/aprender.ts`, prueba `scripts/prueba-aprender.cjs`) y F3 (Hoy, `src/ui/hoy.ts`, prueba `scripts/prueba-hoy.cjs`). Repaso, Practicar y "Preparar examen" ya no existen.
-- **Siguiente paso concreto:** pestaña Examen: mapa del continente con todas las estrellas, ámbito y número de preguntas, nota y fallos; los fallados pasan a `estado.prioridad`.
+- **Fase en curso:** F5 (navegación, tema y documentación).
+- **Hecho:** F1 (lógica), F2 (Aprender, `scripts/prueba-aprender.cjs`), F3 (Hoy, `scripts/prueba-hoy.cjs`) y F4 (Examen, `src/ui/examen.ts`, `scripts/prueba-examen.cjs`). Las cuatro pestañas ya están y caben a 360 px.
+- **Siguiente paso concreto:** tema Automático/Claro/Oscuro en ⋯; luego guías, README, SPEC, notas técnicas, panel (máximo de nuevos) y adaptar los scripts de prueba antiguos.
 
 ## Cómo retomar (tras una compactación o en otra sesión)
 1. Leer `CLAUDE.md`, `SPEC.md` (secciones 3.3, 4, 6, 7), este plan y `docs/notas-tecnicas.md`.
@@ -54,7 +54,7 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - Sesión mezclada multirregión con transición de mapa y nombre de región; tiempo desde que el mapa está quieto.
 - Nuevos intercalados; resumen al terminar.
 
-### [ ] F4. Examen
+### [x] F4. Examen
 - Mapa del continente sin colores de progreso, con todas las estrellas; ámbito y número de preguntas; nota y lista de fallos.
 
 ### [ ] F5. Navegación, tema y documentación
@@ -79,3 +79,8 @@ Rediseño acordado con el responsable (SPEC 4, 6 y 7). Rama de trabajo: `redisen
 - **E13. Reintento de un fallo en Hoy** (`ColaHoy`): dentro del bloque de su región (hasta 3 preguntas después); si el bloque se acaba, tras la última pregunta de esa región o al final. Así un fallo no hace ir y volver el mapa.
 - **E14. Cambio de región en Hoy:** rótulo con el nombre de la región en la parte baja del mapa durante 1,1 s; el tiempo de la respuesta empieza a contar al terminar. Ese cambio no toca la "última región" guardada. Elegir otra región en el selector reinicia la sesión de Hoy (lo hecho ya está guardado).
 - **E15. Prioridad:** un país priorizado (fallado en un examen) deja de serlo al acertarlo fuera del examen. La lista de examen del panel también prioriza en Hoy.
+- **E16. "Las dos" (Europa y Asia) en el examen:** un mapa por continente, primero Europa y luego Asia, con rótulo al cambiar. Un solo mapa de los dos continentes no cabe en la proyección (recorta a 60° del centro) y los países quedarían diminutos. Con la lista del panel, igual: por continentes. Rusia y Turquía salen en el mapa del ámbito elegido (en "Las dos", en Europa).
+- **E17. Examen sin corrección en el momento:** como en clase, se responde todo y al final se ve la nota y la lista de fallos (con lo que se escribió). En blanco vale como "no lo sé". El mapa mudo no lleva colores de región ni de progreso, tampoco mientras se responde; el selector de región se oculta durante el examen.
+- **E18. Priorizar en Hoy es un botón** al final del examen ("Repasarlos antes en Hoy"), como pide la SPEC 4.4 ("opción de priorizarlos"). El examen cuenta para FSRS pero no mueve escalones.
+- **E19. Pestañas en móvil:** Hoy, Aprender, Examen y Explorar más ⋯ caben en una fila desde 360 px (texto algo más pequeño por debajo de 380 px), con objetivos de 44 px.
+
