@@ -166,6 +166,67 @@ const leer = (p, clave) => p.evaluate((k) => localStorage.getItem(k), clave);
     await ctx.close();
   }
 
+  // 6. Copias: la de ⋯ es del alumno activo y lleva su nombre; importar la de otro avisa (sin bloquear);
+  //    la de todos (panel) se descarga y se restaura.
+  {
+    const fs = require('fs');
+    const os = require('os');
+    const path = require('path');
+    const ctx = await b.newContext({ viewport: { width: 1366, height: 800 }, acceptDownloads: true });
+    await ctx.addInitScript(() => {
+      if (localStorage.getItem('capitalia-perfiles')) return;
+      const vacio = (truco) => JSON.stringify({ version: 1, tarjetas: {}, historial: [], guiaVista: true, bienvenidaVista: true, trucosPropios: truco, ajustes: {} });
+      localStorage.setItem('progreso-capitales', vacio({ ESP: 'de Lucía' }));
+      localStorage.setItem('progreso-capitales-p2', vacio({ FRA: 'de Pablo' }));
+      localStorage.setItem('capitalia-perfiles', JSON.stringify({ version: 1, ultimo: 'p1', pinHash: null, nombrePedido: true,
+        perfiles: [{ id: 'p1', nombre: 'Lucía', imagen: { tipo: 'inicial', color: '#c9daf8' } }, { id: 'p2', nombre: 'Pablo', imagen: { tipo: 'icono', icono: '🧭', color: '#fce5cd' } }] }));
+    });
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => errores.push('copias: ' + e.message));
+    const mensajes = [];
+    let aceptar = false;
+    p.on('dialog', (d) => { mensajes.push(d.message()); if (aceptar) d.accept(); else d.dismiss(); });
+    await p.goto('http://localhost:4173/');
+    await p.waitForSelector('.dialogo-perfiles[open]');
+    await p.locator('.perfil-item', { hasText: 'Lucía' }).click();
+    await p.waitForSelector('.portada-progreso');
+    // Copia de ⋯: de Lucía.
+    await p.locator('#boton-mas').click();
+    comprobar((await p.locator('dialog[open]').innerText()).includes('Esta copia es solo de Lucía'), 'con varios alumnos, ⋯ dice que la copia es solo del alumno activo');
+    const [descarga] = await Promise.all([p.waitForEvent('download'), p.getByRole('button', { name: 'Descargar copia', exact: true }).click()]);
+    const copia = JSON.parse(fs.readFileSync(await descarga.path(), 'utf8'));
+    comprobar(copia.alumno === 'Lucía' && /un ordenador/.test(copia.dispositivo) && descarga.suggestedFilename().includes('lucia'), `la copia lleva el nombre (${descarga.suggestedFilename()}, ${copia.dispositivo})`);
+    // Importar en Lucía una copia de Pablo hecha en un iPad: aviso, no error (se cancela para no tocar nada).
+    const dePablo = { ...copia, alumno: 'Pablo', dispositivo: 'un iPad' };
+    const ruta = path.join(os.tmpdir(), 'copia-de-pablo.json');
+    fs.writeFileSync(ruta, JSON.stringify(dePablo));
+    await p.locator('dialog[open] input[type=file]').setInputFiles(ruta);
+    await p.waitForTimeout(300);
+    const m = mensajes.at(-1) || '';
+    comprobar(m.includes('Esta copia es de Pablo') && m.includes('en un iPad') && m.includes('perfil de Lucía'), `importar la copia de otro avisa sin bloquear → "${m.slice(0, 90)}…"`);
+    await p.keyboard.press('Escape');
+    // Copia de todos desde el panel (crear PIN primero).
+    await p.locator('#boton-mas').click();
+    await p.getByRole('button', { name: 'Panel para adultos', exact: true }).click();
+    await p.getByPlaceholder('Nuevo PIN (4 a 6 cifras)').fill('2468');
+    await p.getByPlaceholder('Repite el PIN').fill('2468');
+    await p.getByRole('button', { name: 'Crear PIN' }).click();
+    await p.locator('dialog[open]').getByRole('button', { name: 'Ajustes', exact: true }).click();
+    const [dTodos] = await Promise.all([p.waitForEvent('download'), p.getByRole('button', { name: 'Descargar copia de todos' }).click()]);
+    const casa = JSON.parse(fs.readFileSync(await dTodos.path(), 'utf8'));
+    comprobar(casa.formato === 'capitalia-casa' && casa.perfiles.length === 2 && casa.progresos.p2.trucosPropios.FRA === 'de Pablo', `copia de todos: ${dTodos.suggestedFilename()} con los 2 alumnos`);
+    // Restaurarla (con un cambio, para ver que se aplica).
+    casa.perfiles[1].nombre = 'Pablo R.';
+    const rutaCasa = path.join(os.tmpdir(), 'copia-casa.json');
+    fs.writeFileSync(rutaCasa, JSON.stringify(casa));
+    aceptar = true;
+    await Promise.all([p.waitForEvent('load'), p.locator('.seccion-alumnos input[type=file]').setInputFiles(rutaCasa)]);
+    comprobar((mensajes.at(-1) || '').includes('Se sustituirán todos los alumnos'), 'restaurar pide confirmación');
+    await p.waitForSelector('.dialogo-perfiles[open]');
+    comprobar(await p.locator('.perfil-item', { hasText: 'Pablo R.' }).count() === 1, 'restaurada: tras recargar, pregunta quién estudia y sale el alumno de la copia');
+    await ctx.close();
+  }
+
   console.log('errores de página:', errores.length ? errores : 'ninguno');
   console.log(fallosPrueba ? `${fallosPrueba} comprobaciones fallidas` : 'todas las comprobaciones bien');
   await b.close();

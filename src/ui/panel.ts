@@ -30,6 +30,10 @@ export interface DatosPanel {
   alumnos(): { perfiles: readonly Perfil[]; actual: string };
   /** Borra un alumno y su progreso (no el actual). */
   borrarAlumno(id: string): boolean;
+  /** Copia de todos los alumnos (fichero) y su nombre. */
+  copiaCasa(): { texto: string; nombre: string };
+  /** Restaura una copia de todos los alumnos (sustituye a todos y recarga). Devuelve el error si no vale. */
+  restaurarCasa(texto: string, confirmar: (n: number) => boolean): string | null;
 }
 
 type Seccion = 'resumen' | 'examen' | 'trucos' | 'ajustes';
@@ -504,6 +508,33 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       }
       lista.append(fila);
     }
+    // Copia de todos los alumnos: un solo fichero con el progreso de cada uno.
+    const descargarTodos = boton('Descargar copia de todos', 'boton-secundario', () => {
+      const { texto, nombre } = datos.copiaCasa();
+      const url = URL.createObjectURL(new Blob([texto], { type: 'application/json' }));
+      const a = el('a');
+      a.href = url;
+      a.download = nombre;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      aviso.textContent = 'Copia de todos los alumnos descargada. Guárdala en un sitio seguro.';
+    });
+    const ficheroCasa = el('input');
+    ficheroCasa.type = 'file';
+    ficheroCasa.accept = 'application/json,.json';
+    ficheroCasa.hidden = true;
+    ficheroCasa.addEventListener('change', async () => {
+      const f = ficheroCasa.files?.[0];
+      ficheroCasa.value = '';
+      if (!f) return;
+      const error = datos.restaurarCasa(await f.text(), (n) =>
+        window.confirm(`Se sustituirán todos los alumnos de este dispositivo por los ${n} de la copia, con su progreso. ¿Seguir?`),
+      );
+      if (error) aviso.textContent = error;
+    });
+    const restaurarTodos = boton('Restaurar copia de todos', 'boton-secundario', () => ficheroCasa.click());
     return el(
       'section',
       'seccion-alumnos',
@@ -516,6 +547,8 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
           : 'Si estudia más de un alumno en este dispositivo, se añaden en ⋯ → Añadir alumno: cada uno tendrá su propio progreso.',
       ),
       lista,
+      el('p', 'ayuda', 'Copia de seguridad de todos los alumnos a la vez (para restaurarlos aquí o en otro dispositivo):'),
+      el('div', 'acciones', descargarTodos, restaurarTodos, ficheroCasa),
       aviso,
     );
   }

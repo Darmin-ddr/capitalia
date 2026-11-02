@@ -5,7 +5,8 @@ import {
   borrarPerfil, cargarIndice, claveProgreso, crearPerfil, faltaNombre, guardarIndice, perfilDe, type IndicePerfiles,
 } from '../logic/perfiles';
 import { editarAlumno, elegirAlumno, nuevoAlumno } from './perfiles';
-import { estadoVacio } from '../logic/progreso';
+import { estadoVacio, type EstadoProgreso } from '../logic/progreso';
+import { exportarCasa, importarCasa, nombreFicheroCasa } from '../logic/copia';
 import {
   nivelesDe,
   registrarEscalon,
@@ -568,6 +569,42 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
     todos,
     recargar: () => window.location.reload(),
     alumnos: () => ({ perfiles: indice.perfiles, actual: perfilId }),
+    copiaCasa() {
+      guardar();
+      const progresos: Record<string, EstadoProgreso> = {};
+      for (const p of indice.perfiles) progresos[p.id] = p.id === perfilId ? estado : new Almacen(backend, claveProgreso(p.id)).cargar();
+      return { texto: exportarCasa(indice.perfiles, progresos), nombre: nombreFicheroCasa() };
+    },
+    restaurarCasa(texto: string, confirmar: (n: number) => boolean) {
+      const r = importarCasa(texto);
+      if (!r.ok) return r.error;
+      if (!confirmar(r.perfiles.length)) return null;
+      // Fuera los alumnos de ahora; dentro los de la copia (con el PIN de este dispositivo).
+      for (const p of indice.perfiles) {
+        try {
+          backend?.removeItem(claveProgreso(p.id));
+        } catch {
+          /* nada */
+        }
+      }
+      for (const p of r.perfiles) {
+        const e = r.progresos[p.id];
+        e.ajustes.pinHash = indice.pinHash;
+        new Almacen(backend, claveProgreso(p.id)).guardar(e);
+      }
+      indice.perfiles = r.perfiles;
+      indice.ultimo = r.perfiles[0].id;
+      indice.nombrePedido = true;
+      guardarIndice(backend, indice);
+      // Al recargar, si hay varios, se pregunta quién estudia.
+      try {
+        sessionStorage.removeItem(CLAVE_ELEGIDO);
+      } catch {
+        /* nada */
+      }
+      window.location.reload();
+      return null;
+    },
     borrarAlumno(id: string) {
       if (id === perfilId || !borrarPerfil(indice, id)) return false;
       try {

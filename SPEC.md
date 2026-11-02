@@ -127,7 +127,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 ## 9. Persistencia y dispositivos
 
-- Todo en local (IndexedDB o localStorage). Sin cuentas ni servidor. Con varios alumnos, el progreso de cada uno se guarda aparte (el primero conserva la clave de siempre, así el progreso anterior a los perfiles es suyo sin moverlo).
+- Todo en local (IndexedDB o localStorage). Sin cuentas ni servidor. Con varios alumnos, el progreso de cada uno se guarda aparte (el primero conserva la clave de siempre, así el progreso anterior a los perfiles es suyo sin moverlo). La copia de ⋯ es del alumno activo y lleva su nombre, la fecha y el tipo de dispositivo; al importarla, la confirmación dice de quién es y en qué perfil se va a poner (aviso, nunca bloqueo: restaurar en otro dispositivo es su uso normal). El panel de adultos tiene además "Descargar copia de todos" y "Restaurar copia de todos" (un fichero con todos los alumnos).
 - **Exportar/importar progreso** mediante código o fichero (y QR si es sencillo). Sirve para pasar progreso entre dispositivos y como copia de seguridad.
 - Pedir almacenamiento persistente (`navigator.storage.persist()`) cuando esté disponible.
 - Nota iOS: Safari puede borrar datos de webs no visitadas en unos días; las webs añadidas a pantalla de inicio deberían estar exentas según WebKit (confianza media). De ahí la importancia del export.

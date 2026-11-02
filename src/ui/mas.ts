@@ -1,4 +1,4 @@
-import { aplicarImportacion, exportarCodigo, exportarFichero, importar, nombreFichero } from '../logic/copia';
+import { aplicarImportacion, exportarCodigo, exportarFichero, importar, mensajeImportar, nombreFichero, tipoDispositivo } from '../logic/copia';
 import type { EstadoProgreso } from '../logic/progreso';
 import { boton, el } from './dom';
 import type { Perfil } from '../logic/perfiles';
@@ -39,13 +39,17 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     const mensaje = el('p', 'mensaje-copia');
     mensaje.setAttribute('role', 'status');
     const decir = (texto: string) => (mensaje.textContent = texto);
+    // La copia dice de quién es (para avisar al importarla en otro perfil o dispositivo).
+    const alumnoActual = datos.alumno?.();
+    const nombreAlumno = alumnoActual?.perfil.nombre || undefined;
+    const origen = () => ({ alumno: nombreAlumno, dispositivo: tipoDispositivo(navigator.userAgent, navigator.maxTouchPoints) });
 
     const descargar = boton('Descargar copia', 'boton-principal', () => {
-      const blob = new Blob([exportarFichero(datos.estado())], { type: 'application/json' });
+      const blob = new Blob([exportarFichero(datos.estado(), new Date(), origen())], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = el('a');
       a.href = url;
-      a.download = nombreFichero();
+      a.download = nombreFichero(new Date(), nombreAlumno);
       document.body.append(a);
       a.click();
       a.remove();
@@ -60,7 +64,7 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     areaCodigo.spellcheck = false;
 
     const copiar = boton('Copiar código', 'boton-secundario', async () => {
-      const codigo = exportarCodigo(datos.estado());
+      const codigo = exportarCodigo(datos.estado(), origen());
       areaCodigo.value = codigo;
       try {
         await navigator.clipboard.writeText(codigo);
@@ -77,7 +81,8 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
         decir(r.error);
         return;
       }
-      const ok = window.confirm('Se sustituirá el progreso de este dispositivo por el de la copia. ¿Seguir?');
+      // Aviso, no bloqueo: restaurar en otro dispositivo o perfil es un uso normal de la copia.
+      const ok = window.confirm(mensajeImportar(r.origen, nombreAlumno ?? null));
       if (!ok) return;
       datos.reemplazar(aplicarImportacion(datos.estado(), r.estado, r.incluyeHistorial));
     }
@@ -144,7 +149,9 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
       el(
         'p',
         'ayuda',
-        'Tu progreso se guarda solo en este dispositivo. Descarga una copia de vez en cuando, o usa el código para pasarlo a otro dispositivo.',
+        alumnoActual?.varios
+          ? `Esta copia es solo de ${nombreAlumno ?? 'este alumno'}. La de todos los alumnos está en el panel de adultos (Ajustes → Alumnos).`
+          : 'Tu progreso se guarda solo en este dispositivo. Descarga una copia de vez en cuando, o usa el código para pasarlo a otro dispositivo.',
       ),
       el('div', 'acciones', descargar, copiar),
       areaCodigo,
