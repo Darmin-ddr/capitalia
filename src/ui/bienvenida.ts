@@ -70,6 +70,7 @@ export function crearBienvenida(datos: DatosBienvenida): { abrirBienvenida(): vo
           [fuerte('Resumen'), ': cómo va cada región, qué países se le atascan y cuántos días ha practicado.'],
           [fuerte('Examen'), ': marcar los países que entran (hay casillas para Europa o Asia enteras, y para cada región) y la fecha. Hoy les dará prioridad y el Examen de prueba podrá hacerse solo con ellos.'],
           [fuerte('Trucos'), ': revisar, cambiar o desactivar los trucos de memoria que trae la app.'],
+          [fuerte('Alumnos'), ': si estudia más de uno en este dispositivo, se añaden en ⋯ → Añadir alumno; cada uno tiene su progreso y sus ajustes de examen, y la app pregunta quién va a estudiar al abrirla. El PIN es el mismo para todos. Borrar un alumno se hace desde Ajustes.'],
           [fuerte('Ajustes'), ': cuántos países nuevos al día como mucho, desbloquear todas las regiones si el curso va en otro orden, cambiar el PIN o reiniciar el progreso.'],
         ),
       ],

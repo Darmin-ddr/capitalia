@@ -22,6 +22,7 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 - **Examen de prueba.** Un mapa mudo del continente entero con las estrellas de las capitales, como el examen de clase, con nota sobre 10 (medio punto si aciertas solo el país o solo la capital). Lo que falles puedes mandarlo a Hoy para repasarlo antes.
 - **El mapa es tu marcador.** Cada país se colorea a medida que lo dominas, y las regiones se van abriendo de una en una.
 - **Trucos de memoria.** Algunos países traen uno, y puedes inventar los tuyos (la app incluye una guía para fabricarlos).
+- **Varios alumnos en el mismo dispositivo**, cada uno con su progreso: un nombre y una imagen (inicial o icono), sin fotos ni cuentas.
 - **Modo claro y oscuro**, automático o a elegir.
 - **Fallar no castiga.** Cuando fallas, ves la respuesta y el truco, y ese país vuelve a salir en unos minutos. No hay rachas ni puntos que perder.
 - **Escribir sin agobios.** No hace falta poner tildes ni mayúsculas, y si se te escapa una letra te lo damos por bueno (pero vuelve a salir para afianzarlo).

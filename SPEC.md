@@ -13,6 +13,7 @@ Herramienta interactiva para que un alumno de 3º de ESO aprenda las capitales d
 - Alumno de 3º de ESO (14 a 15 años). Requisito clave: **que no parezca infantil**. A esa edad rechazan rápido lo que parece de primaria o de los primeros cursos.
 - Dispositivos: iPad, móvil y navegador de PC (Chrome). Todo debe funcionar con táctil y con ratón.
 - Un adulto (padre/madre) consulta el progreso y configura la lista de examen.
+- **Varios alumnos en el mismo dispositivo** (hermanos): perfiles locales con un nombre y una imagen (la inicial sobre un color o un icono sobrio; **sin fotos**, para que nadie piense que la app saca datos). Cada alumno tiene su propio progreso, trucos y ajustes de examen; el PIN del panel, el tema y la instalación son comunes. Con dos o más alumnos, la app pregunta "¿Quién va a estudiar?" cada vez que se abre (para no mezclar progresos) y la portada de Hoy muestra quién estudia. Añadir alumno puede cualquiera (en ⋯); borrarlo, solo el adulto desde el panel (y nunca al que está usando la app). Con un solo alumno, la app funciona como siempre, sin preguntar nada.
 
 ## 3. Decisiones de producto (cerradas)
 
@@ -126,7 +127,7 @@ En Hoy las preguntas pueden saltar de región (dificultad deseable que demuestra
 
 ## 9. Persistencia y dispositivos
 
-- Todo en local (IndexedDB o localStorage). Sin cuentas ni servidor.
+- Todo en local (IndexedDB o localStorage). Sin cuentas ni servidor. Con varios alumnos, el progreso de cada uno se guarda aparte (el primero conserva la clave de siempre, así el progreso anterior a los perfiles es suyo sin moverlo).
 - **Exportar/importar progreso** mediante código o fichero (y QR si es sencillo). Sirve para pasar progreso entre dispositivos y como copia de seguridad.
 - Pedir almacenamiento persistente (`navigator.storage.persist()`) cuando esté disponible.
 - Nota iOS: Safari puede borrar datos de webs no visitadas en unos días; las webs añadidas a pantalla de inicio deberían estar exentas según WebKit (confianza media). De ahí la importancia del export.

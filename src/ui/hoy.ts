@@ -5,6 +5,8 @@ import type { Rng } from '../logic/rng';
 import type { Resultado } from '../logic/sesion';
 import type { Continente, Pais } from '../logic/types';
 import type { ResumenPortada } from '../logic/portada';
+import type { Perfil } from '../logic/perfiles';
+import { avatar, nombreVisible } from './perfiles';
 import type { Mapa } from '../map/mapa';
 import { boton, el, rellenar } from './dom';
 import { PAUSA_TRAS_ACIERTO_MS, Teclado, progreso, type Motor } from './comun';
@@ -42,6 +44,9 @@ export interface ServiciosHoy {
   nombreContinente: (c: Continente) => string;
   continenteMapa: () => Continente;
   verContinente: (c: Continente) => void;
+  /** Alumno actual si hay varios en el dispositivo (null si solo hay uno) y cómo cambiarlo. */
+  alumno: () => Perfil | null;
+  cambiarAlumno: () => void;
   /** Aviso de instalar (una vez): si toca, abrir la instalación, descartarlo para siempre y saber si ya está instalada. */
   avisoInstalar: () => boolean;
   instalar: () => void;
@@ -122,6 +127,16 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   let dejarDeEscuchar: (() => void) | null = null;
+
+  /** Con varios alumnos, quién está estudiando (tocarlo deja cambiar). */
+  function chipAlumno(): HTMLElement | null {
+    const p = s.alumno();
+    if (!p) return null;
+    const b = boton('', 'chip-alumno', s.cambiarAlumno);
+    b.append(avatar(p), el('span', 'perfil-nombre', nombreVisible(p)), el('span', 'chip-alumno-cambiar', 'Cambiar'));
+    b.setAttribute('aria-label', `Estudia ${nombreVisible(p)}. Cambiar de alumno`);
+    return b;
+  }
 
   /** Aviso de instalar, una sola vez: "Ahora no" lo descarta para siempre (queda la entrada en ⋯). */
   function avisoInstalar(): HTMLElement | null {
@@ -288,7 +303,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     const minutos = Math.max(1, Math.round((items.length * SEGUNDOS_PREGUNTA) / 60));
     rellenar(
       contenedor,
-      el('h2', 'titulo-panel', 'Hoy'),
+      el('div', 'cabecera-hoy', el('h2', 'titulo-panel', 'Hoy'), chipAlumno()),
       avisoPausa(),
       el('p', 'resumen', `Hoy toca: ${items.length} preguntas, unos ${minutos} minutos.`),
       el('ul', 'hoy-cuentas', ...partes),
@@ -308,7 +323,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
       : boton('Ir a Aprender', 'boton-principal', s.irAAprender);
     rellenar(
       contenedor,
-      el('h2', 'titulo-panel', 'Hoy'),
+      el('div', 'cabecera-hoy', el('h2', 'titulo-panel', 'Hoy'), chipAlumno()),
       avisoPausa(),
       el('p', 'resumen', 'Lo de hoy ya está hecho.'),
       el(

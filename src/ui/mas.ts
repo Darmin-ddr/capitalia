@@ -1,9 +1,15 @@
 import { aplicarImportacion, exportarCodigo, exportarFichero, importar, nombreFichero } from '../logic/copia';
 import type { EstadoProgreso } from '../logic/progreso';
 import { boton, el } from './dom';
+import type { Perfil } from '../logic/perfiles';
+import { avatar, nombreVisible } from './perfiles';
 import { guardarTema, leerTema, type Tema } from './tema';
 
 export interface DatosMas {
+  /** Alumno actual y si hay varios en el dispositivo. */
+  alumno?: () => { perfil: Perfil; varios: boolean };
+  cambiarAlumno?: () => void;
+  anadirAlumno?: () => void;
   estado(): EstadoProgreso;
   /** Sustituye el progreso guardado y reinicia la app. */
   reemplazar(nuevo: EstadoProgreso): void;
@@ -109,10 +115,25 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
       return b;
     });
     selectorTema.append(...botonesTema);
+    const alumno = datos.alumno?.();
+    const bloqueAlumno = alumno
+      ? el(
+          'div',
+          'bloque-alumno',
+          alumno.varios ? el('p', 'alumno-actual', avatar(alumno.perfil), el('span', 'perfil-nombre', nombreVisible(alumno.perfil))) : null,
+          el(
+            'div',
+            'acciones',
+            alumno.varios && datos.cambiarAlumno ? boton('Cambiar de alumno', 'boton-secundario', () => (dialogo.close(), datos.cambiarAlumno?.())) : null,
+            datos.anadirAlumno ? boton('Añadir alumno', 'boton-secundario', () => (dialogo.close(), datos.anadirAlumno?.())) : null,
+          ),
+        )
+      : null;
     const contenido = el(
       'div',
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Más'),
+      bloqueAlumno,
       ayuda,
       el('h3', 'dialogo-subtitulo', 'Tema'),
       selectorTema,

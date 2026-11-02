@@ -1,6 +1,11 @@
 import { paises as todos, regiones } from '../data';
 import { paisesActivos, paisesDeRegion as filtrarRegion } from '../logic/datos';
-import { Almacen, almacenDelNavegador } from '../logic/almacen';
+import { Almacen, CLAVE, almacenDelNavegador, type AlmacenTexto } from '../logic/almacen';
+import {
+  borrarPerfil, cargarIndice, claveProgreso, crearPerfil, guardarIndice, perfilDe, type IndicePerfiles,
+} from '../logic/perfiles';
+import { elegirAlumno, nuevoAlumno } from './perfiles';
+import { estadoVacio } from '../logic/progreso';
 import {
   nivelesDe,
   registrarEscalon,
@@ -43,9 +48,107 @@ const esContinente = (r: Region) => r.id.startsWith(PREFIJO_CONTINENTE);
  * Estado y orquestación de la app: progreso guardado, región actual, mapa,
  * pestañas y avisos (región dominada, región desbloqueada).
  */
+/** Alumno elegido en esta visita (al abrir de nuevo la app, se vuelve a preguntar si hay varios). */
+const CLAVE_ELEGIDO = 'capitalia-perfil-elegido';
+
+function leerElegido(): string | null {
+  try {
+    return sessionStorage.getItem(CLAVE_ELEGIDO);
+  } catch {
+    return null;
+  }
+}
+
+function marcarElegido(id: string): void {
+  try {
+    sessionStorage.setItem(CLAVE_ELEGIDO, id);
+  } catch {
+    /* sin almacenamiento de sesión: se preguntará al recargar */
+  }
+}
+
+/** PIN del progreso de antes de los perfiles (para que el índice nuevo lo herede). */
+function pinDelPrimero(backend: AlmacenTexto | null): string | null {
+  try {
+    const d = JSON.parse(backend?.getItem(CLAVE) ?? 'null') as { ajustes?: { pinHash?: unknown } } | null;
+    return typeof d?.ajustes?.pinHash === 'string' ? d.ajustes.pinHash : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Arranque: con dos o más alumnos en el dispositivo, "¿Quién va a estudiar?"
+ * cada vez que se abre la app (para no mezclar progresos); con uno, directo.
+ */
 export function iniciarApp(): void {
-  const almacen = new Almacen(almacenDelNavegador());
+  const backend = almacenDelNavegador();
+  const indice = cargarIndice(backend, pinDelPrimero(backend));
+  guardarIndice(backend, indice);
+  const elegido = leerElegido();
+  if (elegido && perfilDe(indice, elegido)) {
+    arrancarCon(backend, indice, elegido);
+    return;
+  }
+  if (indice.perfiles.length < 2) {
+    arrancarCon(backend, indice, indice.ultimo);
+    return;
+  }
+  const preguntar = () =>
+    elegirAlumno(indice, {
+      obligatorio: true,
+      alElegir(id) {
+        indice.ultimo = id;
+        guardarIndice(backend, indice);
+        marcarElegido(id);
+        arrancarCon(backend, indice, id);
+      },
+      alAnadir: () => anadirAlumno(backend, indice, preguntar),
+    });
+  preguntar();
+}
+
+/** Añade un alumno (con progreso vacío y el PIN común) y entra con él. */
+function anadirAlumno(backend: AlmacenTexto | null, indice: IndicePerfiles, alCancelar: () => void): void {
+  nuevoAlumno(indice, {
+    alCrear(nombre, imagen, nombrePrimero) {
+      if (nombrePrimero) indice.perfiles[0].nombre = nombrePrimero;
+      const p = crearPerfil(indice, nombre, imagen);
+      const nuevo = estadoVacio();
+      nuevo.ajustes.pinHash = indice.pinHash;
+      // La bienvenida ("¿quién la abre?") ya se vio en este dispositivo; la guía del alumno, no.
+      nuevo.bienvenidaVista = true;
+      new Almacen(backend, claveProgreso(p.id)).guardar(nuevo);
+      entrarComo(backend, indice, p.id);
+    },
+    alCancelar,
+  });
+}
+
+/** Cambia de alumno: se recuerda y se vuelve a arrancar la app con su progreso. */
+function entrarComo(backend: AlmacenTexto | null, indice: IndicePerfiles, id: string): void {
+  indice.ultimo = id;
+  guardarIndice(backend, indice);
+  marcarElegido(id);
+  window.location.reload();
+}
+
+function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfilId: string): void {
+  const almacen = new Almacen(backend, claveProgreso(perfilId));
   let estado = almacen.cargar();
+  // El PIN del panel es común a todos los alumnos.
+  if (indice.pinHash) estado.ajustes.pinHash = indice.pinHash;
+  const perfil = perfilDe(indice, perfilId)!;
+  const variosAlumnos = () => indice.perfiles.length >= 2;
+  const cambiarAlumno = () =>
+    elegirAlumno(indice, {
+      obligatorio: false,
+      actual: perfilId,
+      alElegir: (id) => {
+        if (id !== perfilId) entrarComo(backend, indice, id);
+      },
+      alAnadir: () => anadirAlumno(backend, indice, () => undefined),
+    });
   const panel = document.getElementById('panel')!;
   const contenedorMapa = document.getElementById('mapa')!;
   const avisos = document.getElementById('avisos')!;
@@ -120,6 +223,10 @@ export function iniciarApp(): void {
 
   function guardar(): void {
     if (!almacen.guardar(estado)) mostrarAvisoAlmacen();
+    if (estado.ajustes.pinHash !== indice.pinHash) {
+      indice.pinHash = estado.ajustes.pinHash;
+      guardarIndice(backend, indice);
+    }
   }
 
   function mostrarAvisoAlmacen(): void {
@@ -315,6 +422,8 @@ export function iniciarApp(): void {
         region = regionContinente(c);
         montarMapa();
       },
+      alumno: () => (variosAlumnos() ? perfil : null),
+      cambiarAlumno,
       avisoInstalar: tocaAvisoInstalar,
       instalar: abrirInstalar,
       descartarInstalar: descartarAviso,
@@ -402,6 +511,17 @@ export function iniciarApp(): void {
     paisesDe: paisesDeRegion,
     todos,
     recargar: () => window.location.reload(),
+    alumnos: () => ({ perfiles: indice.perfiles, actual: perfilId }),
+    borrarAlumno(id: string) {
+      if (id === perfilId || !borrarPerfil(indice, id)) return false;
+      try {
+        backend?.removeItem(claveProgreso(id));
+      } catch {
+        /* sin almacenamiento: no queda nada que borrar */
+      }
+      guardarIndice(backend, indice);
+      return true;
+    },
   });
   const abrirGuia = crearGuia({
     paisParaTaller() {
@@ -437,6 +557,9 @@ export function iniciarApp(): void {
     },
   });
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
+    alumno: () => ({ perfil, varios: variosAlumnos() }),
+    cambiarAlumno,
+    anadirAlumno: () => anadirAlumno(backend, indice, () => undefined),
     abrirGuia,
     abrirInstalar: () => (formaInstalar() === 'instalada' ? null : abrirInstalar),
     abrirGuiaAdultos,

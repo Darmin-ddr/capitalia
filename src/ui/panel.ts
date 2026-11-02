@@ -1,4 +1,6 @@
 import { CONFIG } from '../logic/config';
+import type { Perfil } from '../logic/perfiles';
+import { avatar, nombreVisible } from './perfiles';
 import {
   actividadReciente,
   comprobarPin,
@@ -24,6 +26,10 @@ export interface DatosPanel {
   todos: readonly Pais[];
   /** Aplica cambios que afectan a los datos (países opcionales, examen): reinicia la app. */
   recargar(): void;
+  /** Alumnos del dispositivo y cuál es el actual (el panel muestra y ajusta el actual). */
+  alumnos(): { perfiles: readonly Perfil[]; actual: string };
+  /** Borra un alumno y su progreso (no el actual). */
+  borrarAlumno(id: string): boolean;
 }
 
 type Seccion = 'resumen' | 'examen' | 'trucos' | 'ajustes';
@@ -121,6 +127,13 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
     return b;
   }
 
+  /** Con varios alumnos, el título dice de quién son los datos. */
+  function tituloPanel(): string {
+    const { perfiles, actual } = datos.alumnos();
+    const p = perfiles.find((x) => x.id === actual);
+    return perfiles.length >= 2 && p ? `Panel para adultos · ${nombreVisible(p)}` : 'Panel para adultos';
+  }
+
   function contenido(...hijos: Node[]): HTMLElement {
     const c = el('div', 'dialogo-contenido');
     c.append(...hijos);
@@ -141,7 +154,7 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       pestanas.append(b);
     }
     const cuerpo = el('div', 'panel-cuerpo');
-    contenido(el('h2', 'dialogo-titulo', 'Panel para adultos'), pestanas, cuerpo, el('div', 'acciones acciones-cerrar', cerrarBoton()));
+    contenido(el('h2', 'dialogo-titulo', tituloPanel()), pestanas, cuerpo, el('div', 'acciones acciones-cerrar', cerrarBoton()));
     ({ resumen: pintarResumen, examen: pintarExamen, trucos: pintarTrucos, ajustes: pintarAjustes })[seccion](cuerpo);
   }
 
@@ -465,6 +478,45 @@ export function crearPanelAdultos(datos: DatosPanel): () => void {
       el('p', 'ayuda', 'Antes de reiniciar, conviene descargar una copia de seguridad (botón ⋯).'),
       el('div', 'acciones', reiniciar),
       mensaje,
+      seccionAlumnos(),
+    );
+  }
+
+  /** Alumnos del dispositivo: crearlos puede cualquiera (en ⋯); borrarlos, solo desde aquí. */
+  function seccionAlumnos(): HTMLElement {
+    const { perfiles, actual } = datos.alumnos();
+    const lista = el('ul', 'lista-alumnos');
+    const aviso = el('p', 'mensaje-copia');
+    aviso.setAttribute('role', 'status');
+    for (const p of perfiles) {
+      const fila = el('li', 'fila-alumno', avatar(p), el('span', 'perfil-nombre', nombreVisible(p), p.id === actual ? el('span', 'perfil-ahora', ' (ahora)') : null));
+      if (p.id !== actual) {
+        fila.append(
+          boton('Borrar', 'boton-secundario boton-peligro', () => {
+            if (!window.confirm(`Se borrará ${nombreVisible(p)} y todo su progreso de este dispositivo. ¿Seguir?`)) return;
+            if (!window.confirm('¿Seguro? No se puede deshacer (salvo que tengas una copia de seguridad suya).')) return;
+            if (datos.borrarAlumno(p.id)) {
+              fila.remove();
+              aviso.textContent = `${nombreVisible(p)}: borrado.`;
+            }
+          }),
+        );
+      }
+      lista.append(fila);
+    }
+    return el(
+      'section',
+      'seccion-alumnos',
+      el('h3', 'dialogo-subtitulo', 'Alumnos'),
+      el(
+        'p',
+        'ayuda',
+        perfiles.length >= 2
+          ? 'Cada alumno tiene su propio progreso y sus ajustes de examen. Este panel muestra y ajusta los del alumno actual; para revisar a otro, cámbialo en ⋯ → Cambiar de alumno. Para borrar al actual, entra antes con otro.'
+          : 'Si estudia más de un alumno en este dispositivo, se añaden en ⋯ → Añadir alumno: cada uno tendrá su propio progreso.',
+      ),
+      lista,
+      aviso,
     );
   }
 
