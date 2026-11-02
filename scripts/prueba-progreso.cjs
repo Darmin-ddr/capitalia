@@ -6,7 +6,7 @@ const empezarHoy = async (p) => { const e = p.locator('.contenido-modo .acciones
 const ESTADO_BALCANES = JSON.stringify({ version: 1, tarjetas: {}, historial: [], trucosPropios: {}, regionesCelebradas: [],
   ultimaRegion: 'balcanes', guiaVista: true, ajustes: { opcionalesActivados: [], listaExamen: ['ALB','BIH','BGR','HRV','SVN','GRC','MKD','MNE','SRB'],
   fechaExamen: null, trucosDesactivados: [], trucosEditados: {}, pinHash: null } });
-const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
+const empezarEnBalcanes = (ctx) => ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO_BALCANES);
 
 const out = process.argv[2];
 (async () => {
@@ -16,7 +16,7 @@ const out = process.argv[2];
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(e.message));
-  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   await empezarHoy(p);
   // Responder siempre la primera opción: unas veces acierta y otras falla, y así se ve la cola en acción.

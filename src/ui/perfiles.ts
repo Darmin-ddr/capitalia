@@ -30,6 +30,73 @@ function dialogoBase(etiqueta: string, cerrable: boolean): HTMLDialogElement {
   return d;
 }
 
+function campoNombre(etiqueta: string, placeholder: string, valor = ''): HTMLInputElement {
+  const c = el('input', 'campo-texto');
+  c.type = 'text';
+  c.maxLength = NOMBRE_MAX;
+  c.placeholder = placeholder;
+  c.autocomplete = 'off';
+  c.value = valor;
+  c.setAttribute('aria-label', etiqueta);
+  return c;
+}
+
+/** Elegir imagen (inicial o icono) y color, con vista previa que sigue al nombre escrito. */
+function selectorImagen(nombre: HTMLInputElement, inicialImagen: ImagenPerfil): { nodos: HTMLElement[]; valor: () => ImagenPerfil } {
+  let imagen: ImagenPerfil = { ...inicialImagen };
+  const vista = el('div', 'vista-avatar');
+  const pintarVista = () => vista.replaceChildren(avatar({ nombre: nombre.value, imagen }, 'avatar-grande'));
+  nombre.addEventListener('input', pintarVista);
+
+  const rejilla = el('div', 'rejilla-iconos');
+  rejilla.setAttribute('role', 'group');
+  rejilla.setAttribute('aria-label', 'Imagen');
+  const botones: HTMLButtonElement[] = [];
+  const elegir = (b: HTMLButtonElement, tipo: ImagenPerfil['tipo'], icono?: string) => {
+    imagen = { ...imagen, tipo, icono };
+    for (const x of botones) x.setAttribute('aria-pressed', String(x === b));
+    pintarVista();
+  };
+  const bInicial = boton('Inicial', 'opcion-imagen opcion-inicial', () => elegir(bInicial, 'inicial'));
+  bInicial.setAttribute('aria-pressed', String(imagen.tipo === 'inicial'));
+  botones.push(bInicial);
+  rejilla.append(bInicial);
+  for (const icono of ICONOS_PERFIL) {
+    const b = boton(icono, 'opcion-imagen', () => elegir(b, 'icono', icono));
+    b.setAttribute('aria-pressed', String(imagen.tipo === 'icono' && imagen.icono === icono));
+    b.setAttribute('aria-label', `Icono ${icono}`);
+    botones.push(b);
+    rejilla.append(b);
+  }
+
+  const colores = el('div', 'rejilla-colores');
+  colores.setAttribute('role', 'group');
+  colores.setAttribute('aria-label', 'Color');
+  const botonesColor = COLORES_PERFIL.map((c, i) => {
+    const b = boton('', 'opcion-color', () => {
+      imagen = { ...imagen, color: c };
+      for (const x of botonesColor) x.setAttribute('aria-pressed', String(x === b));
+      pintarVista();
+    });
+    b.style.background = c;
+    b.setAttribute('aria-label', `Color ${i + 1}`);
+    b.setAttribute('aria-pressed', String(c === imagen.color));
+    return b;
+  });
+  colores.append(...botonesColor);
+  pintarVista();
+  return {
+    nodos: [
+      el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Imagen'), el('div', 'fila-avatar', vista, rejilla)),
+      el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Color'), colores),
+    ],
+    valor: () => imagen,
+  };
+}
+
+const AVISO_PRIVACIDAD = 'Solo se guarda en este dispositivo: un nombre y una imagen, sin fotos ni datos que salgan de aquí.';
+const mismoNombre = (a: string, b: string) => a.toLocaleLowerCase('es') === b.toLocaleLowerCase('es');
+
 /**
  * "¿Quién va a estudiar?": un botón por alumno y "Añadir alumno".
  * `obligatorio`: al abrir la app con dos o más alumnos no se puede cerrar sin elegir.
@@ -80,60 +147,10 @@ export function nuevoAlumno(
 ): void {
   const d = dialogoBase('Añadir alumno', true);
   enterPulsaPrincipal(d);
-  const primeroSinNombre = indice.perfiles.length === 1 && !indice.perfiles[0].nombre ? indice.perfiles[0] : null;
-  const campo = (etiqueta: string, placeholder: string) => {
-    const c = el('input', 'campo-texto');
-    c.type = 'text';
-    c.maxLength = NOMBRE_MAX;
-    c.placeholder = placeholder;
-    c.autocomplete = 'off';
-    c.setAttribute('aria-label', etiqueta);
-    return c;
-  };
-  const nombrePrimero = primeroSinNombre ? campo('Nombre de quien ya usaba la app', 'Su nombre') : null;
-  const nombre = campo('Nombre del alumno nuevo', 'Nombre');
-  let imagen: ImagenPerfil = { tipo: 'inicial', color: COLORES_PERFIL[(indice.perfiles.length) % COLORES_PERFIL.length] };
-  const vista = el('div', 'vista-avatar');
-  const pintarVista = () => vista.replaceChildren(avatar({ nombre: nombre.value, imagen }, 'avatar-grande'));
-  nombre.addEventListener('input', pintarVista);
-
-  const opcionesImagen = el('div', 'rejilla-iconos');
-  opcionesImagen.setAttribute('role', 'group');
-  opcionesImagen.setAttribute('aria-label', 'Imagen');
-  const botonesImagen: HTMLButtonElement[] = [];
-  const elegirImagen = (b: HTMLButtonElement, tipo: ImagenPerfil['tipo'], icono?: string) => {
-    imagen = { ...imagen, tipo, icono };
-    for (const x of botonesImagen) x.setAttribute('aria-pressed', String(x === b));
-    pintarVista();
-  };
-  const bInicial = boton('Inicial', 'opcion-imagen opcion-inicial', () => elegirImagen(bInicial, 'inicial'));
-  bInicial.setAttribute('aria-pressed', 'true');
-  botonesImagen.push(bInicial);
-  opcionesImagen.append(bInicial);
-  for (const icono of ICONOS_PERFIL) {
-    const b = boton(icono, 'opcion-imagen', () => elegirImagen(b, 'icono', icono));
-    b.setAttribute('aria-pressed', 'false');
-    b.setAttribute('aria-label', `Icono ${icono}`);
-    botonesImagen.push(b);
-    opcionesImagen.append(b);
-  }
-
-  const colores = el('div', 'rejilla-colores');
-  colores.setAttribute('role', 'group');
-  colores.setAttribute('aria-label', 'Color');
-  const botonesColor = COLORES_PERFIL.map((c, i) => {
-    const b = boton('', 'opcion-color', () => {
-      imagen = { ...imagen, color: c };
-      for (const x of botonesColor) x.setAttribute('aria-pressed', String(x === b));
-      pintarVista();
-    });
-    b.style.background = c;
-    b.setAttribute('aria-label', `Color ${i + 1}`);
-    b.setAttribute('aria-pressed', String(c === imagen.color));
-    return b;
-  });
-  colores.append(...botonesColor);
-
+  const primeroSinNombre = indice.perfiles.length === 1 && !indice.perfiles[0].nombre;
+  const nombrePrimero = primeroSinNombre ? campoNombre('Nombre de quien ya usaba la app', 'Su nombre') : null;
+  const nombre = campoNombre('Nombre del alumno nuevo', 'Nombre');
+  const imagen = selectorImagen(nombre, { tipo: 'inicial', color: COLORES_PERFIL[indice.perfiles.length % COLORES_PERFIL.length] });
   const mensaje = el('p', 'mensaje-copia');
   mensaje.setAttribute('role', 'status');
   const crear = boton('Crear', 'boton-principal', () => {
@@ -149,14 +166,14 @@ export function nuevoAlumno(
       nombre.focus();
       return;
     }
-    if (indice.perfiles.some((p) => p.nombre.toLocaleLowerCase('es') === n.toLocaleLowerCase('es')) || n1?.toLocaleLowerCase('es') === n.toLocaleLowerCase('es')) {
+    if (indice.perfiles.some((p) => mismoNombre(p.nombre, n)) || (n1 && mismoNombre(n1, n))) {
       mensaje.textContent = 'Ya hay un alumno con ese nombre.';
       nombre.focus();
       return;
     }
     d.close();
     d.remove();
-    opciones.alCrear(n, imagen, n1);
+    opciones.alCrear(n, imagen.valor(), n1);
   });
   const cancelar = boton('Cancelar', 'boton-secundario', () => {
     d.close();
@@ -168,18 +185,76 @@ export function nuevoAlumno(
       'div',
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Añadir alumno'),
-      el('p', 'ayuda', 'Solo se guarda en este dispositivo: un nombre y una imagen, sin fotos ni datos que salgan de aquí.'),
+      el('p', 'ayuda', AVISO_PRIVACIDAD),
       nombrePrimero
         ? el('label', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Antes, ¿cómo se llama quien ya usaba la app? (su progreso sigue siendo suyo)'), nombrePrimero)
         : null,
       el('label', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Nombre del alumno nuevo'), nombre),
-      el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Imagen'), el('div', 'fila-avatar', vista, opcionesImagen)),
-      el('div', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Color'), colores),
+      ...imagen.nodos,
       mensaje,
       el('div', 'acciones acciones-cerrar', crear, cancelar),
     ),
   );
-  pintarVista();
   d.showModal();
   (nombrePrimero ?? nombre).focus();
+}
+
+/**
+ * Editar el perfil (nombre, imagen y color). También sirve para ponerle nombre
+ * la primera vez (`primeraVez`: "¿Cómo te llamas?", con "Ahora no").
+ */
+export function editarAlumno(
+  indice: IndicePerfiles,
+  perfil: Perfil,
+  opciones: { primeraVez?: boolean; alGuardar: (nombre: string, imagen: ImagenPerfil) => void; alCerrar: () => void },
+): void {
+  const d = dialogoBase(opciones.primeraVez ? 'Tu nombre' : 'Editar perfil', true);
+  enterPulsaPrincipal(d);
+  const nombre = campoNombre('Nombre', 'Tu nombre', perfil.nombre);
+  const imagen = selectorImagen(nombre, perfil.imagen);
+  const mensaje = el('p', 'mensaje-copia');
+  mensaje.setAttribute('role', 'status');
+  const cerrar = () => {
+    d.close();
+    d.remove();
+  };
+  d.addEventListener('close', () => {
+    if (d.isConnected) {
+      d.remove();
+      opciones.alCerrar();
+    }
+  });
+  const guardar = boton('Guardar', 'boton-principal', () => {
+    const n = limpiarNombre(nombre.value);
+    if (!n) {
+      mensaje.textContent = `Escribe un nombre (hasta ${NOMBRE_MAX} letras).`;
+      nombre.focus();
+      return;
+    }
+    if (indice.perfiles.some((p) => p.id !== perfil.id && mismoNombre(p.nombre, n))) {
+      mensaje.textContent = 'Ya hay otro alumno con ese nombre.';
+      nombre.focus();
+      return;
+    }
+    cerrar();
+    opciones.alGuardar(n, imagen.valor());
+  });
+  const otro = boton(opciones.primeraVez ? 'Ahora no' : 'Cancelar', 'boton-secundario', () => {
+    cerrar();
+    opciones.alCerrar();
+  });
+  d.append(
+    el(
+      'div',
+      'dialogo-contenido',
+      el('h2', 'dialogo-titulo', opciones.primeraVez ? '¿Cómo te llamas?' : 'Editar perfil'),
+      el('p', 'ayuda', opciones.primeraVez ? `Ponle nombre a tu perfil. ${AVISO_PRIVACIDAD} Lo puedes cambiar cuando quieras en ⋯.` : AVISO_PRIVACIDAD),
+      el('label', 'campo-etiquetado', el('span', 'etiqueta-campo', 'Nombre'), nombre),
+      ...imagen.nodos,
+      mensaje,
+      el('div', 'acciones acciones-cerrar', guardar, otro),
+    ),
+  );
+  d.showModal();
+  nombre.focus();
 }

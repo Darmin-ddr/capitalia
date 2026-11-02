@@ -31,10 +31,19 @@ const leer = (p, clave) => p.evaluate((k) => localStorage.getItem(k), clave);
       return p;
     };
 
-    // 1. Un solo alumno: entra directo, como siempre; crea el PIN.
+    // 0. Primer arranque con la versión de los alumnos: "¿Cómo te llamas?" (una sola vez); "Ahora no" no insiste.
     let p = await abrir();
+    await p.waitForSelector('.dialogo-perfiles[open]');
+    const pide = await p.locator('.dialogo-perfiles[open]').innerText();
+    comprobar(pide.includes('¿Cómo te llamas?') && pide.includes('sin fotos') && pide.includes('Ahora no'), `${nombre}: el primer arranque pide nombre (con "Ahora no")`);
+    await p.screenshot({ path: `${out}/${nombre}-perfil-nombre.png` });
+    await p.locator('.dialogo-perfiles[open]').getByRole('button', { name: 'Ahora no' })[tap]();
+    p = await abrir();
     await p.waitForSelector('.portada-progreso');
-    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: con un solo alumno, sin preguntar quién`);
+    await p.waitForTimeout(300);
+
+    // 1. Un solo alumno: entra directo, como siempre; crea el PIN.
+    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: con un solo alumno, sin preguntar quién ni volver a pedir el nombre`);
     comprobar(await p.locator('.chip-alumno').count() === 0, `${nombre}: con un solo alumno, sin nombre en la portada`);
     await p.locator('#boton-mas')[tap]();
     await p.getByRole('button', { name: 'Panel para adultos', exact: true })[tap]();
@@ -131,6 +140,32 @@ const leer = (p, clave) => p.evaluate((k) => localStorage.getItem(k), clave);
     comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: vuelve a un solo alumno: no pregunta`);
     await ctx.close();
   }
+  // 5. Ponerle nombre en el primer arranque y editarlo después desde ⋯.
+  {
+    const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
+    await ctx.addInitScript((x) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', x); }, PREVIO);
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => errores.push('nombre: ' + e.message));
+    await p.goto('http://localhost:4173/');
+    await p.waitForSelector('.dialogo-perfiles[open]');
+    await p.locator('.dialogo-perfiles[open] input.campo-texto').fill('Lucía');
+    await p.getByRole('button', { name: 'Icono 🗺️' }).click();
+    await p.locator('.dialogo-perfiles[open]').getByRole('button', { name: 'Guardar' }).click();
+    await p.locator('#boton-mas').click();
+    await p.waitForSelector('dialog[open] .bloque-alumno');
+    comprobar((await p.locator('dialog[open] .alumno-actual').innerText()).includes('Lucía'), 'con nombre: ⋯ muestra el alumno aunque sea uno solo');
+    await p.locator('dialog[open]').getByRole('button', { name: 'Editar perfil' }).click();
+    await p.waitForSelector('.dialogo-perfiles[open]');
+    comprobar((await p.locator('.dialogo-perfiles[open] input.campo-texto').inputValue()) === 'Lucía', 'Editar perfil trae el nombre actual');
+    await p.locator('.dialogo-perfiles[open] input.campo-texto').fill('Lucía M.');
+    await p.locator('.dialogo-perfiles[open]').getByRole('button', { name: 'Guardar' }).click();
+    const ind = JSON.parse(await p.evaluate(() => localStorage.getItem('capitalia-perfiles')));
+    comprobar(ind.perfiles[0].nombre === 'Lucía M.' && ind.perfiles[0].imagen.icono === '🗺️' && ind.nombrePedido === true, `nombre e imagen guardados (${ind.perfiles[0].nombre}, ${ind.perfiles[0].imagen.icono})`);
+    await p.reload(); await p.waitForSelector('.portada-progreso'); await p.waitForTimeout(300);
+    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, 'con nombre, no lo vuelve a pedir');
+    await ctx.close();
+  }
+
   console.log('errores de página:', errores.length ? errores : 'ninguno');
   console.log(fallosPrueba ? `${fallosPrueba} comprobaciones fallidas` : 'todas las comprobaciones bien');
   await b.close();

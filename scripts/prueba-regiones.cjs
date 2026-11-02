@@ -21,11 +21,11 @@ const enRegion = (p, r) => !p.opcional && (p.region === r || (p.regionesExtra ||
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext(perfil);
-  await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, JSON.stringify(estado));
+  await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, JSON.stringify(estado));
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(e.message));
-  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   const sufijo = process.argv[3] === 'movil' ? '-movil' : '';
   // El selector de región está en Explorar y Aprender (Hoy no lo usa).

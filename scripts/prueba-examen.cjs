@@ -20,7 +20,7 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
   const errores = [];
   for (const [nombre, o] of [['movil', devices['iPhone 13']], ['pc', { viewport: { width: 1366, height: 800 } }]]) {
     const ctx = await b.newContext(o);
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
@@ -75,7 +75,7 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
   // Móvil estrecho (360 px): las pestañas siguen cabiendo.
   {
     const ctx = await b.newContext({ viewport: { width: 360, height: 740 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     await p.goto('http://localhost:4173/');
     await p.waitForSelector('.pais');
@@ -95,7 +95,7 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
     const est = JSON.parse(ESTADO);
     est.ajustes.listaExamen = ['VAT', 'SMR', 'FRA'];
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, JSON.stringify(est));
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, JSON.stringify(est));
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push('enfoque: ' + e.message));
     await p.goto('http://localhost:4173/');
@@ -123,7 +123,7 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
   // "Las dos": primero Europa y luego Asia, con rótulo al cambiar de continente.
   {
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push('dos: ' + e.message));
     await p.goto('http://localhost:4173/');

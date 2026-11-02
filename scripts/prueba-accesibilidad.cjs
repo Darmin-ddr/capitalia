@@ -27,7 +27,7 @@ async function medir(p, pantalla, fallos) {
     const ctx = await b.newContext(perfil);
     const p = await ctx.newPage();
     p.on('dialog', (d) => d.accept());
-    await p.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+    await p.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
     const ir = async (sel) => { await p.locator(sel).click(); await p.waitForTimeout(200); };
     await medir(p, `${nombre}/hoy-inicio`, fallos);
     await empezarHoy(p);
@@ -80,7 +80,7 @@ async function medir(p, pantalla, fallos) {
 
   // Teclado en PC.
   const p = await (await b.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
-  await p.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
+  await p.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO); await p.goto('http://localhost:4173/'); await p.waitForSelector('.pais');
   const foco = () => p.evaluate(() => { const e = document.activeElement; return `${e.tagName.toLowerCase()}${e.className ? '.' + String(e.className.baseVal ?? e.className).split(' ')[0] : ''} "${(e.getAttribute('aria-label') || e.textContent || '').trim().slice(0, 25)}"`; });
   const pasos = [];
   // 1) En Hoy, Empezar tiene el foco; luego, la primera opción; la tecla 2 responde.

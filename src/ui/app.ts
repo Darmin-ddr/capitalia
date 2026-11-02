@@ -2,9 +2,9 @@ import { paises as todos, regiones } from '../data';
 import { paisesActivos, paisesDeRegion as filtrarRegion } from '../logic/datos';
 import { Almacen, CLAVE, almacenDelNavegador, type AlmacenTexto } from '../logic/almacen';
 import {
-  borrarPerfil, cargarIndice, claveProgreso, crearPerfil, guardarIndice, perfilDe, type IndicePerfiles,
+  borrarPerfil, cargarIndice, claveProgreso, crearPerfil, faltaNombre, guardarIndice, perfilDe, type IndicePerfiles,
 } from '../logic/perfiles';
-import { elegirAlumno, nuevoAlumno } from './perfiles';
+import { editarAlumno, elegirAlumno, nuevoAlumno } from './perfiles';
 import { estadoVacio } from '../logic/progreso';
 import {
   nivelesDe,
@@ -186,6 +186,25 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
       alAnadir: () => anadirAlumno(backend, indice, () => undefined),
     });
   vigilarVueltas(backend, indice, perfilId);
+  /** Editar nombre, imagen y color (desde ⋯), o ponerle nombre la primera vez. */
+  const editarPerfil = (primeraVez = false, despues?: () => void) =>
+    editarAlumno(indice, perfil, {
+      primeraVez,
+      alGuardar(nombre, imagen) {
+        perfil.nombre = nombre;
+        perfil.imagen = imagen;
+        indice.nombrePedido = true;
+        guardarIndice(backend, indice);
+        despues?.();
+      },
+      alCerrar() {
+        if (primeraVez) {
+          indice.nombrePedido = true;
+          guardarIndice(backend, indice);
+        }
+        despues?.();
+      },
+    });
   const panel = document.getElementById('panel')!;
   const contenedorMapa = document.getElementById('mapa')!;
   const avisos = document.getElementById('avisos')!;
@@ -584,7 +603,8 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
     alEmpezar: () => cambiarPestana('hoy'),
   });
   const { abrirBienvenida, abrirGuiaAdultos } = crearBienvenida({
-    abrirGuiaAlumno: abrirGuia,
+    // Quien estrena la app como alumno: primero su nombre, luego su guía.
+    abrirGuiaAlumno: () => (faltaNombre(indice) ? editarPerfil(true, abrirGuia) : abrirGuia()),
     abrirPanel,
     alElegir() {
       if (!estado.bienvenidaVista) {
@@ -596,6 +616,7 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
   prepararMas(document.getElementById('boton-mas') as HTMLButtonElement, {
     alumno: () => ({ perfil, varios: variosAlumnos() }),
     cambiarAlumno,
+    editarPerfil: () => editarPerfil(),
     anadirAlumno: () => anadirAlumno(backend, indice, () => undefined),
     abrirGuia,
     abrirInstalar: () => (formaInstalar() === 'instalada' ? null : abrirInstalar),
@@ -614,6 +635,8 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
   cambiarPestana('hoy');
   // Primer arranque: "¿quién eres?". Después, si el alumno aún no ha visto su guía, se le abre sola.
   if (!estado.bienvenidaVista) abrirBienvenida();
+  // Primera vez con la versión de los alumnos: ponerle nombre al perfil (una sola vez).
+  else if (faltaNombre(indice)) editarPerfil(true, () => (estado.guiaVista ? undefined : abrirGuia()));
   else if (!estado.guiaVista) abrirGuia();
 
 }

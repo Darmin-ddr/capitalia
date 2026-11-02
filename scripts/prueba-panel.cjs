@@ -12,7 +12,7 @@ const movil = process.argv[3] === 'movil';
   p.on('pageerror', (e) => errores.push(e.message));
   p.on('dialog', (d) => d.accept());
   const suf = movil ? '-movil' : '';
-  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
+  await p.addInitScript(() => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', JSON.stringify({ version: 1, tarjetas: {}, guiaVista: true })); }); await p.goto('http://localhost:4173/');
   await p.waitForSelector('.pais');
   await empezarHoy(p);
   // Algo de actividad para el resumen.

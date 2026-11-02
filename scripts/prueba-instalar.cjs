@@ -14,7 +14,7 @@ const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' 
 
 async function abrir(b, perfil, e) {
   const ctx = await b.newContext(perfil);
-  await ctx.addInitScript((x) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', x); }, e);
+  await ctx.addInitScript((x) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', x); }, e);
   const p = await ctx.newPage();
   await p.goto('http://localhost:4173/');
   await p.waitForSelector('.portada-progreso');

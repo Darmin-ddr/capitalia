@@ -73,7 +73,7 @@ async function responder(p, tap, mal = false) {
   // ---------- 1. Primer día: solo nuevos, cada uno dos veces y nunca seguidos ----------
   for (const [nombre, o] of [['movil', devices['iPhone 13']], ['pc', { viewport: { width: 1366, height: 800 } }]]) {
     const ctx = await b.newContext(o);
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, base({}));
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, base({}));
     const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
@@ -119,7 +119,7 @@ async function responder(p, tap, mal = false) {
   // ---------- 2. Multirregión: el mapa salta de región con rótulo ----------
   {
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, estadoMultirregion());
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, estadoMultirregion());
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push('multi: ' + e.message));
     await p.goto('http://localhost:4173/');
@@ -186,7 +186,7 @@ async function responder(p, tap, mal = false) {
       historial.push({ t: ayer, pais: p.id, modo: 'elegir', res: 'acierto', ms: 3000, nota: 3 });
     }
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, base({ aprendizaje, historial, ultimaRegion: 'europa-sur' }));
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, base({ aprendizaje, historial, ultimaRegion: 'europa-sur' }));
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push('segundo día: ' + e.message));
     await p.goto('http://localhost:4173/');

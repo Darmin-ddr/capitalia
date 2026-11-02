@@ -28,6 +28,8 @@ export interface IndicePerfiles {
   ultimo: string;
   /** PIN del panel de adultos, común a todos los alumnos. */
   pinHash: string | null;
+  /** Ya se pidió nombre al primer alumno (lo puso o dijo "Ahora no"): no se vuelve a pedir. */
+  nombrePedido?: boolean;
 }
 
 export const CLAVE_PERFILES = 'capitalia-perfiles';
@@ -77,7 +79,13 @@ export function cargarIndice(backend: AlmacenTexto | null, pinActual: string | n
       const perfiles = Array.isArray(d.perfiles) ? d.perfiles.filter(esPerfil) : [];
       if (d.version === 1 && perfiles.length) {
         const ultimo = perfiles.some((p) => p.id === d.ultimo) ? d.ultimo! : perfiles[0].id;
-        return { version: 1, perfiles, ultimo, pinHash: typeof d.pinHash === 'string' ? d.pinHash : pinActual };
+        return {
+          version: 1,
+          perfiles,
+          ultimo,
+          pinHash: typeof d.pinHash === 'string' ? d.pinHash : pinActual,
+          ...(d.nombrePedido === true ? { nombrePedido: true } : {}),
+        };
       }
     } catch {
       /* roto: se rehace con un solo alumno */
@@ -126,6 +134,11 @@ export function borrarPerfil(indice: IndicePerfiles, id: string): boolean {
   indice.perfiles = indice.perfiles.filter((p) => p.id !== id);
   if (indice.ultimo === id) indice.ultimo = indice.perfiles[0].id;
   return true;
+}
+
+/** ¿Hay que pedir nombre? Solo con un alumno sin nombre y si no se ha pedido ya. */
+export function faltaNombre(indice: IndicePerfiles): boolean {
+  return indice.perfiles.length === 1 && !indice.perfiles[0].nombre && !indice.nombrePedido;
 }
 
 export function perfilDe(indice: IndicePerfiles, id: string): Perfil | undefined {

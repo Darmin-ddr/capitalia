@@ -29,7 +29,7 @@ const out = process.argv[2] || '.';
   const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' ' + texto); if (!cond) fallosPrueba++; };
   for (const [nombre, o] of [['movil', devices['iPhone 13']], ['pc', { viewport: { width: 1366, height: 800 } }]]) {
     const ctx = await b.newContext(o);
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
@@ -138,7 +138,7 @@ const out = process.argv[2] || '.';
   est.aprendizaje = {};
   for (const p of paises.filter((x) => x.region === 'europa-occidental')) est.aprendizaje[p.id] = { escalon: 0, aciertos: 0, aprendido: true };
   est.aprendizaje.NLD = { escalon: 3, aciertos: 1, aprendido: false };
-  await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, JSON.stringify(est));
+  await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, JSON.stringify(est));
   const p = await ctx.newPage();
   p.on('pageerror', (e) => errores.push('holanda: ' + e.message));
   await p.goto('http://localhost:4173/');

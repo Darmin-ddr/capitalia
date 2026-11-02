@@ -29,7 +29,7 @@ async function elegirTema(p, texto) {
   // Sistema claro: Oscuro a mano, se recuerda al recargar; Automático vuelve a claro.
   {
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 }, colorScheme: 'light' });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push(e.message));
     await p.goto('http://localhost:4173/');
@@ -49,7 +49,7 @@ async function elegirTema(p, texto) {
   // Sistema oscuro: Claro a mano gana.
   {
     const ctx = await b.newContext({ viewport: { width: 1366, height: 800 }, colorScheme: 'dark' });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     await p.goto('http://localhost:4173/');
     await p.waitForSelector('.pais');
@@ -61,7 +61,7 @@ async function elegirTema(p, texto) {
   // Capturas en oscuro: Hoy, Aprender (escalera y mapa mudo), Examen y el diálogo ⋯.
   for (const [nombre, o] of [['pc', { viewport: { width: 1366, height: 800 } }], ['movil', devices['iPhone 13']]]) {
     const ctx = await b.newContext({ ...o, colorScheme: 'dark' });
-    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('progreso-capitales', e); }, ESTADO);
+    await ctx.addInitScript((e) => { if (!localStorage.getItem('progreso-capitales')) localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'), localStorage.setItem('progreso-capitales', e); }, ESTADO);
     const p = await ctx.newPage();
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
     await p.goto('http://localhost:4173/');

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CLAVE, type AlmacenTexto } from '../src/logic/almacen';
 import {
-  CLAVE_PERFILES, ID_PRIMERO, borrarPerfil, cargarIndice, claveProgreso, crearPerfil, guardarIndice, inicial, limpiarNombre,
+  CLAVE_PERFILES, ID_PRIMERO, borrarPerfil, cargarIndice, claveProgreso, crearPerfil, faltaNombre, guardarIndice, inicial, limpiarNombre,
 } from '../src/logic/perfiles';
 
 class Memoria implements AlmacenTexto {
@@ -65,5 +65,20 @@ describe('perfiles de alumno', () => {
     expect(limpiarNombre('x'.repeat(21))).toBeNull();
     expect(inicial('álvaro')).toBe('Á');
     expect(inicial('')).toBe('?');
+  });
+
+  it('pedir nombre al primer alumno: una sola vez, y nunca con varios', () => {
+    const m = new Memoria();
+    const i = cargarIndice(m);
+    expect(faltaNombre(i)).toBe(true);
+    i.nombrePedido = true;
+    guardarIndice(m, i);
+    expect(faltaNombre(cargarIndice(m))).toBe(false);
+    const j = cargarIndice(new Memoria());
+    j.perfiles[0].nombre = 'Lucía';
+    expect(faltaNombre(j)).toBe(false);
+    const k = cargarIndice(new Memoria());
+    crearPerfil(k, 'Pablo', imagen);
+    expect(faltaNombre(k)).toBe(false);
   });
 });

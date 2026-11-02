@@ -18,6 +18,12 @@ const empezarHoy = async (p) => { const e = p.locator('.contenido-modo .acciones
   for (const k of ['1', '2', '3', '4', 'Enter']) await p.keyboard.press(k);
   await p.waitForTimeout(300);
   console.log('tras 1-4 y Enter en la bienvenida: respuestas detrás =', await respuestas(), '| diálogo ahora:', await titulo());
+  // "¿Cómo te llamas?": Escape equivale a "Ahora no" y sigue a la guía.
+  if ((await titulo()).includes('Cómo te llamas')) {
+    await p.keyboard.press('Escape');
+    await p.waitForTimeout(200);
+    console.log('Escape en "¿Cómo te llamas?" -> diálogo ahora:', await titulo());
+  }
   // Enter con el foco en el texto ha pulsado el botón principal (alumno -> guía).
   await p.locator('dialog[open] p').first().click();
   await p.keyboard.press('Enter');

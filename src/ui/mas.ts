@@ -10,6 +10,7 @@ export interface DatosMas {
   alumno?: () => { perfil: Perfil; varios: boolean };
   cambiarAlumno?: () => void;
   anadirAlumno?: () => void;
+  editarPerfil?: () => void;
   estado(): EstadoProgreso;
   /** Sustituye el progreso guardado y reinicia la app. */
   reemplazar(nuevo: EstadoProgreso): void;
@@ -120,10 +121,11 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
       ? el(
           'div',
           'bloque-alumno',
-          alumno.varios ? el('p', 'alumno-actual', avatar(alumno.perfil), el('span', 'perfil-nombre', nombreVisible(alumno.perfil))) : null,
+          alumno.varios || alumno.perfil.nombre ? el('p', 'alumno-actual', avatar(alumno.perfil), el('span', 'perfil-nombre', nombreVisible(alumno.perfil))) : null,
           el(
             'div',
             'acciones',
+            datos.editarPerfil ? boton('Editar perfil', 'boton-secundario', () => (dialogo.close(), datos.editarPerfil?.())) : null,
             alumno.varios && datos.cambiarAlumno ? boton('Cambiar de alumno', 'boton-secundario', () => (dialogo.close(), datos.cambiarAlumno?.())) : null,
             datos.anadirAlumno ? boton('Añadir alumno', 'boton-secundario', () => (dialogo.close(), datos.anadirAlumno?.())) : null,
           ),

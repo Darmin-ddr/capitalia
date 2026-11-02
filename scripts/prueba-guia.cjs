@@ -14,7 +14,14 @@ const movil = process.argv[3] === 'movil';
   console.log('primer arranque:', await p.locator('.dialogo-guia[open] .dialogo-titulo').innerText());
   await p.screenshot({ path: `${out}/bienvenida${suf}.png` });
   await p.getByRole('button', { name: 'Soy el alumno o la alumna' }).click();
+  // Antes de su guía, el alumno le pone nombre a su perfil.
+  await p.waitForSelector('.dialogo-perfiles[open]');
+  console.log('pide nombre:', await p.locator('.dialogo-perfiles[open] .dialogo-titulo').innerText());
+  await p.screenshot({ path: `${out}/nombre-primero${suf}.png` });
+  await p.locator('.dialogo-perfiles[open] input.campo-texto').fill('Lucía');
+  await p.locator('.dialogo-perfiles[open]').getByRole('button', { name: 'Guardar' }).click();
   await p.waitForTimeout(200);
+  console.log('nombre guardado:', JSON.parse(await p.evaluate(() => localStorage.getItem('capitalia-perfiles'))).perfiles[0].nombre);
   console.log('el alumno va a su guía:', await p.locator('.dialogo-guia[open] .dialogo-titulo').innerText());
   await p.screenshot({ path: `${out}/guia-1${suf}.png` });
   const titulos = [];
