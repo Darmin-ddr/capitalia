@@ -68,3 +68,13 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 - `src/ui/bienvenida.ts` (primer arranque y guía de adultos), `guia.ts` (guía del alumno), `acerca.ts` (versión y créditos; la autoría está en `AUTORIA`).
 - Los atajos de teclado de las preguntas (`Teclado` en `comun.ts`) se ignoran mientras haya un `<dialog>` abierto.
 - Cambios de ajustes que afectan a los datos (Kosovo, examen, importar) recargan la página.
+
+## Alumnos (perfiles locales, versión 1.3.0)
+- Lógica pura en `src/logic/perfiles.ts`; interfaz en `src/ui/perfiles.ts` (imagen, "¿Quién va a estudiar?", añadir y editar).
+- Guardado: el índice de alumnos y el PIN común en `capitalia-perfiles`. El progreso del primer alumno sigue en `progreso-capitales` (el de antes de los perfiles es suyo sin moverlo); el de los demás, en `progreso-capitales-<id>`.
+- Arranque (`iniciarApp` en `app.ts`): con dos o más alumnos pregunta quién estudia; el elegido se recuerda en `sessionStorage` (`capitalia-perfil-elegido`) para no preguntar al recargar en la misma visita. Cambiar de alumno guarda y recarga la página.
+- `vigilarVueltas`: si la app ha estado oculta más de 10 minutos, al volver vuelve a preguntar (en iOS volver solo reanuda la app).
+- El PIN vive en el índice y se copia al estado del alumno al cargarlo; al guardar, si cambió, se actualiza el índice.
+- Copias (`src/logic/copia.ts`): la de un alumno (`formato: 'progreso-capitales'`, con `alumno`, `dispositivo` y `fecha`; código `CAPITALES2:`, que también los lleva, y se siguen leyendo los `CAPITALES1:`) y la de todos (`formato: 'capitalia-casa'`, desde el panel).
+- Preferencias del dispositivo, fuera del progreso: tema (`capitalia-tema`), aviso de instalar descartado (`capitalia-aviso-instalar`) y aviso de pausa plegado (`capitalia-aviso-pausa-plegado`).
+

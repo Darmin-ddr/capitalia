@@ -16,13 +16,13 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 
 ## Cómo te ayuda a aprender
 
-- **Solo un continente si hace falta.** Si los exámenes de Europa y Asia van por separado, Hoy se puede limitar a uno; el otro queda en pausa hasta volver a "Todo".
 - **Hoy: diez minutos al día.** Al abrir la app ves lo que toca, cuántos países llevas aprendidos y el mapa coloreado con tu progreso. La app calcula cuándo estás a punto de olvidar cada capital y te la pregunta justo entonces (repetición espaciada), y cada día mete unos pocos países nuevos entre los repasos. Lo que te sabes sale cada vez menos; lo que te cuesta, más a menudo.
 - **Aprender, a tu ritmo.** Cada país sube cuatro escalones, de más fácil a más difícil: elegir la capital entre cuatro, colocar capitales en su país, escribirla sin ayuda y, por último, el mapa mudo: ver solo la estrella y escribir país y capital. Sube de escalón al acertarlo dos veces con otras preguntas por medio. Cuando tienes abiertas todas las regiones de un continente, puedes practicarlo entero.
 - **Examen de prueba.** Un mapa mudo del continente entero con las estrellas de las capitales, como el examen de clase, con nota sobre 10 (medio punto si aciertas solo el país o solo la capital). Lo que falles puedes mandarlo a Hoy para repasarlo antes.
-- **El mapa es tu marcador.** Cada país se colorea a medida que lo dominas, y las regiones se van abriendo de una en una.
+- **Solo un continente si hace falta.** Si los exámenes de Europa y Asia van por separado, Hoy se puede limitar a uno; el otro queda en pausa hasta volver a "Todo".
+- **El mapa es tu marcador.** Cada país se colorea a medida que sube de escalón, y las regiones se van abriendo de una en una.
 - **Trucos de memoria.** Algunos países traen uno, y puedes inventar los tuyos (la app incluye una guía para fabricarlos).
-- **Varios alumnos en el mismo dispositivo**, cada uno con su progreso: un nombre y una imagen (inicial o icono), sin fotos ni cuentas.
+- **Varios alumnos en el mismo dispositivo**, cada uno con su progreso: un nombre y una imagen (inicial o icono), sin fotos ni cuentas. Con dos o más, la app pregunta quién va a estudiar al abrirla.
 - **Modo claro y oscuro**, automático o a elegir.
 - **Fallar no castiga.** Cuando fallas, ves la respuesta y el truco, y ese país vuelve a salir en unos minutos. No hay rachas ni puntos que perder.
 - **Escribir sin agobios.** No hace falta poner tildes ni mayúsculas, y si se te escapa una letra te lo damos por bueno (pero vuelve a salir para afianzarlo).
@@ -37,15 +37,16 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 
 La app tiene un **panel para adultos** protegido con un PIN (botón ⋯, arriba a la derecha):
 
-- **Resumen:** cómo va cada región, qué países se le atascan al alumno y cuántos días ha practicado.
+- **Resumen:** cuántos países lleva aprendidos en cada región, cuáles se le atascan y cuántos días ha practicado, con una explicación de qué significa cada dato.
 - **Examen:** marca los países que entran (puedes marcar Europa o Asia enteras, o una región) y la fecha. Hoy les dará prioridad, y el alumno podrá hacer un examen de prueba solo con ellos.
 - **Trucos:** revisa, cambia o desactiva los trucos de memoria que trae la app.
 - **Ajustes:** cuántos países nuevos al día como mucho, desbloquear todas las regiones (si el curso va en otro orden), cambiar el PIN o reiniciar el progreso.
+- **Alumnos:** si estudia más de uno en el dispositivo, cada uno tiene su progreso y sus ajustes de examen (el PIN es común). Desde aquí se borra un alumno y se descarga o restaura la copia de todos a la vez.
 
 La primera vez que se abre, la app pregunta quién la está usando y ofrece una guía breve tanto al alumno como a los adultos.
 
 <p align="center">
-  <img src="docs/capturas/panel-adultos.png" alt="Panel para adultos: dominio por región y países que más se atascan" width="560">
+  <img src="docs/capturas/panel-adultos.png" alt="Panel para adultos: países aprendidos por región y los que más se atascan" width="560">
 </p>
 
 ## Instalarla
@@ -60,7 +61,9 @@ Se puede usar directamente en el navegador, pero instalada se abre como una app 
 
 Todo se guarda **solo en tu dispositivo**. No hay cuentas, no se envían datos a ningún servidor y no hay publicidad ni seguimiento.
 
-Como el progreso vive en el dispositivo, conviene hacer de vez en cuando una **copia de seguridad** (botón ⋯ → Descargar copia). Con "Copiar código" puedes pasar el progreso a otro dispositivo.
+Como el progreso vive en el dispositivo, conviene hacer de vez en cuando una **copia de seguridad** (botón ⋯ → Descargar copia). Con "Copiar código" puedes pasar el progreso a otro dispositivo. Con varios alumnos, esa copia es la del alumno activo (y dice de quién es); la de todos a la vez está en el panel para adultos.
+
+Los perfiles de alumno son solo un nombre y una imagen elegida de la app (una inicial o un icono): no hay fotos ni ningún dato que salga del dispositivo.
 
 ## Qué incluye ahora
 

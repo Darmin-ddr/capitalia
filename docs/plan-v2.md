@@ -3,7 +3,7 @@
 Rediseño acordado con el responsable (SPEC 4, 6 y 7). Se hizo en la rama `rediseno-hoy-aprender-examen` y se fusionó con la rama publicada el 2026-11-01. La rama publicada se llama ahora `main` (antes `claude/hito-1-plan-7opthj`).
 
 ## Ahora mismo
-- **Estado:** v2 terminada (F1 a F6), aprobada por el responsable, fusionada y **publicada** el 2026-11-01 (salió como 2.0.0; numeración correcta: 1.1.0). Rama publicada: `main` (Pages publica con cada push a `main`). En curso, en la rama `hoy-solo-un-continente`: "Qué estudia Hoy" (versión 1.2.0), sin fusionar.
+- **Estado:** v2 terminada (F1 a F6), aprobada por el responsable, fusionada y **publicada** el 2026-11-01 (salió como 2.0.0; numeración correcta: 1.1.0). Rama publicada: `main` (Pages publica con cada push a `main`). Después: 1.2.0 ("Qué estudia Hoy", instalar la app, aviso de pausa plegable) y 1.3.0 (alumnos), publicadas.
 - **Siguiente paso:** que el alumno la use y recoger lo que se vea raro.
 - **Pendientes que no bloquean:** pruebas con el alumno en iPad y iPhone reales; Explorar en "Europa entera" no tiene prueba automática propia.
 

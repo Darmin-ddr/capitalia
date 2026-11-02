@@ -33,7 +33,7 @@ void datos;
   const b = await chromium.launch();
   const preparar = async (perfil) => {
     const ctx = await b.newContext({ ...perfil, deviceScaleFactor: 1, colorScheme: 'light' });
-    await ctx.addInitScript((e) => { localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'); localStorage.setItem('progreso-capitales', e); }, JSON.stringify(estado));
+    await ctx.addInitScript((e) => { localStorage.setItem('capitalia-perfiles', '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}'); localStorage.setItem('progreso-capitales', e); localStorage.setItem('capitalia-aviso-instalar', 'descartado'); }, JSON.stringify(estado));
     const p = await ctx.newPage();
     await p.goto('http://localhost:4173/');
     await p.waitForSelector('.pais');
