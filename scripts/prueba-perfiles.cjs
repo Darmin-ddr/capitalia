@@ -86,6 +86,27 @@ const leer = (p, clave) => p.evaluate((k) => localStorage.getItem(k), clave);
     // Al recargar en la misma visita no vuelve a preguntar.
     await p.reload(); await p.waitForSelector('.portada-progreso');
     comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: al recargar en la misma visita, no pregunta otra vez`);
+    // Volver a la app tras un rato (en iPhone/iPad no se reabre: se reanuda). Se simula ocultarla y adelantar el reloj.
+    const ocultarYVolver = (minutos) => p.evaluate((m) => {
+      const fijar = (v) => Object.defineProperty(document, 'visibilityState', { value: v, configurable: true });
+      fijar('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      const ahora = Date.now;
+      Date.now = () => ahora() + m * 60000;
+      fijar('visible');
+      document.dispatchEvent(new Event('visibilitychange'));
+      Date.now = ahora;
+    }, minutos);
+    await p.evaluate(() => (window.__sinRecargar = true));
+    await ocultarYVolver(2);
+    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: al volver tras 2 minutos, no pregunta`);
+    await ocultarYVolver(11);
+    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 1, `${nombre}: al volver tras 11 minutos, pregunta quién va a estudiar`);
+    await p.keyboard.press('Escape');
+    comprobar(await p.locator('.dialogo-perfiles[open]').count() === 1, `${nombre}: y hay que elegir (Escape no lo cierra)`);
+    await p.locator('.perfil-item', { hasText: 'Lucía' })[tap]();
+    await p.waitForTimeout(300);
+    comprobar(await p.evaluate(() => window.__sinRecargar === true) && await p.locator('.dialogo-perfiles[open]').count() === 0, `${nombre}: el mismo alumno sigue donde estaba, sin recargar`);
 
     // 4. PIN común; borrar alumno solo desde el panel (y no al actual).
     await p.locator('#boton-mas')[tap]();

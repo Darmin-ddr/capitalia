@@ -133,6 +133,42 @@ function entrarComo(backend: AlmacenTexto | null, indice: IndicePerfiles, id: st
   window.location.reload();
 }
 
+/** Tras este tiempo con la app oculta, al volver se pregunta otra vez quién estudia. */
+const PAUSA_PREGUNTAR_MS = 10 * 60 * 1000;
+
+/**
+ * Con dos o más alumnos, si la app ha estado oculta (en segundo plano, otra
+ * pestaña) más de PAUSA_PREGUNTAR_MS, al volver pregunta "¿Quién va a estudiar?".
+ * En iPhone y iPad volver a la app solo la reanuda: sin esto, un hermano podría
+ * seguir en el perfil del otro. Si es el mismo alumno, sigue donde estaba (sin recargar).
+ */
+function vigilarVueltas(backend: AlmacenTexto | null, indice: IndicePerfiles, perfilId: string): void {
+  let ocultaDesde: number | null = null;
+  let preguntando = false;
+  const preguntar = () => {
+    preguntando = true;
+    elegirAlumno(indice, {
+      obligatorio: true,
+      actual: perfilId,
+      alElegir(id) {
+        preguntando = false;
+        if (id !== perfilId) entrarComo(backend, indice, id);
+      },
+      alAnadir: () => anadirAlumno(backend, indice, preguntar),
+    });
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (indice.perfiles.length < 2) return;
+    if (document.visibilityState === 'hidden') {
+      ocultaDesde = Date.now();
+      return;
+    }
+    const pausa = ocultaDesde === null ? 0 : Date.now() - ocultaDesde;
+    ocultaDesde = null;
+    if (pausa >= PAUSA_PREGUNTAR_MS && !preguntando) preguntar();
+  });
+}
+
 function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfilId: string): void {
   const almacen = new Almacen(backend, claveProgreso(perfilId));
   let estado = almacen.cargar();
@@ -149,6 +185,7 @@ function arrancarCon(backend: AlmacenTexto | null, indice: IndicePerfiles, perfi
       },
       alAnadir: () => anadirAlumno(backend, indice, () => undefined),
     });
+  vigilarVueltas(backend, indice, perfilId);
   const panel = document.getElementById('panel')!;
   const contenedorMapa = document.getElementById('mapa')!;
   const avisos = document.getElementById('avisos')!;
