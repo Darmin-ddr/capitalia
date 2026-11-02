@@ -99,7 +99,7 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     });
     const importarFichero = boton('Importar fichero', 'boton-secundario', () => selectorFichero.click());
 
-    const ayuda = el('div', 'acciones');
+    const ayuda = el('div', 'acciones acciones-rejilla');
     if (datos.abrirGuia) ayuda.append(boton('Cómo aprender con Capitalia', 'boton-principal', () => (dialogo.close(), datos.abrirGuia?.())));
     const instalar = datos.abrirInstalar?.();
     if (instalar) ayuda.append(boton('Instalar la app', 'boton-secundario', () => (dialogo.close(), instalar())));
@@ -122,25 +122,39 @@ export function prepararMas(disparador: HTMLButtonElement, datos: DatosMas): voi
     });
     selectorTema.append(...botonesTema);
     const alumno = datos.alumno?.();
-    const bloqueAlumno = alumno
-      ? el(
-          'div',
-          'bloque-alumno',
-          alumno.varios || alumno.perfil.nombre ? el('p', 'alumno-actual', avatar(alumno.perfil), el('span', 'perfil-nombre', nombreVisible(alumno.perfil))) : null,
-          el(
-            'div',
-            'acciones',
-            datos.editarPerfil ? boton('Editar perfil', 'boton-secundario', () => (dialogo.close(), datos.editarPerfil?.())) : null,
-            alumno.varios && datos.cambiarAlumno ? boton('Cambiar de alumno', 'boton-secundario', () => (dialogo.close(), datos.cambiarAlumno?.())) : null,
-            datos.anadirAlumno ? boton('Añadir alumno', 'boton-secundario', () => (dialogo.close(), datos.anadirAlumno?.())) : null,
-          ),
-        )
-      : null;
+    // Tu perfil: imagen y nombre (con varios alumnos, tocarlos deja cambiar), lápiz para editar y "+" para añadir.
+    let bloqueAlumno: HTMLElement | null = null;
+    if (alumno) {
+      const quien = alumno.varios && datos.cambiarAlumno
+        ? boton('', 'chip-alumno', () => (dialogo.close(), datos.cambiarAlumno?.()))
+        : el('span', 'alumno-actual');
+      quien.append(avatar(alumno.perfil), el('span', 'perfil-nombre', nombreVisible(alumno.perfil)));
+      if (alumno.varios) {
+        quien.append(el('span', 'chip-alumno-cambiar', 'Cambiar'));
+        quien.setAttribute('aria-label', `${nombreVisible(alumno.perfil)}. Cambiar de alumno`);
+      }
+      const lapiz = datos.editarPerfil ? boton('✎', 'boton-icono', () => (dialogo.close(), datos.editarPerfil?.())) : null;
+      lapiz?.setAttribute('aria-label', 'Editar perfil');
+      lapiz?.setAttribute('title', 'Editar perfil');
+      let anadir: HTMLButtonElement | null = null;
+      if (datos.anadirAlumno) {
+        anadir = boton('', 'boton-anadir', () => (dialogo.close(), datos.anadirAlumno?.()));
+        anadir.append(el('span', 'circulo-mas', '+'), el('span', 'texto-anadir', 'Añadir alumno'));
+        anadir.setAttribute('aria-label', 'Añadir alumno');
+      }
+      bloqueAlumno = el(
+        'section',
+        'bloque-alumno',
+        el('h3', 'dialogo-subtitulo', 'Tu perfil'),
+        el('div', 'fila-perfil', el('div', 'fila-perfil-quien', quien, lapiz), anadir),
+      );
+    }
     const contenido = el(
       'div',
       'dialogo-contenido',
       el('h2', 'dialogo-titulo', 'Más'),
       bloqueAlumno,
+      el('h3', 'dialogo-subtitulo', 'Ayuda'),
       ayuda,
       el('h3', 'dialogo-subtitulo', 'Tema'),
       selectorTema,

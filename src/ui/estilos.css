@@ -1327,9 +1327,15 @@ button {
 }
 
 .lista-creditos a {
-  display: inline-block;
-  padding: 10px 0;
+  /* En línea: el relleno amplía la zona de toque (44 px) sin estirar el renglón. */
+  display: inline;
+  padding: 12px 0;
   color: var(--acento);
+}
+
+.lista-creditos li {
+  margin-bottom: 8px;
+  line-height: 1.45;
 }
 
 .bloque-continente {
@@ -1927,4 +1933,93 @@ button {
 
 .dialogo-perfiles .campo-etiquetado {
   margin-top: 12px;
+}
+
+/* Menú ⋯: los botones de cada sección en columnas iguales (dos en el ordenador, uno en el móvil), alineados. */
+.acciones-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.bloque-alumno {
+  margin-bottom: 0;
+}
+
+
+/* Menú ⋯ → Tu perfil: [imagen nombre ✎] ...... (+) Añadir alumno */
+.fila-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fila-perfil-quien {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fila-perfil .alumno-actual {
+  margin: 0;
+}
+
+.boton-icono {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.boton-anadir {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--texto-suave);
+  font: inherit;
+  cursor: pointer;
+}
+
+.circulo-mas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--acento);
+  color: var(--acento);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.texto-anadir {
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* En los diálogos, estos no se estiran como los demás botones. */
+.dialogo-contenido .fila-perfil button {
+  flex: none;
+}
+
+/* Ayuda: el botón principal a lo ancho; los demás, emparejados debajo. */
+.acciones-rejilla > .boton-principal {
+  grid-column: 1 / -1;
 }
