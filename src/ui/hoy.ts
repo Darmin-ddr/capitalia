@@ -7,6 +7,7 @@ import type { Continente, Pais } from '../logic/types';
 import type { ResumenPortada } from '../logic/portada';
 import type { Perfil } from '../logic/perfiles';
 import { avatar, nombreVisible } from './perfiles';
+import { actualizarAhora, alHaberVersionNueva, hayVersionNueva } from './actualizar';
 import type { Mapa } from '../map/mapa';
 import { boton, el, rellenar } from './dom';
 import { PAUSA_TRAS_ACIERTO_MS, Teclado, progreso, type Motor } from './comun';
@@ -127,6 +128,30 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   let dejarDeEscuchar: (() => void) | null = null;
+  /** Se está en la portada (o en el resumen final), no a mitad de preguntas. */
+  let enPortada = false;
+
+  /** Versión nueva lista: aviso en la portada (nunca a mitad de una pregunta). */
+  function avisoVersion(): HTMLElement | null {
+    if (!hayVersionNueva()) return null;
+    const a = el(
+      'div',
+      'aviso-version',
+      el('p', '', el('strong', '', 'Hay una versión nueva de Capitalia.'), ' Tu progreso no cambia.'),
+      boton('Actualizar', 'boton-principal', actualizarAhora),
+    );
+    a.setAttribute('role', 'status');
+    return a;
+  }
+  // Si queda lista mientras se mira la portada, aparece sin esperar.
+  const dejarDeEscucharVersion = alHaberVersionNueva(() => {
+    if (!enPortada || contenedor.querySelector('.aviso-version')) return;
+    const a = avisoVersion();
+    if (!a) return;
+    const arriba = contenedor.querySelector('.cabecera-hoy, .resumen-titulo');
+    if (arriba) arriba.after(a);
+    else contenedor.prepend(a);
+  });
 
   /** Con varios alumnos, quién está estudiando (tocarlo deja cambiar). */
   function chipAlumno(): HTMLElement | null {
@@ -284,6 +309,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   function pintarInicio(): void {
+    enPortada = true;
     const items = s.sesion();
     teclado.usar(null);
     if (!items.length) {
@@ -304,6 +330,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     rellenar(
       contenedor,
       el('div', 'cabecera-hoy', el('h2', 'titulo-panel', 'Hoy'), chipAlumno()),
+      avisoVersion(),
       avisoPausa(),
       el('p', 'resumen', `Hoy toca: ${items.length} preguntas, unos ${minutos} minutos.`),
       el('ul', 'hoy-cuentas', ...partes),
@@ -317,6 +344,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   function pintarNadaQueHacer(): void {
+    enPortada = true;
     const hayAdelantado = s.adelantado().length > 0;
     const principal = hayAdelantado
       ? boton('Adelantar repasos', 'boton-principal', () => empezarSesion(s.adelantado(), true))
@@ -324,6 +352,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     rellenar(
       contenedor,
       el('div', 'cabecera-hoy', el('h2', 'titulo-panel', 'Hoy'), chipAlumno()),
+      avisoVersion(),
       avisoPausa(),
       el('p', 'resumen', 'Lo de hoy ya está hecho.'),
       el(
@@ -341,6 +370,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   function empezarSesion(items: ItemHoy[], adelantado: boolean): void {
+    enPortada = false;
     adelantando = adelantado;
     nuevosVistos = new Set(items.filter((i) => i.tipo === 'nuevo').map((i) => i.paisId));
     tiposPorPais = new Map(items.map((i) => [i.paisId, i.tipo]));
@@ -391,6 +421,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
   }
 
   function pintarFinal(): void {
+    enPortada = true;
     teclado.usar(null);
     s.mapaActual()?.setInteractivo(false);
     const resumen = cola?.resumen() ?? { total: 0, aLaPrimera: 0, fallos: 0 };
@@ -404,6 +435,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     rellenar(
       contenedor,
       el('p', 'resumen-titulo', adelantando ? 'Repaso terminado' : 'Hoy, hecho'),
+      avisoVersion(),
       el('p', 'resumen', mensajeResumen(resumen.aLaPrimera, resumen.total)),
       nuevosVistos.size
         ? el('p', 'resumen-escalones', el('strong', '', 'Nuevos de hoy: '), [...nuevosVistos].map(nombre).join(', '), '.')
@@ -420,6 +452,7 @@ export function iniciarHoy(panel: HTMLElement, s: ServiciosHoy): Modo {
     alSeleccionarPais: (id) => control.alTocarPais?.(id),
     salir() {
       dejarDeEscuchar?.();
+      dejarDeEscucharVersion();
       window.clearTimeout(temporizador);
       teclado.quitar();
       limpiarMapa();

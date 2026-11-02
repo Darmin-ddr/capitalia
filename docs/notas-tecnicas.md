@@ -33,6 +33,7 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 - `scripts/prueba-hoy.cjs <carpeta>`: primer día (nuevos dos veces, nunca seguidos) y sesión de tres regiones con rótulo.
 - `scripts/prueba-examen.cjs <carpeta>`: examen de Europa (nota con medio punto, sin colores, priorizar en Hoy), "Las dos" por continentes y pestañas a 360 px.
 - `scripts/prueba-tema.cjs <carpeta>`: tema Automático/Claro/Oscuro y capturas en oscuro.
+- `scripts/prueba-version.cjs <carpeta>`: aviso de versión nueva en la portada y franja al pie (simula el evento `controllerchange`).
 - `scripts/prueba-perfiles.cjs <carpeta>`: alumnos: uno solo sigue igual; añadir otro; "¿Quién va a estudiar?" al abrir; progresos separados; PIN común; borrar desde el panel.
 - `scripts/prueba-instalar.cjs <carpeta>`: entrada "Instalar la app" y aviso de una vez (simula el evento de instalación de Chrome; iPhone muestra los pasos de Safari).
 - `scripts/prueba-portada.cjs <carpeta>`: portada de Hoy (cifras, sin selector, mapa del continente), "Europa entera" (bloqueada, tandas de 16) y vuelta a la región elegida.
@@ -77,4 +78,7 @@ Las de la v2 (`prueba-aprender`, `prueba-hoy`, `prueba-examen`, `prueba-tema`) c
 - El PIN vive en el índice y se copia al estado del alumno al cargarlo; al guardar, si cambió, se actualiza el índice.
 - Copias (`src/logic/copia.ts`): la de un alumno (`formato: 'progreso-capitales'`, con `alumno`, `dispositivo` y `fecha`; código `CAPITALES2:`, que también los lleva, y se siguen leyendo los `CAPITALES1:`) y la de todos (`formato: 'capitalia-casa'`, desde el panel).
 - Preferencias del dispositivo, fuera del progreso: tema (`capitalia-tema`), aviso de instalar descartado (`capitalia-aviso-instalar`) y aviso de pausa plegado (`capitalia-aviso-pausa-plegado`).
+
+## Versión nueva (1.3.1)
+- `src/ui/actualizar.ts`: el service worker (autoUpdate, con `skipWaiting` y `clientsClaim`) toma el control en cuanto la versión nueva está descargada; el evento `controllerchange` (si ya había control al cargar) marca que hay versión nueva. Aviso en la portada de Hoy y franja al pie en el resto (`.app:has(.aviso-version)` la oculta en la portada). Al volver a la app (`visibilitychange`) se llama a `registration.update()`.
 

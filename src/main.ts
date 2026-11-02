@@ -5,9 +5,12 @@ import './ui/estilos.css';
 import { iniciarApp } from './ui/app';
 import { aplicarTema, leerTema } from './ui/tema';
 import { prepararInstalacion } from './ui/instalar';
+import { prepararActualizacion, prepararFranjaVersion } from './ui/actualizar';
 
 aplicarTema(leerTema());
 prepararInstalacion();
+prepararActualizacion();
+prepararFranjaVersion(document.querySelector('.app') as HTMLElement);
 
 iniciarApp();
 

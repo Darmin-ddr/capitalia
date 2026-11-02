@@ -24,6 +24,7 @@ En lugar de leer una lista una y otra vez, la app te hace **recordar** las capit
 - **Trucos de memoria.** Algunos países traen uno, y puedes inventar los tuyos (la app incluye una guía para fabricarlos).
 - **Varios alumnos en el mismo dispositivo**, cada uno con su progreso: un nombre y una imagen (inicial o icono), sin fotos ni cuentas. Con dos o más, la app pregunta quién va a estudiar al abrirla.
 - **Modo claro y oscuro**, automático o a elegir.
+- **Se actualiza sola**: cuando hay una versión nueva, avisa con un botón para cargarla (el progreso no cambia).
 - **Fallar no castiga.** Cuando fallas, ves la respuesta y el truco, y ese país vuelve a salir en unos minutos. No hay rachas ni puntos que perder.
 - **Escribir sin agobios.** No hace falta poner tildes ni mayúsculas, y si se te escapa una letra te lo damos por bueno (pero vuelve a salir para afianzarlo).
 

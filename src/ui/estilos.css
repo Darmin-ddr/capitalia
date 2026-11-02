@@ -2023,3 +2023,63 @@ button {
 .acciones-rejilla > .boton-principal {
   grid-column: 1 / -1;
 }
+
+
+/* --- Versión nueva: aviso en la portada de Hoy y franja al pie en el resto --- */
+.aviso-version,
+.franja-version {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--acento);
+  background: color-mix(in srgb, var(--acento) 10%, var(--superficie));
+}
+
+.aviso-version {
+  margin: 4px 0 12px;
+}
+
+.aviso-version p,
+.franja-version p {
+  flex: 1 1 200px;
+  margin: 0;
+}
+
+.franja-version {
+  flex: none;
+  flex-wrap: nowrap;
+  margin: 0 16px 12px;
+}
+
+.franja-version p {
+  font-size: 0.95rem;
+}
+
+.franja-version .boton-principal {
+  flex: none;
+}
+
+/* En la portada de Hoy ya está el aviso: la franja no sale dos veces. */
+.app:has(.aviso-version) .franja-version {
+  display: none;
+}
+
+/* En el móvil, la franja en una sola línea: solo lo esencial. */
+@media (max-width: 600px) {
+  .franja-detalle {
+    display: none;
+  }
+  .franja-version {
+    gap: 8px;
+    padding: 6px 8px 6px 12px;
+  }
+  .franja-version p {
+    flex: 1 1 auto;
+  }
+  .franja-version .boton-principal {
+    padding: 0 14px;
+  }
+}
