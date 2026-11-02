@@ -1,6 +1,6 @@
 // Prueba del aviso de versión nueva: en la portada de Hoy y franja al pie en las demás pestañas.
-// El cambio de versión real no se puede provocar aquí: se simula el evento `controllerchange`
-// (el que da el navegador cuando la versión nueva toma el control).
+// Se simula que el servidor tiene otra compilación (version.json distinto). La prueba con
+// compilaciones reales es scripts/prueba-actualizacion.cjs.
 // Uso: node scripts/prueba-version.cjs <carpeta-capturas>   (con `npx vite preview --port 4173` en marcha)
 const { chromium, devices } = require('playwright');
 
@@ -9,7 +9,16 @@ const ESTADO = JSON.stringify({ version: 1, tarjetas: {}, historial: [], guiaVis
 const out = process.argv[2] || '.';
 let fallosPrueba = 0;
 const comprobar = (cond, texto) => { console.log((cond ? 'OK   ' : 'FALLO') + ' ' + texto); if (!cond) fallosPrueba++; };
-const versionNueva = (p) => p.evaluate(() => navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));
+// El servidor pasa a tener otra compilación y se "vuelve" a la app (pasado el minuto de espera entre consultas).
+const versionNueva = async (p) => {
+  await p.route('**/version.json*', (r) => r.fulfill({ contentType: 'application/json', body: '{"version":"9.9.9","compilacion":"otra"}' }));
+  await p.evaluate(() => {
+    const ahora = Date.now;
+    Date.now = () => ahora() + 120000;
+    window.dispatchEvent(new Event('focus'));
+  });
+  await p.waitForSelector('.aviso-version, #franja-version', { timeout: 5000 }).catch(() => null);
+};
 const visible = (p, sel) => p.locator(sel).first().isVisible().catch(() => false);
 
 (async () => {
@@ -23,14 +32,14 @@ const visible = (p, sel) => p.locator(sel).first().isVisible().catch(() => false
     const p = await ctx.newPage();
     const tap = o.hasTouch ? 'tap' : 'click';
     p.on('pageerror', (e) => errores.push(nombre + ': ' + e.message));
-    // Primera visita: el service worker se instala y toma el control; eso no es una versión nueva.
+    // Misma compilación que el servidor: sin aviso (ni al arrancar ni al volver).
     await p.goto('http://localhost:4173/');
     await p.waitForSelector('.portada-progreso');
-    await p.evaluate(() => navigator.serviceWorker.ready);
+    await p.waitForTimeout(6000);
+    await p.evaluate(() => window.dispatchEvent(new Event('focus')));
     await p.waitForTimeout(500);
-    comprobar(!(await visible(p, '.aviso-version')) && !(await visible(p, '#franja-version')), `${nombre}: primera visita, sin aviso`);
-    // Con la app ya controlada por el service worker, llega una versión nueva.
-    await p.reload(); await p.waitForSelector('.portada-progreso');
+    comprobar(!(await visible(p, '.aviso-version')) && !(await visible(p, '#franja-version')), `${nombre}: misma versión que el servidor, sin aviso`);
+    // El servidor publica otra: al volver a la app, avisa.
     await versionNueva(p);
     await p.waitForTimeout(200);
     comprobar(await visible(p, '.aviso-version'), `${nombre}: aviso en la portada de Hoy`);
@@ -51,6 +60,7 @@ const visible = (p, sel) => p.locator(sel).first().isVisible().catch(() => false
     await p.locator('#franja-version').getByRole('button', { name: 'Ocultar el aviso hasta la próxima vez' })[tap]();
     comprobar(!(await visible(p, '#franja-version')), `${nombre}: "×" oculta la franja`);
     await p.locator('.modo[data-modo="hoy"]')[tap]();
+    await p.unroute('**/version.json*');
     await Promise.all([p.waitForEvent('load'), p.locator('.aviso-version').getByRole('button', { name: 'Actualizar' })[tap]()]);
     await p.waitForSelector('.portada-progreso');
     comprobar(!(await visible(p, '.aviso-version')), `${nombre}: "Actualizar" recarga la app`);

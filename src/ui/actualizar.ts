@@ -1,57 +1,63 @@
 import { boton, el } from './dom';
 
 /**
- * Versión nueva de la app. El service worker (vite-plugin-pwa, autoUpdate)
- * descarga la versión nueva en segundo plano y toma el control en cuanto
- * está lista, pero la página abierta sigue con el código anterior hasta que
- * se recarga. Aquí se detecta ese momento (evento `controllerchange`) para
- * ofrecer "Actualizar" en la portada de Hoy, y se pide al navegador que busque
- * versión nueva al volver a la app (en iPhone y iPad volver solo la reanuda).
+ * Versión nueva de la app.
+ * - La página va "primero la red" (vite.config.ts): con conexión, al abrir se ve
+ *   siempre la última versión. Este aviso es para quien deja la app abierta (o
+ *   la abrió sin conexión) mientras se publica otra.
+ * - Para saberlo no se depende de cuándo actualice el navegador su copia: cada
+ *   compilación tiene un identificador (`__COMPILACION__`) y el servidor publica
+ *   el de la última en `version.json`. Si no coinciden, hay versión nueva. Se
+ *   mira al volver a la app (pestaña, ventana o desde segundo plano) y cada 30 minutos.
  */
+
+declare const __COMPILACION__: string;
 
 let hayNueva = false;
 const oyentes = new Set<() => void>();
+/** Para no preguntar al servidor más de una vez por minuto. */
+const ESPERA_MINIMA_MS = 60_000;
+
+async function comprobar(): Promise<void> {
+  if (hayNueva) return;
+  try {
+    const r = await fetch(`./version.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (!r.ok) return;
+    const d = (await r.json()) as { compilacion?: unknown };
+    if (typeof d.compilacion === 'string' && d.compilacion !== __COMPILACION__) {
+      hayNueva = true;
+      for (const f of oyentes) f();
+    }
+  } catch {
+    // Sin conexión: ya se mirará más tarde.
+  }
+}
 
 export function prepararActualizacion(): void {
-  const sw = navigator.serviceWorker;
-  if (!sw) return;
-  // Sin service worker al cargar = primera visita: su toma de control no es una versión nueva.
-  let habiaControl = Boolean(sw.controller);
-  sw.addEventListener('controllerchange', () => {
-    if (!habiaControl) {
-      habiaControl = true;
-      return;
-    }
-    hayNueva = true;
-    for (const f of oyentes) f();
-  });
-  // Buscar versión nueva (el navegador solo lo hace al navegar): al volver a la app (pestaña o
-  // ventana; en el PC, pasar a otra ventana no siempre "oculta" la página) y cada 30 minutos.
-  let ultimaBusqueda = 0;
+  let ultima = 0;
   const buscar = () => {
-    if (document.visibilityState !== 'visible' || Date.now() - ultimaBusqueda < 60_000) return;
-    ultimaBusqueda = Date.now();
-    void sw
-      .getRegistration()
-      .then((r) => r?.update())
-      .catch(() => undefined);
+    if (document.visibilityState !== 'visible' || Date.now() - ultima < ESPERA_MINIMA_MS) return;
+    ultima = Date.now();
+    void comprobar();
   };
   document.addEventListener('visibilitychange', buscar);
   window.addEventListener('focus', buscar);
   window.setInterval(buscar, 30 * 60_000);
+  // Y una vez al arrancar, por si la página salió de la copia (sin conexión o con mala cobertura).
+  window.setTimeout(buscar, 5_000);
 }
 
 export function hayVersionNueva(): boolean {
   return hayNueva;
 }
 
-/** Avisa cuando la versión nueva queda lista. Devuelve cómo dejar de escuchar. */
+/** Avisa cuando hay versión nueva. Devuelve cómo dejar de escuchar. */
 export function alHaberVersionNueva(f: () => void): () => void {
   oyentes.add(f);
   return () => oyentes.delete(f);
 }
 
-/** Recargar con la versión nueva (el progreso ya está guardado: se guarda en cada respuesta). */
+/** Recargar: con "primero la red", la página que llega es la nueva (el progreso ya está guardado). */
 export function actualizarAhora(): void {
   window.location.reload();
 }
@@ -81,4 +87,3 @@ export function prepararFranjaVersion(app: HTMLElement): void {
   if (hayNueva) mostrar();
   alHaberVersionNueva(mostrar);
 }
-
