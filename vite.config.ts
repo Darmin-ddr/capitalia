@@ -1,10 +1,41 @@
 import { defineConfig } from 'vitest/config';
 import { VitePWA } from 'vite-plugin-pwa';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { join } from 'node:path';
 
 const version = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version as string;
-/** Identificador de esta compilación: la app lo compara con `version.json` del servidor para saber si hay una nueva. */
-const compilacion = Date.now().toString(36);
+/**
+ * Identificador de la compilación: la app lo compara con `version.json` del servidor para
+ * saber si hay una nueva. Es una huella del contenido de la app (código, página, ficheros
+ * públicos, versión y dependencias), no de la hora: así, publicar solo cambios en el README,
+ * los documentos, las pruebas o los scripts no hace saltar el aviso de "versión nueva".
+ * Se normalizan los saltos de línea para que salga igual en Windows y en GitHub.
+ * CAPITALIA_COMPILACION_EXTRA (solo para pruebas) fuerza una huella distinta.
+ */
+function huellaDeLaApp(): string {
+  const raiz = new URL('.', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+  const ficheros: string[] = ['index.html', 'vite.config.ts'];
+  const recorrer = (dir: string) => {
+    for (const nombre of readdirSync(join(raiz, dir))) {
+      const ruta = `${dir}/${nombre}`;
+      if (statSync(join(raiz, ruta)).isDirectory()) recorrer(ruta);
+      else ficheros.push(ruta);
+    }
+  };
+  recorrer('src');
+  recorrer('public');
+  const paquete = JSON.parse(readFileSync(join(raiz, 'package.json'), 'utf8'));
+  const h = createHash('sha256');
+  h.update(JSON.stringify({ version: paquete.version, dependencies: paquete.dependencies }));
+  for (const f of ficheros.sort()) {
+    h.update(f);
+    h.update(readFileSync(join(raiz, f)).toString('latin1').split('\r\n').join('\n'));
+  }
+  h.update(process.env.CAPITALIA_COMPILACION_EXTRA ?? '');
+  return h.digest('hex').slice(0, 12);
+}
+const compilacion = huellaDeLaApp();
 
 /** Publica `version.json` con la versión y la compilación (no va en la copia sin conexión: se pide siempre a la red). */
 const ficheroVersion = {

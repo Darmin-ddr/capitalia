@@ -9,7 +9,10 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 const raiz = path.join(__dirname, '..');
-const compilar = () => execSync('npm run build', { cwd: raiz, stdio: 'ignore' });
+// La huella de la compilación sale del contenido de la app: para simular una versión nueva sin
+// tocar el código se fuerza con CAPITALIA_COMPILACION_EXTRA.
+const compilar = (extra = '') =>
+  execSync('npm run build', { cwd: raiz, stdio: 'ignore', env: { ...process.env, CAPITALIA_COMPILACION_EXTRA: extra } });
 const P = '{"version":1,"perfiles":[{"id":"p1","nombre":"","imagen":{"tipo":"inicial","color":"#c9daf8"}}],"ultimo":"p1","pinHash":null,"nombrePedido":true}';
 const ESTADO = JSON.stringify({ version: 1, tarjetas: {}, historial: [], guiaVista: true, bienvenidaVista: true, ajustes: {} });
 let fallosPrueba = 0;
@@ -40,7 +43,7 @@ const compilacionDe = (p) => p.evaluate(() => document.querySelector('script[typ
   const a = await compilacionDe(vieja);
 
   // Se publica la versión B.
-  compilar();
+  compilar('version-b');
 
   // 1. Abrir otra vez con conexión: sale ya la B, sin esperar a otra apertura.
   const nueva = await abrir();
@@ -88,6 +91,7 @@ const compilacionDe = (p) => p.evaluate(() => document.querySelector('script[typ
   comprobar((await p3.locator('path.pais.jugable').count()) > 0, 'recién estrenada, sin conexión abre igual');
   await ctx2.close();
 
+  compilar(); // dejar dist/ con la compilación normal
   console.log('errores de página:', errores.length ? errores : 'ninguno');
   console.log(fallosPrueba ? `${fallosPrueba} comprobaciones fallidas` : 'todas las comprobaciones bien');
   await b.close();
