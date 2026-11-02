@@ -25,14 +25,20 @@ export function prepararActualizacion(): void {
     hayNueva = true;
     for (const f of oyentes) f();
   });
-  // Al volver a la app, que mire si hay versión nueva (el navegador solo lo hace al navegar).
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') return;
+  // Buscar versión nueva (el navegador solo lo hace al navegar): al volver a la app (pestaña o
+  // ventana; en el PC, pasar a otra ventana no siempre "oculta" la página) y cada 30 minutos.
+  let ultimaBusqueda = 0;
+  const buscar = () => {
+    if (document.visibilityState !== 'visible' || Date.now() - ultimaBusqueda < 60_000) return;
+    ultimaBusqueda = Date.now();
     void sw
       .getRegistration()
       .then((r) => r?.update())
       .catch(() => undefined);
-  });
+  };
+  document.addEventListener('visibilitychange', buscar);
+  window.addEventListener('focus', buscar);
+  window.setInterval(buscar, 30 * 60_000);
 }
 
 export function hayVersionNueva(): boolean {
